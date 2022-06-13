@@ -1,0 +1,38 @@
+.informationContainer {
+    width: 100%;
+    min-height: 85vh;
+    position: relative;
+}
+
+.formContainer {
+    background-color: var(--white);
+    padding: 20px 0px 0px 20px;
+    border: 1px solid #D3D4E7;
+    box-sizing: border-box;
+    box-shadow: 0px 4px 40px rgba(108, 109, 138, 0.1);
+    border-radius: 10px;
+    width: 100%;
+    max-width: 860px;
+}
+
+.formWrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px 20px 10px 0px;
+}
+
+.formLeft {
+    display: flex;
+    flex-direction: column;
+    width: 48%;
+
+}
+
+.formRight {
+    display: flex;
+    flex-direction: column;
+    width: 48%;
+
+}

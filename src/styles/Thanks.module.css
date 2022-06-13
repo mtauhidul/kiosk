@@ -1,0 +1,28 @@
+.thanksContainer {
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--bg);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.thanksWrapper {
+    padding: 30px 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 700px;
+    min-height: 300px;
+    text-align: center;
+}
+
+.thanksImgWrapper {
+    max-width: 200px;
+    margin-bottom: 50px;
+}
+
+.thanksWrapper img {
+    max-width: 100%;
+}

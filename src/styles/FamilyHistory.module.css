@@ -1,0 +1,31 @@
+.familyHisContainer {
+    width: 100%;
+    min-height: 85vh;
+    position: relative;
+
+}
+
+.radioBtnContainer {
+    display: flex;
+    flex-direction: row !important;
+    width: 100%;
+}
+
+.radioBtn {
+    width: 140px !important;
+    border: 1px solid var(--border);
+    margin-right: 20px !important;
+    margin-left: 0px !important;
+    border-radius: 4px;
+    background-color: var(--white);
+    font-style: normal;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 18px;
+    color: var(--grey);
+}
+
+.radioBtn:hover {
+    border-color: var(--primary);
+    color: var(--primary) !important;
+}

@@ -1,0 +1,36 @@
+.customOption {
+    cursor: pointer;
+    user-select: none;
+    display: block;
+    margin: 10px 20px 10px 0px;
+}
+
+.customOption span {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    transition: 0.2s;
+    padding: 0 16px;
+    max-width: 300px;
+    height: 46px;
+    color: var(--secondary);
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--white);
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 18px;
+}
+
+
+.customOption input {
+    pointer-events: none;
+    display: none;
+}
+
+.customOption input:checked+span {
+    border-color: var(--primary);
+    background-color: var(--checked)
+}

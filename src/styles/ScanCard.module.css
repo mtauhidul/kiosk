@@ -1,0 +1,15 @@
+.cardImg {
+    margin-top: 20px;
+}
+
+.cardImg img {
+    margin: 0 auto;
+    width: 105px;
+    height: 70px;
+    border-radius: 6px;
+    object-fit: cover;
+}
+
+#violateText {
+    color: var(--primary) !important;
+}

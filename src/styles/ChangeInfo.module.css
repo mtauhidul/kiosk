@@ -1,0 +1,25 @@
+.mainContainer {
+    width: 100%;
+    min-height: 85vh;
+    position: relative;
+}
+
+.cardWrapper {
+    width: 100%;
+    max-width: 850px;
+    padding: 20px;
+    background: var(--white);
+    border: 1px solid var(--border);
+    box-shadow: 0px 4px 40px rgba(108, 109, 138, 0.1);
+    border-radius: 10px;
+}
+
+.textWrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.textWrapper img {
+    margin-right: 10px;
+}

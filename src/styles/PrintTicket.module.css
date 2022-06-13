@@ -1,0 +1,33 @@
+.PrintTicketContainer {
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--bg);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.PrintTicketWrapper {
+    width: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.PrintTicketWrapper h2 {
+    margin-bottom: 15px;
+}
+
+.PrintTicketWrapper h6 {
+    margin-bottom: 30px;
+}
+
+.backBtnContainer {
+    position: absolute;
+    bottom: 0;
+    padding-bottom: 30px;
+
+}

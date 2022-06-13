@@ -1,0 +1,29 @@
+.itemsContainer {
+    width: 100%;
+}
+
+.itemList {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+    max-width: 870px;
+}
+
+
+
+.addNewInput {
+    height: 50px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+    min-width: 200px;
+}
+
+.addNewInput input {
+    height: 44px;
+    padding: 0px 14.3px !important;
+}

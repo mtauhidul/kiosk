@@ -1,0 +1,83 @@
+:root {
+    --card-line-height: 1.2em;
+    --card-padding: 1em;
+    --card-radius: 4px;
+    --color-green: var(--primary);
+    --color-gray: #CECFFD;
+    --color-dark-gray: #CECFFD;
+    --radio-border-width: 2px;
+    --radio-size: 1.2em;
+}
+
+.socialCardContainer {
+    display: flex;
+    flex-direction: row;
+}
+
+.socialCard {
+    background-color: #fff;
+    border-radius: 8px;
+    position: relative;
+    margin-right: 30px;
+    width: 240px;
+    height: 260px;
+    border: 2px solid var(--border);
+    transition: background 0.2s ease-out, border-color 0.2s ease-out;
+}
+
+.socialCard:hover {
+    border: 2px solid var(--primary);
+    box-shadow: var(--color-dark-gray) 0px 0px 0px 3px;
+
+}
+
+.cardRadio {
+    font-size: inherit;
+    margin: 0;
+    position: absolute;
+    right: calc(1em + var(--radio-border-width));
+    top: calc(1em + var(--radio-border-width));
+}
+
+@supports (-webkit-appearance: none) or (-moz-appearance: none) {
+    .cardRadio {
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        background: #fff;
+        border: var(--radio-border-width) solid var(--color-gray);
+        border-radius: 50%;
+        cursor: pointer;
+        height: var(--radio-size);
+        outline: none;
+        transition: background 0.2s ease-out, border-color 0.2s ease-out;
+        width: var(--radio-size);
+    }
+
+    .cardRadio:checked {
+        background: var(--color-green);
+        outline: 1px solid var(--primary);
+        border-color: var(--white);
+    }
+
+    .socialCard:hover .cardRadio {
+        border: var(--radio-border-width) solid var(--color-gray);
+    }
+
+
+}
+
+.cardBody {
+    width: 100%;
+    height: 260px;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    padding: 1em;
+    align-items: center;
+    justify-content: center;
+}
+
+.cardBody img {
+    width: 100px;
+    height: 100px;
+}

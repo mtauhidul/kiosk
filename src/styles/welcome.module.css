@@ -1,0 +1,35 @@
+.container {
+    background-color: var(--bg);
+    min-height: 100vh;
+    padding: 5vw 3vw !important;
+}
+
+.wrapper {
+    min-height: 80vh;
+    padding: 0 !important;
+    display: flex !important;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.heroText {
+    width: 60%;
+    min-height: 55vh;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 0px 50px;
+}
+
+.heroBg {
+    width: 40%;
+    min-height: 70vh;
+    padding: 3vw 0 !important;
+    background-color: var(--lightBg);
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}

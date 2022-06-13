@@ -1,0 +1,23 @@
+.GeneralContainer {
+    width: 100%;
+    min-height: 85vh;
+    position: relative;
+}
+
+
+
+.form {
+    width: 440px;
+    height: auto;
+    background: var(--white);
+    border: 1px solid #D3D4E7;
+    box-sizing: border-box;
+    box-shadow: 0px 4px 40px rgba(108, 109, 138, 0.1);
+    border-radius: 10px;
+    padding: 23px 23px 40px 23px;
+
+}
+
+#locationSelector {
+    margin-top: 40px;
+}

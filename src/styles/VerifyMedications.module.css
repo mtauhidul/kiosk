@@ -1,0 +1,12 @@
+.verificationWrapper {
+    padding: 20px;
+    background-color: var(--white);
+    width: 100%;
+    max-width: 350px;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+}
+
+#verifyBtn {
+    transform: translateX(120%)
+}

@@ -1,0 +1,20 @@
+.appointmentContainer {
+    width: 100%;
+    min-height: 85vh;
+    position: relative;
+}
+
+.dateWrapper {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-top: 10px;
+
+}
+
+.dateWrapper img {
+    margin-right: 10px;
+    max-width: 100%;
+    max-height: 100%;
+
+}
