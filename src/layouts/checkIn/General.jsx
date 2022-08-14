@@ -4,7 +4,6 @@ import {
   MenuItem,
   Select,
   TextField,
-  Box,
 } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
@@ -28,7 +27,13 @@ const General = () => {
 
   useEffect(() => {
     const state = store?.getState()?.data?.userInfo;
-    setUser(state);
+    setUser({
+      fullName: state.fullName || "",
+      day: state.day || "",
+      month: state.month || "",
+      year: state.year || "",
+      location: state.location || "",
+    });
   }, []);
 
   useEffect(() => {
