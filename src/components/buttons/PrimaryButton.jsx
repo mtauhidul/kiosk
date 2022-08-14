@@ -12,6 +12,7 @@ const PrimaryButton = ({ handleSubmit, data, text, url, disabled }) => {
     }
     navigate(url);
   };
+
   return (
     <Button
       disabled={disabled}
@@ -27,7 +28,7 @@ const PrimaryButton = ({ handleSubmit, data, text, url, disabled }) => {
         },
       }}
     >
-      {text}
+      {disabled ? "Please fill out all fields" : text}
     </Button>
   );
 };

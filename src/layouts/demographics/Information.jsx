@@ -5,6 +5,7 @@ import {
   Select,
   TextField,
 } from "@mui/material";
+import { useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { bindActionCreators } from "redux";
@@ -17,6 +18,7 @@ import styles from "../../styles/Information.module.css";
 const Information = () => {
   const dispatch = useDispatch();
   const [isDisabled, setIsDisabled] = useState(true);
+  const location = useLocation();
 
   const [user, setUser] = useState({
     fullName: "",
@@ -92,6 +94,7 @@ const Information = () => {
             <FormControl sx={{ mt: 1, mb: 2, width: "100%" }}>
               <TextField
                 required
+                disabled
                 value={user?.fullName}
                 id="outlined-required"
                 onChange={(e) =>
@@ -215,6 +218,7 @@ const Information = () => {
         isDisabled={isDisabled}
         handleSubmit={addDemographicData}
         data={demographics}
+        isEdit={location.state}
       />
     </form>
   );

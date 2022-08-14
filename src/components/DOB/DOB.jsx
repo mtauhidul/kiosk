@@ -1,14 +1,17 @@
 import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
-import React from "react";
+import { useLocation } from "react-router-dom";
 import styles from "../../styles/DOB.module.css";
 import { days, months, years } from "../../utils/DateTime";
 
 const DOB = ({ setData, data }) => {
+  const locations = useLocation();
+
   return (
     <div className={styles.dobWrapper}>
       <FormControl sx={{ mr: 2, mt: 1, minWidth: 120 }}>
         <InputLabel id="demo-simple-select-helper-label">Day</InputLabel>
         <Select
+          disabled={locations.pathname === "/kiosk/demographics_Information"}
           required
           labelId="demo-simple-select-helper-label"
           id="demo-simple-select-helper"
@@ -31,6 +34,7 @@ const DOB = ({ setData, data }) => {
       <FormControl sx={{ mr: 2, mt: 1, minWidth: 120 }}>
         <InputLabel id="demo-simple-select-helper-label">Month</InputLabel>
         <Select
+          disabled={locations.pathname === "/kiosk/demographics_Information"}
           required
           labelId="demo-simple-select-helper-label"
           id="demo-simple-select-helper"
@@ -53,6 +57,7 @@ const DOB = ({ setData, data }) => {
       <FormControl sx={{ mr: 2, mt: 1, minWidth: 120 }}>
         <InputLabel id="demo-simple-select-helper-label">Year</InputLabel>
         <Select
+          disabled={locations.pathname === "/kiosk/demographics_Information"}
           required
           labelId="demo-simple-select-helper-label"
           id="demo-simple-select-helper"

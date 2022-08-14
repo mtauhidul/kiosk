@@ -1,35 +1,37 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import Bottom from '../../components/Bottom/Bottom';
-import History from '../../components/history/History';
-import * as actionCreators from '../../state/actionCreators/index';
-import store from '../../state/store';
-import styles from '../../styles/Medicals.module.css';
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { bindActionCreators } from "redux";
+import Bottom from "../../components/Bottom/Bottom";
+import History from "../../components/history/History";
+import * as actionCreators from "../../state/actionCreators/index";
+import store from "../../state/store";
+import styles from "../../styles/Medicals.module.css";
 
 const diseaseList = [
-  'Alzheimer’s',
-  'Arthritis',
-  'Back Problems',
-  'Liver Disease',
-  'Cancer',
-  'Cholesterol',
-  'Chest Pain',
-  'AIDS/HIV',
-  'Circulatory Problems',
-  'Stomach/GI Ulcers',
-  'Heart Disease',
-  'Gout',
-  'Phlebitis',
-  'Hepatitis',
-  'Hemophilia',
-  'Diabetes',
-  'Allergies to medicine or drugs',
+  "Alzheimer’s",
+  "Arthritis",
+  "Back Problems",
+  "Liver Disease",
+  "Cancer",
+  "Cholesterol",
+  "Chest Pain",
+  "AIDS/HIV",
+  "Circulatory Problems",
+  "Stomach/GI Ulcers",
+  "Heart Disease",
+  "Gout",
+  "Phlebitis",
+  "Hepatitis",
+  "Hemophilia",
+  "Diabetes",
+  "Allergies to medicine or drugs",
 ];
 
 const MedicalHistory = () => {
   const dispatch = useDispatch();
   const { addMedicalHistory } = bindActionCreators(actionCreators, dispatch);
+  const location = useLocation();
 
   const [data, setData] = useState([]);
 
@@ -56,11 +58,14 @@ const MedicalHistory = () => {
         addedItems={data}
         addToList={addItemToList}
         items={diseaseList}
-        headerText='PLEASE ADD MEDICAL HISTORY :
-'
-        btnText='Add Other Medications'
+        headerText="PLEASE ADD MEDICAL HISTORY :"
+        btnText="Add Other Medications"
       />
-      <Bottom handleSubmit={addMedicalHistory} data={data} />
+      <Bottom
+        isEdit={location.state}
+        handleSubmit={addMedicalHistory}
+        data={data}
+      />
     </div>
   );
 };

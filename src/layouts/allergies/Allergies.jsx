@@ -1,30 +1,31 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import Bottom from '../../components/Bottom/Bottom';
-import History from '../../components/history/History';
-import * as actionCreators from '../../state/actionCreators/index';
-import store from '../../state/store';
-import styles from '../../styles/Allergies.module.css';
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { bindActionCreators } from "redux";
+import Bottom from "../../components/Bottom/Bottom";
+import History from "../../components/history/History";
+import * as actionCreators from "../../state/actionCreators/index";
+import store from "../../state/store";
+import styles from "../../styles/Allergies.module.css";
 
 const allergyList = [
-  'No known allergies',
-  'Local Anesthetics',
-  'Aspirin',
-  'Penicillin',
-  'Food Allergies',
-  'Iodine/Shellfish',
-  'Demerol',
-  'Codeine',
+  "No known allergies",
+  "Local Anesthetics",
+  "Aspirin",
+  "Penicillin",
+  "Food Allergies",
+  "Iodine/Shellfish",
+  "Demerol",
+  "Codeine",
 ];
 
 const Allergies = () => {
   const dispatch = useDispatch();
   const { addAllergiesData } = bindActionCreators(actionCreators, dispatch);
+  const location = useLocation();
 
   const [data, setData] = useState([]);
   const addItemToList = (item) => {
-    console.log(item);
     const repeatDataCheck = data.find((d) => d === item);
     if (!repeatDataCheck) {
       const newArray = [...data];
@@ -48,10 +49,14 @@ const Allergies = () => {
         addedItems={data}
         addToList={addItemToList}
         items={allergyList}
-        headerText='PLEASE ADD ANY ALLERGIES :'
-        btnText='Add Other Allergies'
+        headerText="PLEASE ADD ANY ALLERGIES :"
+        btnText="Add Other Allergies"
       />
-      <Bottom handleSubmit={addAllergiesData} data={data} />
+      <Bottom
+        isEdit={location.state}
+        handleSubmit={addAllergiesData}
+        data={data}
+      />
     </div>
   );
 };

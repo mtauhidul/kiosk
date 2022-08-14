@@ -1,23 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import Bottom from '../../components/Bottom/Bottom';
-import History from '../../components/history/History';
-import * as actionCreators from '../../state/actionCreators/index';
-import store from '../../state/store';
-import styles from '../../styles/Surgeries.module.css';
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { bindActionCreators } from "redux";
+import Bottom from "../../components/Bottom/Bottom";
+import History from "../../components/history/History";
+import * as actionCreators from "../../state/actionCreators/index";
+import store from "../../state/store";
+import styles from "../../styles/Surgeries.module.css";
 
 const surgeryList = [
-  'Surgery',
-  'Some long name of surgeries',
-  'Surgery 1',
-  'Surgery 2',
-  'Surgery 3',
+  "Surgery",
+  "Some long name of surgeries",
+  "Surgery 1",
+  "Surgery 2",
+  "Surgery 3",
 ];
 
 const SurgicalHistory = () => {
   const dispatch = useDispatch();
   const { addSurgicalHistory } = bindActionCreators(actionCreators, dispatch);
+  const location = useLocation();
 
   const [data, setData] = useState([]);
 
@@ -44,10 +46,14 @@ const SurgicalHistory = () => {
         addedItems={data}
         addToList={addItemToList}
         items={surgeryList}
-        headerText='PLEASE ADD SURGICAL HISTORY :'
-        btnText='Add Other Surgeries'
+        headerText="PLEASE ADD SURGICAL HISTORY :"
+        btnText="Add Other Surgeries"
       />
-      <Bottom handleSubmit={addSurgicalHistory} data={data} />
+      <Bottom
+        isEdit={location.state}
+        handleSubmit={addSurgicalHistory}
+        data={data}
+      />
     </div>
   );
 };

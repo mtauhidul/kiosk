@@ -10,8 +10,8 @@ const Documents = () => {
   const [isDisabled, setIsDisabled] = useState(true);
 
   const [demographics, setDemographics] = useState({
-    patientsPicture: "",
-    driversLicense: "",
+    patientsPicture: "abc",
+    driversLicense: "xyz",
   });
 
   useEffect(() => {
@@ -28,8 +28,8 @@ const Documents = () => {
   useEffect(() => {
     const state = store?.getState()?.data?.demographicsInfo;
     setDemographics({
-      patientsPicture: state.patientsPicture || "",
-      driversLicense: state.driversLicense || "",
+      patientsPicture: state.patientsPicture || "abc",
+      driversLicense: state.driversLicense || "xyz",
     });
   }, [demographics.driversLicense, demographics.patientsPicture]);
 
