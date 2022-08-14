@@ -5,7 +5,7 @@ import { modules } from "../../utils/Modules";
 import BackButton from "../buttons/BackButton";
 import PrimaryButton from "../buttons/PrimaryButton";
 
-const Bottom = ({ handleSubmit, data }) => {
+const Bottom = ({ handleSubmit, isDisabled, data }) => {
   const locations = useLocation();
   const currentPath = locations.pathname;
   const index = modules.findIndex((module) => module.path === currentPath);
@@ -13,8 +13,9 @@ const Bottom = ({ handleSubmit, data }) => {
 
   return (
     <div className={styles.btnContainer}>
-      <BackButton text="Back" url="/" />
+      <BackButton text={`${index === 0 ? "Cancel" : "Back"}`} url="/" />
       <PrimaryButton
+        disabled={isDisabled}
         handleSubmit={handleSubmit}
         data={data}
         text="Save & Continue"
