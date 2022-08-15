@@ -1,18 +1,73 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
+import { bindActionCreators } from "redux";
 import DriversLicense from "../../assets/images/driversLic.svg";
 import PatientsPicture from "../../assets/images/patientsPic.svg";
 import Bottom from "../../components/Bottom/Bottom";
-import ScanCard from "../../components/cards/ScanCard";
+import UploadCard from "../../components/cards/UploadCard";
 import store from "../../state/store";
 import styles from "../../styles/Documents.module.css";
+import * as actionCreators from "../../state/actionCreators";
+import { useDispatch } from "react-redux";
 
 const Documents = () => {
+  const dispatch = useDispatch();
+  const { addDemographicData } = bindActionCreators(actionCreators, dispatch);
   const [isDisabled, setIsDisabled] = useState(true);
-
   const [demographics, setDemographics] = useState({
-    patientsPicture: "abc",
-    driversLicense: "xyz",
+    patientsPicture: "",
+    driversLicense: "",
   });
+
+  const addFile = useCallback(
+    (id, file) => {
+      if (id === "patientsPicture") {
+        const reader = new FileReader();
+        if (file) {
+          reader.readAsDataURL(file);
+        }
+
+        reader.onload = (readerEvent) => {
+          const state = store?.getState()?.data?.demographicsInfo;
+          const newState = {
+            ...state,
+            patientsPicture: readerEvent.target.result,
+          };
+          addDemographicData(newState);
+          setDemographics({
+            ...demographics,
+            patientsPicture: readerEvent.target.result,
+          });
+        };
+      } else if (id === "driversLicense") {
+        const reader = new FileReader();
+        if (file) {
+          reader.readAsDataURL(file);
+        }
+
+        reader.onload = (readerEvent) => {
+          const state = store?.getState()?.data?.demographicsInfo;
+          const newState = {
+            ...state,
+            driversLicense: readerEvent.target.result,
+          };
+          addDemographicData(newState);
+          setDemographics({
+            ...demographics,
+            driversLicense: readerEvent.target.result,
+          });
+        };
+      }
+    },
+    [addDemographicData, demographics]
+  );
+
+  useEffect(() => {
+    const state = store?.getState()?.data?.demographicsInfo;
+    setDemographics({
+      patientsPicture: state.patientsPicture || "",
+      driversLicense: state.driversLicense || "",
+    });
+  }, [demographics.driversLicense, demographics.patientsPicture]);
 
   useEffect(() => {
     if (
@@ -23,14 +78,6 @@ const Documents = () => {
     } else {
       setIsDisabled(false);
     }
-  }, [demographics.driversLicense, demographics.patientsPicture]);
-
-  useEffect(() => {
-    const state = store?.getState()?.data?.demographicsInfo;
-    setDemographics({
-      patientsPicture: state.patientsPicture || "abc",
-      driversLicense: state.driversLicense || "xyz",
-    });
   }, [demographics.driversLicense, demographics.patientsPicture]);
 
   // const state = store?.getState()?.data?.demographicsInfo;
@@ -47,7 +94,7 @@ const Documents = () => {
           btnText="Take a picture"
         /> */}
 
-        <ScanCard
+        <UploadCard
           id="patientsPicture"
           title="PATIENT’S PICTURE"
           subTitle=""
@@ -58,6 +105,7 @@ const Documents = () => {
           }
           alt="card"
           btnText="Upload a picture"
+          addFile={addFile}
         />
 
         {/* <ScanCard
@@ -69,7 +117,7 @@ const Documents = () => {
           btnText="Scan card"
         /> */}
 
-        <ScanCard
+        <UploadCard
           id="driversLicense"
           title="DRIVER’S LICENSE"
           subTitle=""
@@ -80,6 +128,7 @@ const Documents = () => {
           }
           alt="card"
           btnText="Upload card"
+          addFile={addFile}
         />
       </div>
       <Bottom isDisabled={isDisabled} />
