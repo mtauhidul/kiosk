@@ -16,6 +16,8 @@ import PreviewCard from "../components/previewCard/PreviewCard";
 import store from "../state/store";
 import styles from "../styles/Preview.module.css";
 import { date, formatAMPM, getDayName } from "../utils/formatAMPM";
+import UploadCard from "../components/cards/UploadCard";
+import useReviewImages from "./useReviewImages";
 
 const Preview = () => {
   const state = store?.getState()?.data;
@@ -56,6 +58,8 @@ const Preview = () => {
     new Date().getDay()
   )}, ${formatAMPM(new Date())}, ${date}`;
 
+  const { addFile } = useReviewImages();
+
   return (
     <div className={styles.previewContainer}>
       <div id={styles.item_0}>
@@ -72,12 +76,21 @@ const Preview = () => {
         <PrimaryButton text="Edit Information" url="/kiosk/checkIn_General" />
       </div> */}
       <div id={styles.item_4}>
-        <ScanCard
+        {/* <ScanCard
           title="DRIVER’S LICENSE"
           subTitle=""
           img={demographicsInfo?.driversLicense}
           alt="License"
           btnText="Review"
+        /> */}
+        <UploadCard
+          id="driversLicense"
+          title="DRIVER’S LICENSE"
+          subTitle=""
+          img={demographicsInfo?.driversLicense}
+          alt="License"
+          btnText="Review"
+          addFile={addFile}
         />
       </div>
       <div id={styles.item_5}>
@@ -311,42 +324,71 @@ const Preview = () => {
         </div>
       </div>
       <div id={styles.item_10}>
-        <ScanCard
+        <UploadCard
+          id="insuranceCardFront"
           title="PRI INSURANCE CARD"
           subTitle="Front"
           img={primaryInsurance?.insuranceCardFront}
           alt="Insurance Card"
           btnText="Review"
+          addFile={addFile}
         />
       </div>
       <div id={styles.item_11}>
-        <ScanCard
+        <UploadCard
+          id="insuranceCardBack"
           title="PRI INSURANCE CARD"
           subTitle="Back"
           img={primaryInsurance?.insuranceCardBack}
           alt="Insurance Card"
           btnText="Review"
+          addFile={addFile}
         />
+        {/* <ScanCard
+          title="PRI INSURANCE CARD"
+          subTitle="Back"
+          img={primaryInsurance?.insuranceCardBack}
+          alt="Insurance Card"
+          btnText="Review"
+        /> */}
       </div>
       {secondaryInsurance?.insuranceName && (
         <div id={styles.item_12}>
-          <ScanCard
+          {/* <ScanCard
             title="SEC INSURANCE CARD"
             subTitle="Front"
-            img={secondaryInsurance?.insuranceCardBack}
+            img={secondaryInsurance?.insuranceCardFront}
             alt="Insurance Card"
             btnText="Review"
+          /> */}
+          <UploadCard
+            id="secInsuranceFront"
+            title="SEC INSURANCE CARD"
+            subTitle="Front"
+            img={secondaryInsurance?.insuranceCardFront}
+            alt="Insurance Card"
+            btnText="Review"
+            addFile={addFile}
           />
         </div>
       )}
       {secondaryInsurance?.insuranceName && (
         <div id={styles.item_13}>
-          <ScanCard
+          {/* <ScanCard
             title=" SEC INSURANCE CARD"
             subTitle="Back"
             img={secondaryInsurance?.insuranceCardBack}
             alt="Insurance Card"
             btnText="Review"
+          /> */}
+          <UploadCard
+            id="secInsuranceBack"
+            title=" SEC INSURANCE CARD"
+            subTitle="Back"
+            img={secondaryInsurance?.insuranceCardBack}
+            alt="Insurance Card"
+            btnText="Review"
+            addFile={addFile}
           />
         </div>
       )}

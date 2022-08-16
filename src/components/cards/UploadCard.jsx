@@ -1,8 +1,20 @@
 import { useRef } from "react";
+import { useLocation, Link } from "react-router-dom";
 import { Button, Card, CardHeader } from "@mui/material";
 import styles from "../../styles/ScanCard.module.css";
 
-const UploadCard = ({ id, title, subTitle, img, alt, btnText, addFile }) => {
+const UploadCard = ({
+  id,
+  title,
+  subTitle,
+  img,
+  alt,
+  btnText,
+  addFile,
+  url,
+  state,
+}) => {
+  const location = useLocation();
   const filePickerRef = useRef(null);
 
   return (
@@ -14,6 +26,7 @@ const UploadCard = ({ id, title, subTitle, img, alt, btnText, addFile }) => {
       <div className={styles.cardImg}>
         <img src={img} alt={alt} />
       </div>
+
       <Button
         id={styles.violateText}
         variant="contained"
