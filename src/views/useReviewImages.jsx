@@ -14,28 +14,31 @@ const useReviewImages = () => {
     driverLicense: "",
     patientsPicture: "",
   });
-
   const dispatch = useDispatch();
+
+  // actions
   const { addPrimaryInsurance, addSecondaryInsurance, addDemographicData } =
     bindActionCreators(actionCreators, dispatch);
 
+  // states
+  const demographicState = store?.getState()?.data?.demographicsInfo;
+  const primaryInsuranceState = store?.getState()?.data?.primaryInsurance;
+  const secondaryInsuranceState = store?.getState()?.data?.secondaryInsurance;
+
   const addFile = React.useCallback(
     (id, file) => {
+      // check file types
       var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.webp)$/i;
-
       if (!allowedExtensions.exec(file.name))
         return toast.error("Invalid file type. Please select an image file.");
 
+      // render image preview
       const reader = new FileReader();
       if (file) {
         reader.readAsDataURL(file);
       }
 
-      const demographicState = store?.getState()?.data?.demographicsInfo;
-      const primaryInsuranceState = store?.getState()?.data?.primaryInsurance;
-      const secondaryInsuranceState =
-        store?.getState()?.data?.secondaryInsurance;
-
+      // add file to state and store
       if (id === "driversLicense") {
         reader.onload = (readerEvent) => {
           const newState = {
@@ -112,23 +115,34 @@ const useReviewImages = () => {
         };
       }
     },
-    [addDemographicData, addPrimaryInsurance, addSecondaryInsurance, docs]
+    [
+      addDemographicData,
+      addPrimaryInsurance,
+      addSecondaryInsurance,
+      demographicState,
+      docs,
+      primaryInsuranceState,
+      secondaryInsuranceState,
+    ]
   );
 
   React.useEffect(() => {
-    const demographicInfo = store?.getState()?.data?.demographicsInfo;
-    const primaryInsurance = store?.getState()?.data?.primaryInsurance;
-    const secondaryInsurance = store?.getState()?.data?.secondaryInsurance;
-
     setDocs({
-      insuranceCardFront: primaryInsurance.insuranceCardFront || "",
-      insuranceCardBack: primaryInsurance.insuranceCardBack || "",
-      secInsuranceFront: secondaryInsurance.insuranceCardFront || "",
-      secInsuranceBack: secondaryInsurance.insuranceCardBack || "",
-      driverLicense: demographicInfo.driversLicense || "",
-      patientsPicture: demographicInfo.patientsPicture || "",
+      driverLicense: demographicState.driversLicense || "",
+      patientsPicture: demographicState.patientsPicture || "",
+      insuranceCardFront: primaryInsuranceState.insuranceCardFront || "",
+      insuranceCardBack: primaryInsuranceState.insuranceCardBack || "",
+      secInsuranceFront: secondaryInsuranceState.insuranceCardFront || "",
+      secInsuranceBack: secondaryInsuranceState.insuranceCardBack || "",
     });
-  }, []);
+  }, [
+    demographicState.driversLicense,
+    demographicState.patientsPicture,
+    primaryInsuranceState.insuranceCardBack,
+    primaryInsuranceState.insuranceCardFront,
+    secondaryInsuranceState.insuranceCardBack,
+    secondaryInsuranceState.insuranceCardFront,
+  ]);
 
   return {
     docs,
