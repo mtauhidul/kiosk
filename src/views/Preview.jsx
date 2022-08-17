@@ -54,6 +54,17 @@ const Preview = () => {
     userInfo,
   } = state;
 
+  // update state data to a json file on a specific folder
+  const postData = () => {
+    const data = JSON.stringify(state);
+    const blob = new Blob([data], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${demographicsInfo?.user?.fullName}_data.json`;
+    link.click();
+  };
+
   let appointmentTimeAndDate = `${getDayName(
     new Date().getDay()
   )}, ${formatAMPM(new Date())}, ${date}`;
@@ -70,7 +81,8 @@ const Preview = () => {
         <h2 className="header2">{demographicsInfo?.user?.fullName}</h2>
       </div>
       <div id={styles.item_2}>
-        <PrimaryButton text="Approve" url="/" />
+        {/* <button onClick={postData}>Approve</button> */}
+        <PrimaryButton text="Approve" url="/" saveAsJson={postData} />
       </div>
       {/* <div id={styles.item_3}>
         <PrimaryButton text="Edit Information" url="/kiosk/checkIn_General" />
