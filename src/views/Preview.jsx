@@ -11,16 +11,22 @@ import SurgicalIcon from "../assets/icons/surgical.svg";
 import Logo from "../assets/images/logo.svg";
 import EditIcon from "../assets/icons/icons8-edit.svg";
 import PrimaryButton from "../components/buttons/PrimaryButton";
-import ScanCard from "../components/cards/ScanCard";
+// import ScanCard from "../components/cards/ScanCard";
 import PreviewCard from "../components/previewCard/PreviewCard";
 import store from "../state/store";
 import styles from "../styles/Preview.module.css";
 import { date, formatAMPM, getDayName } from "../utils/formatAMPM";
 import UploadCard from "../components/cards/UploadCard";
 import useReviewImages from "./useReviewImages";
+import { useDispatch } from "react-redux";
+import { bindActionCreators } from "redux";
+import * as actionCreators from "../state/actionCreators/index";
 
 const Preview = () => {
   const state = store?.getState()?.data;
+  const dispatch = useDispatch();
+  const { removeUserData } = bindActionCreators(actionCreators, dispatch);
+  const { addFile } = useReviewImages();
 
   const monthsLong = {
     January: "01",
@@ -63,13 +69,13 @@ const Preview = () => {
     link.href = url;
     link.download = `${demographicsInfo?.user?.fullName}_data.json`;
     link.click();
+
+    removeUserData();
   };
 
   let appointmentTimeAndDate = `${getDayName(
     new Date().getDay()
   )}, ${formatAMPM(new Date())}, ${date}`;
-
-  const { addFile } = useReviewImages();
 
   return (
     <div className={styles.previewContainer}>
@@ -81,7 +87,6 @@ const Preview = () => {
         <h2 className="header2">{demographicsInfo?.user?.fullName}</h2>
       </div>
       <div id={styles.item_2}>
-        {/* <button onClick={postData}>Approve</button> */}
         <PrimaryButton text="Approve" url="/" saveAsJson={postData} />
       </div>
       {/* <div id={styles.item_3}>
