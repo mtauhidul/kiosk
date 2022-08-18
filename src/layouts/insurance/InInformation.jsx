@@ -7,6 +7,7 @@ import Bottom from "../../components/Bottom/Bottom";
 import * as actionCreators from "../../state/actionCreators/index";
 import store from "../../state/store";
 import styles from "../../styles/InsuranceInfo.module.css";
+import { date } from "../../utils/formatAMPM";
 
 const InInformation = () => {
   const dispatch = useDispatch();
@@ -14,10 +15,10 @@ const InInformation = () => {
   const [isDisabled, setIsDisabled] = useState(true);
 
   const [primaryInsurance, setPrimaryInsurance] = useState({
-    activeDate: "Sep 30, 2020",
-    copayForSpecialist: "$40.00",
+    activeDate: "",
+    copayForSpecialist: "",
     insuranceName: "",
-    copay: "$110.00",
+    copay: "",
     memberId: "",
     groupName: "",
     groupNumber: "",
@@ -28,8 +29,8 @@ const InInformation = () => {
     const state = store?.getState()?.data?.primaryInsurance;
     setPrimaryInsurance({
       insuranceName: state?.insuranceName || "",
-      copayForSpecialist: state?.copayForSpecialist || "$40.00",
-      activeDate: state?.activeDate || "Sep 30, 2020",
+      copayForSpecialist: state?.copayForSpecialist || "",
+      activeDate: state?.activeDate || date || "",
       copay: state?.copay || "",
       memberId: state?.memberId || "",
       groupName: state?.groupName || "",
@@ -44,13 +45,19 @@ const InInformation = () => {
       primaryInsurance.memberId === "" ||
       primaryInsurance.groupName === "" ||
       primaryInsurance.groupNumber === "" ||
-      primaryInsurance.phoneNumber === ""
+      primaryInsurance.phoneNumber === "" ||
+      primaryInsurance.copay === "" ||
+      primaryInsurance.copayForSpecialist === "" ||
+      primaryInsurance.activeDate === ""
     ) {
       setIsDisabled(true);
     } else {
       setIsDisabled(false);
     }
   }, [
+    primaryInsurance.activeDate,
+    primaryInsurance.copay,
+    primaryInsurance.copayForSpecialist,
     primaryInsurance.groupName,
     primaryInsurance.groupNumber,
     primaryInsurance.insuranceName,
@@ -79,11 +86,41 @@ const InInformation = () => {
           <div className={styles.inputWrapper}>
             <h6 className="header6">Copay for Specialist</h6>
             <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
-              <TextField
-                required
-                id="outlined-required"
-                value={primaryInsurance.copayForSpecialist}
-              />
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "stretch",
+                }}
+              >
+                <div
+                  style={{
+                    width: "20px",
+                    marginRight: "5px",
+                    height: "55px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  $
+                </div>
+
+                <TextField
+                  style={{
+                    flex: "1",
+                  }}
+                  required
+                  id="outlined-required"
+                  value={primaryInsurance.copayForSpecialist}
+                  onChange={(e) => {
+                    setPrimaryInsurance({
+                      ...primaryInsurance,
+                      copayForSpecialist: e.target.value,
+                    });
+                  }}
+                />
+              </div>
             </FormControl>
           </div>
         </div>
@@ -151,7 +188,41 @@ const InInformation = () => {
           <div className={styles.inputWrapper}>
             <h6 className="header6">Copay</h6>
             <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
-              <TextField required id="outlined-required" value="$110.00" />
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "stretch",
+                }}
+              >
+                <div
+                  style={{
+                    width: "20px",
+                    marginRight: "5px",
+                    height: "55px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  $
+                </div>
+
+                <TextField
+                  style={{
+                    flex: "1",
+                  }}
+                  required
+                  id="outlined-required"
+                  value={primaryInsurance.copay}
+                  onChange={(e) => {
+                    setPrimaryInsurance({
+                      ...primaryInsurance,
+                      copay: e.target.value,
+                    });
+                  }}
+                />
+              </div>
             </FormControl>
             <h6 className="header6">Group Name</h6>
             <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>

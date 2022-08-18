@@ -1,8 +1,9 @@
-import React from 'react';
-import Print from '../../components/print/Print';
+import React from "react";
+import policy from "../../assets/policy.pdf";
+import Print from "../../components/print/Print";
 
 const PrintHippa = () => {
-  return <Print title='HIPPA' />;
+  return <Print title="HIPPA" policyFile={policy} />;
 };
 
 export default PrintHippa;

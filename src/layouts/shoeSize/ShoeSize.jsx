@@ -22,10 +22,21 @@ export default function ShoeSize() {
   const [data, setData] = React.useState({
     shoeSize: "5",
   });
+  const [isDisabled, setIsDisabled] = React.useState(true);
+
+  React.useEffect(() => {
+    if (data.shoeSize === "") {
+      setIsDisabled(true);
+    } else {
+      setIsDisabled(false);
+    }
+  }, [data.shoeSize]);
 
   React.useEffect(() => {
     const state = store?.getState()?.data?.shoeSize;
-    setData(state);
+    setData({
+      shoeSize: state?.shoeSize || "",
+    });
   }, []);
 
   return (
@@ -57,7 +68,12 @@ export default function ShoeSize() {
           </FormControl>
         </Box>
       </div>
-      <Bottom isEdit={location.state} handleSubmit={addShoeSize} data={data} />
+      <Bottom
+        isDisabled={isDisabled}
+        isEdit={location.state}
+        handleSubmit={addShoeSize}
+        data={data}
+      />
     </div>
   );
 }
