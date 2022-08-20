@@ -8,15 +8,15 @@ const PrimaryButton = ({
   text,
   url,
   disabled,
-  saveAsJson,
+  postData,
 }) => {
   const navigate = useNavigate();
 
   const handleSaveAndContinue = (e) => {
     e.preventDefault();
 
-    if (saveAsJson) {
-      saveAsJson();
+    if (postData) {
+      postData();
       navigate(url);
     } else {
       if (handleSubmit) {

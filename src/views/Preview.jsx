@@ -10,9 +10,10 @@ import SocialIcon from "../assets/icons/social.svg";
 import SurgicalIcon from "../assets/icons/surgical.svg";
 import Logo from "../assets/images/logo.svg";
 import EditIcon from "../assets/icons/icons8-edit.svg";
-import PrimaryButton from "../components/buttons/PrimaryButton";
+// import PrimaryButton from "../components/buttons/PrimaryButton";
 // import ScanCard from "../components/cards/ScanCard";
 import PreviewCard from "../components/previewCard/PreviewCard";
+import { Button } from "@mui/material";
 import store from "../state/store";
 import styles from "../styles/Preview.module.css";
 import { date, formatAMPM, getDayName } from "../utils/formatAMPM";
@@ -21,9 +22,16 @@ import useReviewImages from "./useReviewImages";
 import { useDispatch } from "react-redux";
 import { bindActionCreators } from "redux";
 import * as actionCreators from "../state/actionCreators/index";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+
+import axios from "../apis/kios";
 
 const Preview = () => {
   const state = store?.getState()?.data;
+  const navigate = useNavigate();
+  const [loading, setLoading] = React.useState(false);
+
   const dispatch = useDispatch();
   const { removeUserData } = bindActionCreators(actionCreators, dispatch);
   const { addFile } = useReviewImages();
@@ -61,16 +69,40 @@ const Preview = () => {
   } = state;
 
   // update state data to a json file on a specific folder
-  const postData = () => {
-    const data = JSON.stringify(state);
-    const blob = new Blob([data], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement("a");
-    link.href = url;
-    link.download = `${demographicsInfo?.user?.fullName}_data.json`;
-    link.click();
+  // const postData = () => {
+  //   const data = JSON.stringify(state);
+  //   const blob = new Blob([data], { type: "application/json" });
+  //   const url = URL.createObjectURL(blob);
+  //   const link = document.createElement("a");
+  //   link.href = url;
+  //   link.download = `${demographicsInfo?.user?.fullName}_data.json`;
+  //   link.click();
 
-    removeUserData();
+  //   removeUserData();
+  // };
+
+  const postData = async () => {
+    try {
+      setLoading(true);
+      const res = await axios.post("/patients", state, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      setLoading(false);
+
+      if (res.status === 201 || res.statusText === "Created") {
+        removeUserData();
+        toast.success("Your appointment added successfully");
+
+        setTimeout(() => {
+          navigate("/");
+        }, 3100);
+      }
+    } catch (error) {
+      setLoading(false);
+      return toast.error(error.message);
+    }
   };
 
   let appointmentTimeAndDate = `${getDayName(
@@ -87,7 +119,22 @@ const Preview = () => {
         <h2 className="header2">{demographicsInfo?.user?.fullName}</h2>
       </div>
       <div id={styles.item_2}>
-        <PrimaryButton text="Approve" url="/" saveAsJson={postData} />
+        <Button
+          disabled={loading}
+          onClick={() => postData()}
+          className="primaryButton"
+          variant="contained"
+          size="medium"
+          sx={{
+            "&:disabled": {
+              backgroundColor: "gray !important",
+              color: "white !important",
+              cursor: "not-allowed",
+            },
+          }}
+        >
+          {loading ? "Approving..." : "Approve"}
+        </Button>
       </div>
       {/* <div id={styles.item_3}>
         <PrimaryButton text="Edit Information" url="/kiosk/checkIn_General" />
