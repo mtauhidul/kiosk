@@ -1,4 +1,4 @@
-import { Button, TextField } from "@mui/material";
+import { Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import Bottom from "../../components/Bottom/Bottom";
 import store from "../../state/store";
@@ -24,14 +24,14 @@ const VerifyMedications = () => {
             </h5>
           );
         })}
-        <TextField
+        {/* <TextField
           sx={{ width: "350px", mb: 3 }}
           id="outlined-multiline-static"
           label="Type your review..."
           multiline
           rows={2}
           columns={10}
-        />
+        /> */}
 
         <div className={styles.verificationWrapper}>
           <h4 className="header4">Verify all medications added?</h4>

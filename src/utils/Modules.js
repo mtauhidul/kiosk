@@ -74,11 +74,11 @@ export const modules = [
     path: "/kiosk/insurance_docs_secondary",
     title: "Secondary Insurance",
   },
-  {
-    component: ChangeInfo,
-    path: "/kiosk/insurance_change_info",
-    title: "Change Insurance Information",
-  },
+  // {
+  //   component: ChangeInfo,
+  //   path: "/kiosk/insurance_change_info",
+  //   title: "Change Insurance Information",
+  // },
   {
     component: Allergies,
     path: "/kiosk/allergies_add",
@@ -94,11 +94,11 @@ export const modules = [
     path: "/kiosk/medications_add",
     title: "Medications",
   },
-  // {
-  //   component: VerifyMedications,
-  //   path: '/kiosk/medications_verify',
-  //   title: 'Medications',
-  // },
+  {
+    component: VerifyMedications,
+    path: "/kiosk/medications_verify",
+    title: "Medications",
+  },
   {
     component: FamilyHistory,
     path: "/kiosk/family_history",

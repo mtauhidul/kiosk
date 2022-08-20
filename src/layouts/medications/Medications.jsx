@@ -8,6 +8,7 @@ import History from "../../components/history/History";
 import * as actionCreators from "../../state/actionCreators/index";
 import store from "../../state/store";
 import styles from "../../styles/Medications.module.css";
+import { arrangeListOfItems } from "../../utils/arrangeListOfItems";
 
 const medicationList = [
   "Medication 1",
@@ -22,6 +23,9 @@ const Medications = () => {
   const dispatch = useDispatch();
   const { addMedicationsData } = bindActionCreators(actionCreators, dispatch);
   const location = useLocation();
+
+  const state = store?.getState()?.data?.medications;
+  const newMedicationDataList = arrangeListOfItems(medicationList, state);
 
   const [data, setData] = useState([]);
 
@@ -46,9 +50,8 @@ const Medications = () => {
       <History
         addedItems={data}
         addToList={addItemToList}
-        items={medicationList}
-        headerText="PLEASE ADD ANY MEDICATIONS :
-        "
+        items={newMedicationDataList}
+        headerText="PLEASE ADD ANY MEDICATIONS :"
         btnText="Add Other Medications"
       />
       <Bottom

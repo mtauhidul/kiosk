@@ -7,6 +7,7 @@ import History from "../../components/history/History";
 import * as actionCreators from "../../state/actionCreators/index";
 import store from "../../state/store";
 import styles from "../../styles/Allergies.module.css";
+import { arrangeListOfItems } from "../../utils/arrangeListOfItems";
 
 const allergyList = [
   "No known allergies",
@@ -23,6 +24,9 @@ const Allergies = () => {
   const dispatch = useDispatch();
   const { addAllergiesData } = bindActionCreators(actionCreators, dispatch);
   const location = useLocation();
+
+  const state = store?.getState()?.data?.allergies;
+  const newAllergyList = arrangeListOfItems(allergyList, state);
 
   const [data, setData] = useState([]);
   const addItemToList = (item) => {
@@ -48,7 +52,7 @@ const Allergies = () => {
       <History
         addedItems={data}
         addToList={addItemToList}
-        items={allergyList}
+        items={newAllergyList}
         headerText="PLEASE ADD ANY ALLERGIES :"
         btnText="Add Other Allergies"
       />

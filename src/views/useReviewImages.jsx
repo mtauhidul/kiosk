@@ -27,10 +27,22 @@ const useReviewImages = () => {
 
   const addFile = React.useCallback(
     (id, file) => {
+      if (!file) return toast.error("⚠ File doesn't exist!");
+
       // check file types
-      var allowedExtensions = /(\.jpg|\.jpeg|\.png|\.webp)$/i;
-      if (!allowedExtensions.exec(file.name))
-        return toast.error("Invalid file type. Please select an image file.");
+      const types = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
+      if (!types.includes(file.type)) {
+        return toast.error(
+          "File type is not supported. Enter a valid format of image."
+        );
+      }
+
+      // check file size
+      if (file.size > 1024 * 150) {
+        return toast.error(
+          "File size is too big. Size must be 150kb or less than 150kb."
+        );
+      }
 
       // render image preview
       const reader = new FileReader();

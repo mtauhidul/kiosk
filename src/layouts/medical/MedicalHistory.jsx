@@ -7,6 +7,7 @@ import History from "../../components/history/History";
 import * as actionCreators from "../../state/actionCreators/index";
 import store from "../../state/store";
 import styles from "../../styles/Medicals.module.css";
+import { arrangeListOfItems } from "../../utils/arrangeListOfItems";
 
 const diseaseList = [
   "Alzheimer’s",
@@ -32,8 +33,10 @@ const MedicalHistory = () => {
   const dispatch = useDispatch();
   const { addMedicalHistory } = bindActionCreators(actionCreators, dispatch);
   const location = useLocation();
-
   const [data, setData] = useState([]);
+
+  const state = store?.getState()?.data?.medicalHistory;
+  const newDiseaseList = arrangeListOfItems(diseaseList, state);
 
   const addItemToList = (item) => {
     const repeatDataCheck = data.find((d) => d === item);
@@ -57,7 +60,7 @@ const MedicalHistory = () => {
       <History
         addedItems={data}
         addToList={addItemToList}
-        items={diseaseList}
+        items={newDiseaseList}
         headerText="PLEASE ADD MEDICAL HISTORY :"
         btnText="Add Other Medications"
       />

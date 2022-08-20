@@ -7,6 +7,7 @@ import History from "../../components/history/History";
 import * as actionCreators from "../../state/actionCreators/index";
 import store from "../../state/store";
 import styles from "../../styles/Surgeries.module.css";
+import { arrangeListOfItems } from "../../utils/arrangeListOfItems";
 
 const surgeryList = [
   "Surgery",
@@ -20,8 +21,10 @@ const SurgicalHistory = () => {
   const dispatch = useDispatch();
   const { addSurgicalHistory } = bindActionCreators(actionCreators, dispatch);
   const location = useLocation();
-
   const [data, setData] = useState([]);
+
+  const state = store?.getState()?.data?.surgicalHistory;
+  const newSurgeryList = arrangeListOfItems(surgeryList, state);
 
   const addItemToList = (item) => {
     const repeatDataCheck = data.find((d) => d === item);
@@ -45,7 +48,7 @@ const SurgicalHistory = () => {
       <History
         addedItems={data}
         addToList={addItemToList}
-        items={surgeryList}
+        items={newSurgeryList}
         headerText="PLEASE ADD SURGICAL HISTORY :"
         btnText="Add Other Surgeries"
       />

@@ -16,9 +16,9 @@ const InInformation = () => {
 
   const [primaryInsurance, setPrimaryInsurance] = useState({
     activeDate: "",
-    copayForSpecialist: "",
+    copayForSpecialist: "100",
     insuranceName: "",
-    copay: "",
+    copay: "40",
     memberId: "",
     groupName: "",
     groupNumber: "",
@@ -29,9 +29,9 @@ const InInformation = () => {
     const state = store?.getState()?.data?.primaryInsurance;
     setPrimaryInsurance({
       insuranceName: state?.insuranceName || "",
-      copayForSpecialist: state?.copayForSpecialist || "",
+      copayForSpecialist: state?.copayForSpecialist || "100",
       activeDate: state?.activeDate || date || "",
-      copay: state?.copay || "",
+      copay: state?.copay || "40",
       memberId: state?.memberId || "",
       groupName: state?.groupName || "",
       groupNumber: state?.groupNumber || "",
@@ -80,6 +80,7 @@ const InInformation = () => {
                 required
                 value={primaryInsurance.activeDate}
                 id="outlined-required"
+                disabled
               />
             </FormControl>
           </div>
@@ -110,6 +111,7 @@ const InInformation = () => {
                   style={{
                     flex: "1",
                   }}
+                  disabled
                   required
                   id="outlined-required"
                   value={primaryInsurance.copayForSpecialist}
@@ -209,9 +211,10 @@ const InInformation = () => {
                 </div>
 
                 <TextField
-                  style={{
+                  sx={{
                     flex: "1",
                   }}
+                  disabled
                   required
                   id="outlined-required"
                   value={primaryInsurance.copay}

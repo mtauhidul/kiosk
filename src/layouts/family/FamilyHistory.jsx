@@ -26,7 +26,7 @@ const FamilyHistory = () => {
     const state = store?.getState()?.data?.familyHistory;
     setData(state);
   }, []);
-  console.log(data);
+
   return (
     <div className={styles.familyHisContainer}>
       <div>
