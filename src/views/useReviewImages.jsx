@@ -58,11 +58,11 @@ const useReviewImages = () => {
             driversLicense: readerEvent.target.result,
           };
 
-          addDemographicData(newState);
           setDocs({
             ...docs,
             driverLicense: readerEvent.target.result,
           });
+          addDemographicData(newState);
         };
       } else if (id === "patientsPicture") {
         reader.onload = (readerEvent) => {
@@ -70,11 +70,11 @@ const useReviewImages = () => {
             ...demographicState,
             patientsPicture: readerEvent.target.result,
           };
-          addDemographicData(newState);
           setDocs({
             ...docs,
             patientsPicture: readerEvent.target.result,
           });
+          addDemographicData(newState);
         };
       } else if (id === "insuranceCardFront") {
         reader.onload = (readerEvent) => {
@@ -83,11 +83,11 @@ const useReviewImages = () => {
             insuranceCardFront: readerEvent.target.result,
           };
 
-          addPrimaryInsurance(newState);
           setDocs({
             ...docs,
             insuranceCardFront: readerEvent.target.result,
           });
+          addPrimaryInsurance(newState);
         };
       } else if (id === "insuranceCardBack") {
         reader.onload = (readerEvent) => {
@@ -95,11 +95,11 @@ const useReviewImages = () => {
             ...primaryInsuranceState,
             insuranceCardBack: readerEvent.target.result,
           };
-          addPrimaryInsurance(newState);
           setDocs({
             ...docs,
             insuranceCardBack: readerEvent.target.result,
           });
+          addPrimaryInsurance(newState);
         };
       } else if (id === "secInsuranceFront") {
         reader.onload = (readerEvent) => {
@@ -107,11 +107,11 @@ const useReviewImages = () => {
             ...secondaryInsuranceState,
             insuranceCardFront: readerEvent.target.result,
           };
-          addSecondaryInsurance(newState);
           setDocs({
             ...docs,
             secInsuranceFront: readerEvent.target.result,
           });
+          addSecondaryInsurance(newState);
         };
       } else if (id === "secInsuranceBack") {
         reader.onload = (readerEvent) => {
@@ -119,11 +119,11 @@ const useReviewImages = () => {
             ...secondaryInsuranceState,
             insuranceCardBack: readerEvent.target.result,
           };
-          addSecondaryInsurance(newState);
           setDocs({
             ...docs,
             secInsuranceBack: readerEvent.target.result,
           });
+          addSecondaryInsurance(newState);
         };
       }
     },
