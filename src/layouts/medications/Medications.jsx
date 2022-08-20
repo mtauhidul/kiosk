@@ -1,25 +1,31 @@
 /* eslint-disable no-lone-blocks */
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import Bottom from '../../components/Bottom/Bottom';
-import History from '../../components/history/History';
-import * as actionCreators from '../../state/actionCreators/index';
-import store from '../../state/store';
-import styles from '../../styles/Medications.module.css';
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
+import { bindActionCreators } from "redux";
+import Bottom from "../../components/Bottom/Bottom";
+import History from "../../components/history/History";
+import * as actionCreators from "../../state/actionCreators/index";
+import store from "../../state/store";
+import styles from "../../styles/Medications.module.css";
+import { arrangeListOfItems } from "../../utils/arrangeListOfItems";
 
 const medicationList = [
-  'Medication 1',
-  'Medication 2',
-  'Medication 3',
-  'Medication 4',
-  'Medication 5',
-  'Medication 6',
+  "Medication 1",
+  "Medication 2",
+  "Medication 3",
+  "Medication 4",
+  "Medication 5",
+  "Medication 6",
 ];
 
 const Medications = () => {
   const dispatch = useDispatch();
   const { addMedicationsData } = bindActionCreators(actionCreators, dispatch);
+  const location = useLocation();
+
+  const state = store?.getState()?.data?.medications;
+  const newMedicationDataList = arrangeListOfItems(medicationList, state);
 
   const [data, setData] = useState([]);
 
@@ -44,12 +50,15 @@ const Medications = () => {
       <History
         addedItems={data}
         addToList={addItemToList}
-        items={medicationList}
-        headerText='PLEASE ADD ANY MEDICATIONS :
-        '
-        btnText='Add Other Medications'
+        items={newMedicationDataList}
+        headerText="PLEASE ADD ANY MEDICATIONS :"
+        btnText="Add Other Medications"
       />
-      <Bottom handleSubmit={addMedicationsData} data={data} />
+      <Bottom
+        isEdit={location.state}
+        handleSubmit={addMedicationsData}
+        data={data}
+      />
     </div>
   );
 };

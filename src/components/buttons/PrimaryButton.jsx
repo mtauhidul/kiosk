@@ -1,24 +1,47 @@
-import { Button } from '@mui/material';
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { Button } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
-const PrimaryButton = ({ handleSubmit, data, text, url }) => {
+const PrimaryButton = ({
+  handleSubmit,
+  data,
+  text,
+  url,
+  disabled,
+  postData,
+}) => {
   const navigate = useNavigate();
 
   const handleSaveAndContinue = (e) => {
     e.preventDefault();
-    if (handleSubmit) {
-      handleSubmit(data);
+
+    if (postData) {
+      postData();
+      navigate(url);
+    } else {
+      if (handleSubmit) {
+        handleSubmit(data);
+      }
+      navigate(url);
     }
-    navigate(url);
   };
+
   return (
     <Button
+      disabled={disabled}
       onClick={(e) => handleSaveAndContinue(e)}
-      className='primaryButton'
-      variant='contained'
-      size='medium'>
-      {text}
+      className="primaryButton"
+      variant="contained"
+      size="medium"
+      sx={{
+        "&:disabled": {
+          backgroundColor: "gray !important",
+          color: "white !important",
+          cursor: "not-allowed",
+        },
+      }}
+    >
+      {disabled ? "Please fill out all fields" : text}
     </Button>
   );
 };

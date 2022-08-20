@@ -1,50 +1,59 @@
 .PreviewCardWrapper {
-    width: 215px;
-    min-height: 195px;
-    border: 1px solid var(--border);
-    background-color: var(--white);
-    border-radius: 8px;
+  width: 215px;
+  min-height: 195px;
+  border: 1px solid var(--border);
+  background-color: var(--white);
+  border-radius: 8px;
 }
 
 .PreviewCardHeader {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: flex-start;
-    border-bottom: 1px solid var(--border);
-    height: 40px;
-    padding: 0px 15px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  border-bottom: 1px solid var(--border);
+  height: 40px;
+  padding: 0px 15px;
+}
+
+.PreviewCardEditIcon {
+  cursor: pointer;
+  margin-left: auto;
+}
+
+.PreviewCardEditIcon img {
+  width: 20px;
+  height: 20px;
 }
 
 .PreviewCardHeader img {
-    margin-right: 10px;
+  margin-right: 10px;
 }
 
 .PreviewCardHeader small {
-    font-family: 'Montserrat';
-    font-style: normal;
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 140%;
-    color: var(--grey);
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 140%;
+  color: var(--grey);
 }
 
 .PreviewCardBody {
-    padding: 15px;
+  padding: 15px;
 }
 
 .PreviewCardBody strong {
-    font-family: 'Montserrat';
-    font-style: normal;
-    font-weight: 500;
-    font-size: 14px !important;
-    line-height: 18px;
-    color: #272848;
-    margin-top: 5px;
+  font-family: "Montserrat";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 14px !important;
+  line-height: 18px;
+  color: #272848;
+  margin-top: 5px;
 }
 
 .list {
-    display: flex;
-    flex-direction: column;
-
+  display: flex;
+  flex-direction: column;
 }

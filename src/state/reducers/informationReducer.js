@@ -1,4 +1,4 @@
-import * as actions from '../constants';
+import * as actions from "../constants";
 
 const initialState = {
   userInfo: {},
@@ -15,8 +15,8 @@ const initialState = {
   hippaPolicy: {},
   practicePolicies: {},
   survey: {
-    question: 'LOREM IPSUM DOLOR SIT AMET, CONSECTETUR ADIPICING?',
-    answer: '',
+    question: "LOREM IPSUM DOLOR SIT AMET, CONSECTETUR ADIPICING?",
+    answer: "",
   },
 };
 
@@ -87,6 +87,8 @@ function reducer(state = initialState, action) {
         ...state,
         practicePolicies: action.payload,
       });
+    case actions.REMOVE_USER_DATA:
+      return (state = initialState);
     default:
       return state;
   }

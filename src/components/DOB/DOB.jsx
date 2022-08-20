@@ -1,20 +1,25 @@
-import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
-import React from 'react';
-import styles from '../../styles/DOB.module.css';
-import { days, months, years } from '../../utils/DateTime';
+import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
+import { useLocation } from "react-router-dom";
+import styles from "../../styles/DOB.module.css";
+import { days, months, years } from "../../utils/DateTime";
 
 const DOB = ({ setData, data }) => {
+  const locations = useLocation();
+
   return (
     <div className={styles.dobWrapper}>
       <FormControl sx={{ mr: 2, mt: 1, minWidth: 120 }}>
-        <InputLabel id='demo-simple-select-helper-label'>Day</InputLabel>
+        <InputLabel id="demo-simple-select-helper-label">Day</InputLabel>
         <Select
-          labelId='demo-simple-select-helper-label'
-          id='demo-simple-select-helper'
+          disabled={locations.pathname === "/kiosk/demographics_Information"}
+          required
+          labelId="demo-simple-select-helper-label"
+          id="demo-simple-select-helper"
           value={data?.day}
-          label='Day'
-          onChange={(e) => setData({ ...data, day: `${e.target.value}` })}>
-          <MenuItem value=''>
+          label="Day"
+          onChange={(e) => setData({ ...data, day: `${e.target.value}` })}
+        >
+          <MenuItem value="">
             <em>None</em>
           </MenuItem>
           {days.map((day, index) => {
@@ -27,14 +32,17 @@ const DOB = ({ setData, data }) => {
         </Select>
       </FormControl>
       <FormControl sx={{ mr: 2, mt: 1, minWidth: 120 }}>
-        <InputLabel id='demo-simple-select-helper-label'>Month</InputLabel>
+        <InputLabel id="demo-simple-select-helper-label">Month</InputLabel>
         <Select
-          labelId='demo-simple-select-helper-label'
-          id='demo-simple-select-helper'
+          disabled={locations.pathname === "/kiosk/demographics_Information"}
+          required
+          labelId="demo-simple-select-helper-label"
+          id="demo-simple-select-helper"
           value={data?.month}
-          label='Month'
-          onChange={(e) => setData({ ...data, month: e.target.value })}>
-          <MenuItem value=''>
+          label="Month"
+          onChange={(e) => setData({ ...data, month: e.target.value })}
+        >
+          <MenuItem value="">
             <em>None</em>
           </MenuItem>
           {months.map((month, index) => {
@@ -47,14 +55,17 @@ const DOB = ({ setData, data }) => {
         </Select>
       </FormControl>
       <FormControl sx={{ mr: 2, mt: 1, minWidth: 120 }}>
-        <InputLabel id='demo-simple-select-helper-label'>Year</InputLabel>
+        <InputLabel id="demo-simple-select-helper-label">Year</InputLabel>
         <Select
-          labelId='demo-simple-select-helper-label'
-          id='demo-simple-select-helper'
+          disabled={locations.pathname === "/kiosk/demographics_Information"}
+          required
+          labelId="demo-simple-select-helper-label"
+          id="demo-simple-select-helper"
           value={data?.year}
-          label='Year'
-          onChange={(e) => setData({ ...data, year: e.target.value })}>
-          <MenuItem value=''>
+          label="Year"
+          onChange={(e) => setData({ ...data, year: e.target.value })}
+        >
+          <MenuItem value="">
             <em>None</em>
           </MenuItem>
           {years.map((year, index) => {

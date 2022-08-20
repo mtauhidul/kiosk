@@ -1,4 +1,4 @@
-import * as actions from '../constants';
+import * as actions from "../constants";
 
 export const addUserInfo = (data) => {
   return (dispatch) => {
@@ -122,6 +122,14 @@ export const addSurveyData = (data) => {
     dispatch({
       type: actions.ADD_SURVEY_DATA,
       payload: data,
+    });
+  };
+};
+
+export const removeUserData = () => {
+  return (dispatch) => {
+    dispatch({
+      type: actions.REMOVE_USER_DATA,
     });
   };
 };
