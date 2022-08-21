@@ -21,6 +21,7 @@ const useReviewImages = () => {
     bindActionCreators(actionCreators, dispatch);
 
   // states
+
   const demographicState = store?.getState()?.data?.demographicsInfo;
   const primaryInsuranceState = store?.getState()?.data?.primaryInsurance;
   const secondaryInsuranceState = store?.getState()?.data?.secondaryInsurance;
@@ -50,95 +51,87 @@ const useReviewImages = () => {
         reader.readAsDataURL(file);
       }
 
-      // add file to state and store
-      if (id === "driversLicense") {
-        reader.onload = (readerEvent) => {
-          const newState = {
-            ...demographicState,
-            driversLicense: readerEvent.target.result,
-          };
+      switch (id) {
+        case "patientsPicture":
+          return (reader.onload = (readerEvent) => {
+            addDemographicData({
+              ...demographicState,
+              patientsPicture: readerEvent.target.result,
+            });
+            setDocs({
+              ...docs,
+              patientsPicture: readerEvent.target.result,
+            });
+          });
+        case "driversLicense":
+          return (reader.onload = (readerEvent) => {
+            addDemographicData({
+              ...demographicState,
+              driversLicense: readerEvent.target.result,
+            });
+            setDocs({
+              ...docs,
+              driverLicense: readerEvent.target.result,
+            });
+          });
+        case "insuranceCardFront":
+          return (reader.onload = (readerEvent) => {
+            addPrimaryInsurance({
+              ...primaryInsuranceState,
+              insuranceCardFront: readerEvent.target.result,
+            });
+            setDocs({
+              ...docs,
+              insuranceCardFront: readerEvent.target.result,
+            });
+          });
+        case "insuranceCardBack":
+          return (reader.onload = (readerEvent) => {
+            addPrimaryInsurance({
+              ...primaryInsuranceState,
+              insuranceCardBack: readerEvent.target.result,
+            });
 
-          setDocs({
-            ...docs,
-            driverLicense: readerEvent.target.result,
+            setDocs({
+              ...docs,
+              insuranceCardBack: readerEvent.target.result,
+            });
           });
-          addDemographicData(newState);
-        };
-      } else if (id === "patientsPicture") {
-        reader.onload = (readerEvent) => {
-          const newState = {
-            ...demographicState,
-            patientsPicture: readerEvent.target.result,
-          };
-          setDocs({
-            ...docs,
-            patientsPicture: readerEvent.target.result,
+        case "secInsuranceFront":
+          return (reader.onload = (readerEvent) => {
+            addSecondaryInsurance({
+              ...secondaryInsuranceState,
+              insuranceCardFront: readerEvent.target.result,
+            });
+            setDocs({
+              ...docs,
+              secInsuranceFront: readerEvent.target.result,
+            });
           });
-          addDemographicData(newState);
-        };
-      } else if (id === "insuranceCardFront") {
-        reader.onload = (readerEvent) => {
-          const newState = {
-            ...primaryInsuranceState,
-            insuranceCardFront: readerEvent.target.result,
-          };
+        case "secInsuranceBack":
+          return (reader.onload = (readerEvent) => {
+            addSecondaryInsurance({
+              ...secondaryInsuranceState,
+              insuranceCardBack: readerEvent.target.result,
+            });
+            setDocs({
+              ...docs,
+              secInsuranceBack: readerEvent.target.result,
+            });
+          });
 
-          setDocs({
-            ...docs,
-            insuranceCardFront: readerEvent.target.result,
-          });
-          addPrimaryInsurance(newState);
-        };
-      } else if (id === "insuranceCardBack") {
-        reader.onload = (readerEvent) => {
-          const newState = {
-            ...primaryInsuranceState,
-            insuranceCardBack: readerEvent.target.result,
-          };
-          setDocs({
-            ...docs,
-            insuranceCardBack: readerEvent.target.result,
-          });
-          addPrimaryInsurance(newState);
-        };
-      } else if (id === "secInsuranceFront") {
-        reader.onload = (readerEvent) => {
-          const newState = {
-            ...secondaryInsuranceState,
-            insuranceCardFront: readerEvent.target.result,
-          };
-          setDocs({
-            ...docs,
-            secInsuranceFront: readerEvent.target.result,
-          });
-          addSecondaryInsurance(newState);
-        };
-      } else if (id === "secInsuranceBack") {
-        reader.onload = (readerEvent) => {
-          const newState = {
-            ...secondaryInsuranceState,
-            insuranceCardBack: readerEvent.target.result,
-          };
-          setDocs({
-            ...docs,
-            secInsuranceBack: readerEvent.target.result,
-          });
-          addSecondaryInsurance(newState);
-        };
+        default:
+          break;
       }
     },
-    [
-      addDemographicData,
-      addPrimaryInsurance,
-      addSecondaryInsurance,
-      demographicState,
-      docs,
-      primaryInsuranceState,
-      secondaryInsuranceState,
-    ]
+    [addDemographicData, addPrimaryInsurance, addSecondaryInsurance, docs]
   );
 
   React.useEffect(() => {
+    const demographicState = store?.getState()?.data?.demographicsInfo;
+    const primaryInsuranceState = store?.getState()?.data?.primaryInsurance;
+    const secondaryInsuranceState = store?.getState()?.data?.secondaryInsurance;
+
     setDocs({
       driverLicense: demographicState.driversLicense || "",
       patientsPicture: demographicState.patientsPicture || "",
@@ -147,14 +140,7 @@ const useReviewImages = () => {
       secInsuranceFront: secondaryInsuranceState.insuranceCardFront || "",
       secInsuranceBack: secondaryInsuranceState.insuranceCardBack || "",
     });
-  }, [
-    demographicState.driversLicense,
-    demographicState.patientsPicture,
-    primaryInsuranceState.insuranceCardBack,
-    primaryInsuranceState.insuranceCardFront,
-    secondaryInsuranceState.insuranceCardBack,
-    secondaryInsuranceState.insuranceCardFront,
-  ]);
+  }, []);
 
   return {
     docs,
