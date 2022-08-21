@@ -8,11 +8,11 @@ import styles from "../../styles/InsuranceDocs.module.css";
 // import ScanCard from "../../components/cards/ScanCard";
 
 const InsuranceDocs = () => {
-  // window.sessionStorage.setItem("insuranceType", "primary");
-  // const state = store?.getState()?.data?.primaryInsurance;
   const [isDisabled, setIsDisabled] = useState(true);
   const { addFile, docs } = useReviewImages();
 
+  // window.sessionStorage.setItem("insuranceType", "primary");
+  // const state = store?.getState()?.data?.primaryInsurance;
   // useEffect(() => {
   //   const state = store?.getState()?.data?.primaryInsurance;
   //   setPrimaryDocs({

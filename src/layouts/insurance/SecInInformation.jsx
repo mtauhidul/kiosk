@@ -28,9 +28,9 @@ const SecInInformation = () => {
     const state = store?.getState()?.data?.secondaryInsurance;
     setSecInsurance({
       insuranceName: state?.insuranceName || "",
-      copayForSpecialist: state?.copayForSpecialist || "",
+      copayForSpecialist: state?.copayForSpecialist || "100",
       activeDate: state?.activeDate || date || "",
-      copay: state?.copay || "",
+      copay: state?.copay || "40",
       memberId: state?.memberId || "",
       groupName: state?.groupName || "",
       groupNumber: state?.groupNumber || "",
@@ -79,6 +79,7 @@ const SecInInformation = () => {
             <h6 className="header6">Active Date</h6>
             <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
               <TextField
+                disabled
                 value={secInsurance.activeDate}
                 id="outlined-required"
               />
@@ -111,6 +112,7 @@ const SecInInformation = () => {
                   style={{
                     flex: "1",
                   }}
+                  disabled
                   required
                   id="outlined-required"
                   value={secInsurance.copayForSpecialist}
@@ -209,6 +211,7 @@ const SecInInformation = () => {
                   style={{
                     flex: "1",
                   }}
+                  disabled
                   required
                   id="outlined-required"
                   value={secInsurance.copay}
