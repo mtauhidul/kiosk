@@ -17,7 +17,9 @@ import Medications from "../layouts/medications/Medications";
 import VerifyMedications from "../layouts/medications/VerifyMedications";
 import CollectTicket from "../layouts/policies/CollectTicket";
 import HippaPolicy from "../layouts/policies/HippaPolicy";
+import HippaPolicyTerms from "../layouts/policies/HippaPolicyTerms";
 import PracticePolicy from "../layouts/policies/PracticePolicy";
+import PracticePolicyTerms from "../layouts/policies/PracticePolicyTerms";
 import PrintHippa from "../layouts/policies/PrintHippa";
 import PrintPractice from "../layouts/policies/PrintPractice";
 import PrintTicket from "../layouts/policies/PrintTicket";
@@ -135,13 +137,23 @@ export const modules = [
     title: "Shoe Size",
   },
   {
+    component: HippaPolicyTerms,
+    path: "/kiosk/policies_hippa_terms",
+    title: "",
+  },
+  {
     component: HippaPolicy,
     path: "/kiosk/hippa_policy",
     title: "",
   },
+  // {
+  //   component: PrintHippa,
+  //   path: "/kiosk/hippa_print",
+  //   title: "",
+  // },
   {
-    component: PrintHippa,
-    path: "/kiosk/hippa_print",
+    component: PracticePolicyTerms,
+    path: "/kiosk/policies_practice_terms",
     title: "",
   },
   {
@@ -149,11 +161,11 @@ export const modules = [
     path: "/kiosk/practice_policy",
     title: "",
   },
-  {
-    component: PrintPractice,
-    path: "/kiosk/practice_print",
-    title: "",
-  },
+  // {
+  //   component: PrintPractice,
+  //   path: "/kiosk/practice_print",
+  //   title: "",
+  // },
   {
     component: PrintTicket,
     path: "/kiosk/print_ticket",
