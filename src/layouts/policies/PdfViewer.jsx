@@ -85,6 +85,10 @@ const PdfViewer = ({ pdf }) => {
             <ChevronRightIcon />
           </Button>
         )}
+
+        {pageNumber === numPages ? null : (
+          <PrimaryButton data="" text="Skip & Continue" url={nextPath} />
+        )}
       </Box>
 
       {pageNumber === numPages && (
