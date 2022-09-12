@@ -29,6 +29,7 @@ const Allergies = () => {
   const newAllergyList = arrangeListOfItems(allergyList, state);
 
   const [data, setData] = useState([]);
+
   const addItemToList = (item) => {
     const repeatDataCheck = data.find((d) => d === item);
     if (!repeatDataCheck) {

@@ -1,6 +1,6 @@
 import { IconButton } from "@mui/material";
 import React, { useRef } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import SignatureCanvas from "react-signature-canvas";
 import CloseIcon from "../../assets/icons/close.svg";
 import styles from "../../styles/ESignature.module.css";
@@ -28,9 +28,9 @@ const ESignature = ({ handleSubmit, title, url, policyFile }) => {
       <div className={styles.ESignatureWrapper}>
         <h2 className="header2">{title} Policy</h2>
         <br />
-        <Link to={policyFile} target="_blank" download>
+        {/* <Link to={policyFile} target="_blank" download>
           Read {title} Policy
-        </Link>
+        </Link> */}
         <br />
         <h6 className="header6">
           Please sign below to agree the terms and conditions of {title} Policy.

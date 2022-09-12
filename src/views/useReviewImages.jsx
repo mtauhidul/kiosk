@@ -39,7 +39,7 @@ const useReviewImages = () => {
       }
 
       // check file size
-      if (file.size > 1024 * 150) {
+      if (file.size >= 1024 * 150) {
         return toast.error(
           "File size is too big. Size must be 150kb or less than 150kb."
         );
