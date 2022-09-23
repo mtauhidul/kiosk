@@ -219,6 +219,20 @@ small {
   color: var(--grey);
 }
 
+@media screen and (max-width: 768px) {
+  .header1 {
+    font-size: 30px;
+    line-height: 40px;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  .header1 {
+    font-size: 20px;
+    line-height: 40px;
+  }
+}
+
 .primaryText {
   color: var(--primary);
 }
@@ -235,6 +249,12 @@ small {
   margin-left: 10px !important;
   box-shadow: none !important;
   color: var(--primary) !important;
+}
+
+@media screen and (max-width: 400px) {
+  .primaryButton {
+    width: 100% !important;
+  }
 }
 
 .primaryButton:hover {
