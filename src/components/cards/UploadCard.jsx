@@ -15,10 +15,15 @@ const UploadCard = ({
   state,
 }) => {
   const location = useLocation();
+  const pathname = location.pathname;
   const filePickerRef = useRef(null);
 
+  const width = pathname === "/preview" ? "auto" : 240;
+
   return (
-    <Card sx={{ width: 240, height: "auto", pb: "16px", textAlign: "center" }}>
+    <Card
+      sx={{ width: width, height: "auto", pb: "16px", textAlign: "center" }}
+    >
       <CardHeader subheader={title} />
       <h6 style={{ marginTop: "-15px" }} className="header6">
         {subTitle}
