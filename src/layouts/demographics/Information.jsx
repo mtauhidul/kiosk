@@ -4,6 +4,7 @@ import {
   MenuItem,
   Select,
   TextField,
+  Box,
 } from "@mui/material";
 import { useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
@@ -117,30 +118,56 @@ const Information = () => {
                 }
               />
             </FormControl>
-            <h6 className="header6">City</h6>
-            <FormControl sx={{ mt: 1, mb: 2, width: "100%" }}>
-              <TextField
-                required
-                value={demographics?.city}
-                id="outlined-required"
-                label={demographics.city !== "" ? "" : "City"}
-                onChange={(e) =>
-                  setDemographics({ ...demographics, city: e.target.value })
-                }
-              />
-            </FormControl>
-            <h6 className="header6">Zipcode</h6>
-            <FormControl sx={{ mt: 1, mb: 2, width: "100%" }}>
-              <TextField
-                required
-                value={demographics?.zipcode}
-                id="outlined-required"
-                label={demographics.zipcode !== "" ? "" : "Zipcode"}
-                onChange={(e) =>
-                  setDemographics({ ...demographics, zipcode: e.target.value })
-                }
-              />
-            </FormControl>
+
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: { xs: "row", md: "column" },
+                alignItems: "center",
+                gap: "1rem",
+              }}
+            >
+              <Box
+                sx={{
+                  width: { xs: "50%", md: "100%" },
+                }}
+              >
+                <h6 className="header6">City</h6>
+                <FormControl sx={{ mt: 1, mb: 2, width: "100%" }}>
+                  <TextField
+                    required
+                    value={demographics?.city}
+                    id="outlined-required"
+                    label={demographics.city !== "" ? "" : "City"}
+                    onChange={(e) =>
+                      setDemographics({ ...demographics, city: e.target.value })
+                    }
+                  />
+                </FormControl>
+              </Box>
+              <Box
+                sx={{
+                  width: { xs: "50%", md: "100%" },
+                }}
+              >
+                <h6 className="header6">Zipcode</h6>
+                <FormControl sx={{ mt: 1, mb: 2, width: "100%" }}>
+                  <TextField
+                    required
+                    value={demographics?.zipcode}
+                    id="outlined-required"
+                    label={demographics.zipcode !== "" ? "" : "Zipcode"}
+                    onChange={(e) =>
+                      setDemographics({
+                        ...demographics,
+                        zipcode: e.target.value,
+                      })
+                    }
+                  />
+                </FormControl>
+              </Box>
+            </Box>
+
             <h6 className="header6">Email Address</h6>
             <FormControl sx={{ mt: 1, mb: 2, width: "100%" }}>
               <TextField
