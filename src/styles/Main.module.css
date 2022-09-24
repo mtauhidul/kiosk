@@ -1,5 +1,9 @@
 .mainContainer {
     background-color: var(--bg) !important;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .header {
