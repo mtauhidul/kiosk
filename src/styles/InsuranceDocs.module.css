@@ -1,15 +1,25 @@
 .documentsContainer {
-    width: 100%;
-    min-height: 85vh;
-    position: relative;
+  width: 100%;
+  min-height: 85vh;
+  position: relative;
 }
 
 .cardsContainer {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 502px;
-    text-align: center;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 502px;
+  text-align: center;
+  flex-wrap: wrap;
+}
 
+@media screen and (max-width: 600px) {
+  .documentsContainer {
+    min-height: 100vh;
+  }
+
+  .cardsContainer {
+    gap: 20px;
+  }
 }
