@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { bindActionCreators } from "redux";
+import AnimatedPage from "../../components/Animation/Pages";
 import Bottom from "../../components/Bottom/Bottom";
 import * as actionCreators from "../../state/actionCreators/index";
 import store from "../../state/store";
@@ -70,202 +71,206 @@ const SecInInformation = () => {
   );
 
   return (
-    <form className={styles.informationContainer}>
-      <div className={styles.eligibilityFormWrapper}>
-        <h3 className="header3">Eligibility</h3>
-        <br />
-        <div className={styles.eligibilityForm}>
-          <div className={styles.inputWrapper}>
-            <h6 className="header6">Active Date</h6>
-            <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
-              <TextField
-                disabled
-                value={secInsurance.activeDate}
-                id="outlined-required"
-              />
-            </FormControl>
-          </div>
-          <div className={styles.inputWrapper}>
-            <h6 className="header6">Copay for Specialist</h6>
-            <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "stretch",
-                }}
-              >
+    <AnimatedPage>
+      <form className={styles.informationContainer}>
+        <div className={styles.eligibilityFormWrapper}>
+          <h3 className="header3">Eligibility</h3>
+          <br />
+          <div className={styles.eligibilityForm}>
+            <div className={styles.inputWrapper}>
+              <h6 className="header6">Active Date</h6>
+              <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
+                <TextField
+                  disabled
+                  value={secInsurance.activeDate}
+                  id="outlined-required"
+                />
+              </FormControl>
+            </div>
+            <div className={styles.inputWrapper}>
+              <h6 className="header6">Copay for Specialist</h6>
+              <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
                 <div
                   style={{
-                    width: "20px",
-                    marginRight: "5px",
-                    height: "55px",
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center",
+                    justifyContent: "stretch",
                   }}
                 >
-                  $
-                </div>
+                  <div
+                    style={{
+                      width: "20px",
+                      marginRight: "5px",
+                      height: "55px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    $
+                  </div>
 
-                <TextField
-                  style={{
-                    flex: "1",
-                  }}
-                  disabled
-                  required
-                  id="outlined-required"
-                  value={secInsurance.copayForSpecialist}
-                  onChange={(e) => {
-                    setSecInsurance({
-                      ...secInsurance,
-                      copayForSpecialist: e.target.value,
-                    });
-                  }}
-                />
-              </div>
-            </FormControl>
+                  <TextField
+                    style={{
+                      flex: "1",
+                    }}
+                    disabled
+                    required
+                    id="outlined-required"
+                    value={secInsurance.copayForSpecialist}
+                    onChange={(e) => {
+                      setSecInsurance({
+                        ...secInsurance,
+                        copayForSpecialist: e.target.value,
+                      });
+                    }}
+                  />
+                </div>
+              </FormControl>
+            </div>
           </div>
         </div>
-      </div>
-      <br />
-      <div className={styles.eligibilityFormWrapper}>
-        <h3 className="header3">GENERAL INFO</h3>
         <br />
-        <div className={styles.eligibilityForm}>
-          <div className={styles.inputWrapper}>
-            <h6 className="header6">Primary Insurance</h6>
-            <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
-              <TextField
-                required
-                value={secInsurance.insuranceName}
-                onChange={(e) =>
-                  setSecInsurance({
-                    ...secInsurance,
-                    insuranceName: e.target.value,
-                  })
-                }
-                id="outlined-required"
-                label={
-                  secInsurance.insuranceName !== "" ? "" : "Insurance name"
-                }
-              />
-            </FormControl>
-            <h6 className="header6">Member ID</h6>
-            <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
-              <TextField
-                value={secInsurance.memberId}
-                onChange={(e) =>
-                  setSecInsurance({
-                    ...secInsurance,
-                    memberId: e.target.value,
-                  })
-                }
-                id="outlined-required"
-                label={secInsurance.memberId !== "" ? "" : "Enter member ID"}
-              />
-            </FormControl>
-            <h6 className="header6">Group Number</h6>
-            <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
-              <TextField
-                value={secInsurance.groupNumber}
-                onChange={(e) =>
-                  setSecInsurance({
-                    ...secInsurance,
-                    groupNumber: e.target.value,
-                  })
-                }
-                id="outlined-required"
-                label={
-                  secInsurance.groupNumber !== ""
-                    ? ""
-                    : "Enter your group number"
-                }
-              />
-            </FormControl>
-          </div>
-          <div className={styles.inputWrapper}>
-            <h6 className="header6">Copay</h6>
-            <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "stretch",
-                }}
-              >
+        <div className={styles.eligibilityFormWrapper}>
+          <h3 className="header3">GENERAL INFO</h3>
+          <br />
+          <div className={styles.eligibilityForm}>
+            <div className={styles.inputWrapper}>
+              <h6 className="header6">Primary Insurance</h6>
+              <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
+                <TextField
+                  required
+                  value={secInsurance.insuranceName}
+                  onChange={(e) =>
+                    setSecInsurance({
+                      ...secInsurance,
+                      insuranceName: e.target.value,
+                    })
+                  }
+                  id="outlined-required"
+                  label={
+                    secInsurance.insuranceName !== "" ? "" : "Insurance name"
+                  }
+                />
+              </FormControl>
+              <h6 className="header6">Member ID</h6>
+              <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
+                <TextField
+                  value={secInsurance.memberId}
+                  onChange={(e) =>
+                    setSecInsurance({
+                      ...secInsurance,
+                      memberId: e.target.value,
+                    })
+                  }
+                  id="outlined-required"
+                  label={secInsurance.memberId !== "" ? "" : "Enter member ID"}
+                />
+              </FormControl>
+              <h6 className="header6">Group Number</h6>
+              <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
+                <TextField
+                  value={secInsurance.groupNumber}
+                  onChange={(e) =>
+                    setSecInsurance({
+                      ...secInsurance,
+                      groupNumber: e.target.value,
+                    })
+                  }
+                  id="outlined-required"
+                  label={
+                    secInsurance.groupNumber !== ""
+                      ? ""
+                      : "Enter your group number"
+                  }
+                />
+              </FormControl>
+            </div>
+            <div className={styles.inputWrapper}>
+              <h6 className="header6">Copay</h6>
+              <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
                 <div
                   style={{
-                    width: "20px",
-                    marginRight: "5px",
-                    height: "55px",
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center",
+                    justifyContent: "stretch",
                   }}
                 >
-                  $
-                </div>
+                  <div
+                    style={{
+                      width: "20px",
+                      marginRight: "5px",
+                      height: "55px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    $
+                  </div>
 
+                  <TextField
+                    style={{
+                      flex: "1",
+                    }}
+                    disabled
+                    required
+                    id="outlined-required"
+                    value={secInsurance.copay}
+                    onChange={(e) => {
+                      setSecInsurance({
+                        ...secInsurance,
+                        copay: e.target.value,
+                      });
+                    }}
+                  />
+                </div>
+              </FormControl>
+              <h6 className="header6">Group Name</h6>
+              <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
                 <TextField
-                  style={{
-                    flex: "1",
-                  }}
-                  disabled
-                  required
-                  id="outlined-required"
-                  value={secInsurance.copay}
-                  onChange={(e) => {
+                  value={secInsurance.groupName}
+                  onChange={(e) =>
                     setSecInsurance({
                       ...secInsurance,
-                      copay: e.target.value,
-                    });
-                  }}
+                      groupName: e.target.value,
+                    })
+                  }
+                  id="outlined-required"
+                  label={
+                    secInsurance.groupName !== "" ? "" : "Enter group name"
+                  }
                 />
-              </div>
-            </FormControl>
-            <h6 className="header6">Group Name</h6>
-            <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
-              <TextField
-                value={secInsurance.groupName}
-                onChange={(e) =>
-                  setSecInsurance({
-                    ...secInsurance,
-                    groupName: e.target.value,
-                  })
-                }
-                id="outlined-required"
-                label={secInsurance.groupName !== "" ? "" : "Enter group name"}
-              />
-            </FormControl>
-            <h6 className="header6">Phone Number</h6>
-            <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
-              <TextField
-                value={secInsurance.phoneNumber}
-                onChange={(e) =>
-                  setSecInsurance({
-                    ...secInsurance,
-                    phoneNumber: e.target.value,
-                  })
-                }
-                id="outlined-required"
-                label={
-                  secInsurance.phoneNumber !== ""
-                    ? ""
-                    : "Enter your phone number"
-                }
-              />
-            </FormControl>
+              </FormControl>
+              <h6 className="header6">Phone Number</h6>
+              <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
+                <TextField
+                  value={secInsurance.phoneNumber}
+                  onChange={(e) =>
+                    setSecInsurance({
+                      ...secInsurance,
+                      phoneNumber: e.target.value,
+                    })
+                  }
+                  id="outlined-required"
+                  label={
+                    secInsurance.phoneNumber !== ""
+                      ? ""
+                      : "Enter your phone number"
+                  }
+                />
+              </FormControl>
+            </div>
           </div>
         </div>
-      </div>
-      <Bottom
-        isEdit={location.state}
-        isDisabled={isDisabled}
-        handleSubmit={addSecondaryInsurance}
-        data={secInsurance}
-      />
-    </form>
+        <Bottom
+          isEdit={location.state}
+          isDisabled={isDisabled}
+          handleSubmit={addSecondaryInsurance}
+          data={secInsurance}
+        />
+      </form>
+    </AnimatedPage>
   );
 };
 

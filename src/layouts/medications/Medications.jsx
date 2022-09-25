@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { bindActionCreators } from "redux";
+import AnimatedPage from "../../components/Animation/Pages";
 import Bottom from "../../components/Bottom/Bottom";
 import History from "../../components/history/History";
 import * as actionCreators from "../../state/actionCreators/index";
@@ -46,20 +47,22 @@ const Medications = () => {
   }, []);
 
   return (
-    <div className={styles.medicationsContainer}>
-      <History
-        addedItems={data}
-        addToList={addItemToList}
-        items={newMedicationDataList}
-        headerText="PLEASE ADD ANY MEDICATIONS :"
-        btnText="Add Other Medications"
-      />
-      <Bottom
-        isEdit={location.state}
-        handleSubmit={addMedicationsData}
-        data={data}
-      />
-    </div>
+    <AnimatedPage>
+      <div className={styles.medicationsContainer}>
+        <History
+          addedItems={data}
+          addToList={addItemToList}
+          items={newMedicationDataList}
+          headerText="PLEASE ADD ANY MEDICATIONS :"
+          btnText="Add Other Medications"
+        />
+        <Bottom
+          isEdit={location.state}
+          handleSubmit={addMedicationsData}
+          data={data}
+        />
+      </div>
+    </AnimatedPage>
   );
 };
 

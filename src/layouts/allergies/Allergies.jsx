@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { bindActionCreators } from "redux";
+import AnimatedPage from "../../components/Animation/Pages";
 import Bottom from "../../components/Bottom/Bottom";
 import History from "../../components/history/History";
 import * as actionCreators from "../../state/actionCreators/index";
@@ -49,20 +50,22 @@ const Allergies = () => {
   }, []);
 
   return (
-    <div className={styles.allergiesContainer}>
-      <History
-        addedItems={data}
-        addToList={addItemToList}
-        items={newAllergyList}
-        headerText="PLEASE ADD ANY ALLERGIES :"
-        btnText="Add Other Allergies"
-      />
-      <Bottom
-        isEdit={location.state}
-        handleSubmit={addAllergiesData}
-        data={data}
-      />
-    </div>
+    <AnimatedPage>
+      <div className={styles.allergiesContainer}>
+        <History
+          addedItems={data}
+          addToList={addItemToList}
+          items={newAllergyList}
+          headerText="PLEASE ADD ANY ALLERGIES :"
+          btnText="Add Other Allergies"
+        />
+        <Bottom
+          isEdit={location.state}
+          handleSubmit={addAllergiesData}
+          data={data}
+        />
+      </div>
+    </AnimatedPage>
   );
 };
 
