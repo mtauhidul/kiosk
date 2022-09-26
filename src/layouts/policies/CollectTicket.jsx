@@ -13,14 +13,6 @@ const CollectTicket = () => {
   const index = modules.findIndex((module) => module.path === currentPath);
   const nextPath = modules[index + 1].path;
   const lastPath = modules[index + 2].path;
-  console.log(
-    "🚀 ~ file: CollectTicket.jsx ~ line 15 ~ CollectTicket ~ nextPath",
-    nextPath
-  );
-  console.log(
-    "🚀 ~ file: CollectTicket.jsx ~ line 16 ~ CollectTicket ~ lastPath",
-    lastPath
-  );
 
   return (
     <div className={styles.collectTicketContainer}>
