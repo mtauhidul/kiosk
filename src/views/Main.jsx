@@ -232,7 +232,7 @@ export default function Main(props) {
       <Box
         className={styles.body}
         component="main"
-        sx={{ flexGrow: 1, bgColor: "background.default", p: 3 }}
+        sx={{ flexGrow: 1, bgColor: "background.default", p: { xs: 1, md: 3 } }}
       >
         <Toolbar />
         {props.children}

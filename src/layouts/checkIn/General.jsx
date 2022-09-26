@@ -75,7 +75,7 @@ const General = () => {
             <h6 className="header6">
               Which location is your appointment scheduled?
             </h6>
-            <FormControl sx={{ mr: 2, mt: 1, minWidth: 390 }}>
+            <FormControl sx={{ mr: 2, mt: 1, minWidth: { xs: 250, md: 390 } }}>
               <InputLabel id="demo-simple-select-helper-label">
                 Location
               </InputLabel>

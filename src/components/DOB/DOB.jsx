@@ -8,7 +8,7 @@ const DOB = ({ setData, data }) => {
 
   return (
     <div className={styles.dobWrapper}>
-      <FormControl sx={{ mr: 2, mt: 1, minWidth: 120 }}>
+      <FormControl>
         <InputLabel id="demo-simple-select-helper-label">Day</InputLabel>
         <Select
           disabled={locations.pathname === "/kiosk/demographics_Information"}
@@ -31,7 +31,7 @@ const DOB = ({ setData, data }) => {
           })}
         </Select>
       </FormControl>
-      <FormControl sx={{ mr: 2, mt: 1, minWidth: 120 }}>
+      <FormControl>
         <InputLabel id="demo-simple-select-helper-label">Month</InputLabel>
         <Select
           disabled={locations.pathname === "/kiosk/demographics_Information"}
@@ -54,7 +54,7 @@ const DOB = ({ setData, data }) => {
           })}
         </Select>
       </FormControl>
-      <FormControl sx={{ mr: 2, mt: 1, minWidth: 120 }}>
+      <FormControl>
         <InputLabel id="demo-simple-select-helper-label">Year</InputLabel>
         <Select
           disabled={locations.pathname === "/kiosk/demographics_Information"}

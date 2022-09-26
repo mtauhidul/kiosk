@@ -1,5 +1,6 @@
 .dobWrapper {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
+  margin-top: 0.8rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(60px, 1fr));
+  gap: 10px;
 }
