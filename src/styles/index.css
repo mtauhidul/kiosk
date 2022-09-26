@@ -226,8 +226,9 @@ small {
   }
 
   .header2 {
-    font-size: 26px;
+    font-size: 22px;
     line-height: 30px;
+    white-space: nowrap;
   }
 }
 
@@ -238,7 +239,7 @@ small {
   }
 
   .header2 {
-    font-size: 20px;
+    font-size: 1rem;
     line-height: 30px;
   }
 }

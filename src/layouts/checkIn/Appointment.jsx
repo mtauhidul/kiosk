@@ -28,8 +28,10 @@ const Appointment = () => {
             sx={{
               maxWidth: 800,
               display: "flex",
-              flexDirection: "row",
+              flexDirection: { xs: "column", md: "row" },
               justifyContent: "space-between",
+              flexWrap: "wrap",
+              alignItems: "center",
             }}
           >
             <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -46,7 +48,11 @@ const Appointment = () => {
             </Box>
             <CardMedia
               component="img"
-              sx={{ width: 400, padding: "16px" }}
+              sx={{
+                width: 400,
+                padding: "16px",
+                objectFit: { xs: "cover", md: "contain" },
+              }}
               image={AppointmentBg}
               alt="Live from space album cover"
             />
