@@ -15,6 +15,7 @@ import DOB from "../../components/DOB/DOB";
 import * as actionCreators from "../../state/actionCreators/index";
 import store from "../../state/store";
 import styles from "../../styles/Information.module.css";
+import AnimatedPage from "../../components/Animation/Pages";
 
 const Information = () => {
   const dispatch = useDispatch();
@@ -85,169 +86,180 @@ const Information = () => {
   const { addDemographicData } = bindActionCreators(actionCreators, dispatch);
 
   return (
-    <form className={styles.informationContainer}>
-      <div className={styles.formContainer}>
-        <h3 className="header3">GENERAL INFO</h3>
-        <br />
-        <div className={styles.formWrapper}>
-          <div className={styles.formLeft}>
-            <h6 className="header6">Patient Name</h6>
-            <FormControl sx={{ mt: 1, mb: 2, width: "100%" }}>
-              <TextField
-                required
-                disabled
-                value={user?.fullName}
-                id="outlined-required"
-                onChange={(e) =>
-                  setDemographics({
-                    ...demographics,
-                    patientName: e.target.value,
-                  })
-                }
-              />
-            </FormControl>
-            <h6 className="header6">Address</h6>
-            <FormControl sx={{ mt: 1, mb: 2, width: "100%" }}>
-              <TextField
-                required
-                value={demographics?.address}
-                id="outlined-required"
-                label={demographics.address !== "" ? "" : "Address"}
-                onChange={(e) =>
-                  setDemographics({ ...demographics, address: e.target.value })
-                }
-              />
-            </FormControl>
+    <AnimatedPage>
+      <form className={styles.informationContainer}>
+        <div className={styles.formContainer}>
+          <h3 className="header3">GENERAL INFO</h3>
+          <br />
+          <div className={styles.formWrapper}>
+            <div className={styles.formLeft}>
+              <h6 className="header6">Patient Name</h6>
+              <FormControl sx={{ mt: 1, mb: 2, width: "100%" }}>
+                <TextField
+                  required
+                  disabled
+                  value={user?.fullName}
+                  id="outlined-required"
+                  onChange={(e) =>
+                    setDemographics({
+                      ...demographics,
+                      patientName: e.target.value,
+                    })
+                  }
+                />
+              </FormControl>
+              <h6 className="header6">Address</h6>
+              <FormControl sx={{ mt: 1, mb: 2, width: "100%" }}>
+                <TextField
+                  required
+                  value={demographics?.address}
+                  id="outlined-required"
+                  label={demographics.address !== "" ? "" : "Address"}
+                  onChange={(e) =>
+                    setDemographics({
+                      ...demographics,
+                      address: e.target.value,
+                    })
+                  }
+                />
+              </FormControl>
 
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: { xs: "row", md: "column" },
-                alignItems: "center",
-                gap: "1rem",
-              }}
-            >
               <Box
                 sx={{
-                  width: { xs: "50%", md: "100%" },
+                  display: "flex",
+                  flexDirection: { xs: "row", md: "column" },
+                  alignItems: "center",
+                  gap: "1rem",
                 }}
               >
-                <h6 className="header6">City</h6>
-                <FormControl sx={{ mt: 1, mb: 2, width: "100%" }}>
-                  <TextField
-                    required
-                    value={demographics?.city}
-                    id="outlined-required"
-                    label={demographics.city !== "" ? "" : "City"}
-                    onChange={(e) =>
-                      setDemographics({ ...demographics, city: e.target.value })
-                    }
-                  />
-                </FormControl>
+                <Box
+                  sx={{
+                    width: { xs: "50%", md: "100%" },
+                  }}
+                >
+                  <h6 className="header6">City</h6>
+                  <FormControl sx={{ mt: 1, mb: 2, width: "100%" }}>
+                    <TextField
+                      required
+                      value={demographics?.city}
+                      id="outlined-required"
+                      label={demographics.city !== "" ? "" : "City"}
+                      onChange={(e) =>
+                        setDemographics({
+                          ...demographics,
+                          city: e.target.value,
+                        })
+                      }
+                    />
+                  </FormControl>
+                </Box>
+                <Box
+                  sx={{
+                    width: { xs: "50%", md: "100%" },
+                  }}
+                >
+                  <h6 className="header6">Zipcode</h6>
+                  <FormControl sx={{ mt: 1, mb: 2, width: "100%" }}>
+                    <TextField
+                      required
+                      value={demographics?.zipcode}
+                      id="outlined-required"
+                      label={demographics.zipcode !== "" ? "" : "Zipcode"}
+                      onChange={(e) =>
+                        setDemographics({
+                          ...demographics,
+                          zipcode: e.target.value,
+                        })
+                      }
+                    />
+                  </FormControl>
+                </Box>
               </Box>
-              <Box
-                sx={{
-                  width: { xs: "50%", md: "100%" },
-                }}
-              >
-                <h6 className="header6">Zipcode</h6>
-                <FormControl sx={{ mt: 1, mb: 2, width: "100%" }}>
-                  <TextField
-                    required
-                    value={demographics?.zipcode}
-                    id="outlined-required"
-                    label={demographics.zipcode !== "" ? "" : "Zipcode"}
-                    onChange={(e) =>
-                      setDemographics({
-                        ...demographics,
-                        zipcode: e.target.value,
-                      })
-                    }
-                  />
-                </FormControl>
-              </Box>
-            </Box>
 
-            <h6 className="header6">Email Address</h6>
-            <FormControl sx={{ mt: 1, mb: 2, width: "100%" }}>
-              <TextField
-                required
-                value={demographics?.email}
-                id="outlined-required"
-                label={demographics.email !== "" ? "" : "Email Address"}
-                onChange={(e) =>
-                  setDemographics({ ...demographics, email: e.target.value })
-                }
-              />
-            </FormControl>
-          </div>
-          <div className={styles.formRight}>
-            <h6 className="header6">Date of Birth</h6>
-            <DOB setData={setUser} data={user} />
-            <h6 style={{ marginTop: "17px" }} className="header6">
-              Apartment, suite, etc (optional)
-            </h6>
-            <FormControl sx={{ mt: 1, mb: 2, width: "100%" }}>
-              <TextField
-                value={demographics?.address2}
-                id="outlined-required"
-                label={demographics.address2 !== "" ? "" : "Address"}
-                onChange={(e) =>
-                  setDemographics({ ...demographics, address2: e.target.value })
-                }
-              />
-            </FormControl>
-            <h6 className="header6">State</h6>
-            <FormControl sx={{ mt: 1, mb: 2, width: "100%" }}>
-              {demographics.state === "" ? (
-                <InputLabel id="demo-simple-select-helper-label">
-                  State
-                </InputLabel>
-              ) : (
-                <></>
-              )}
+              <h6 className="header6">Email Address</h6>
+              <FormControl sx={{ mt: 1, mb: 2, width: "100%" }}>
+                <TextField
+                  required
+                  value={demographics?.email}
+                  id="outlined-required"
+                  label={demographics.email !== "" ? "" : "Email Address"}
+                  onChange={(e) =>
+                    setDemographics({ ...demographics, email: e.target.value })
+                  }
+                />
+              </FormControl>
+            </div>
+            <div className={styles.formRight}>
+              <h6 className="header6">Date of Birth</h6>
+              <DOB setData={setUser} data={user} />
+              <h6 style={{ marginTop: "17px" }} className="header6">
+                Apartment, suite, etc (optional)
+              </h6>
+              <FormControl sx={{ mt: 1, mb: 2, width: "100%" }}>
+                <TextField
+                  value={demographics?.address2}
+                  id="outlined-required"
+                  label={demographics.address2 !== "" ? "" : "Address"}
+                  onChange={(e) =>
+                    setDemographics({
+                      ...demographics,
+                      address2: e.target.value,
+                    })
+                  }
+                />
+              </FormControl>
+              <h6 className="header6">State</h6>
+              <FormControl sx={{ mt: 1, mb: 2, width: "100%" }}>
+                {demographics.state === "" ? (
+                  <InputLabel id="demo-simple-select-helper-label">
+                    State
+                  </InputLabel>
+                ) : (
+                  <></>
+                )}
 
-              <Select
-                labelId="demo-simple-select-helper-label"
-                id="demo-simple-select-helper"
-                value={demographics?.state}
-                label={demographics.state !== "" ? "" : "Location"}
-                onChange={(e) =>
-                  setDemographics({ ...demographics, state: e.target.value })
-                }
-              >
-                <MenuItem value="">
-                  <em>None</em>
-                </MenuItem>
-                <MenuItem value="A">A</MenuItem>
-                <MenuItem value="B">B</MenuItem>
-                <MenuItem value="C">C</MenuItem>
-              </Select>
-            </FormControl>
-            <h6 className="header6">Primary Phone</h6>
-            <FormControl sx={{ mt: 1, mb: 2, width: "100%" }}>
-              <TextField
-                required
-                value={demographics?.phone}
-                id="outlined-required"
-                label={
-                  demographics.phone !== "" ? "" : "Enter your phone number"
-                }
-                onChange={(e) =>
-                  setDemographics({ ...demographics, phone: e.target.value })
-                }
-              />
-            </FormControl>
+                <Select
+                  labelId="demo-simple-select-helper-label"
+                  id="demo-simple-select-helper"
+                  value={demographics?.state}
+                  label={demographics.state !== "" ? "" : "Location"}
+                  onChange={(e) =>
+                    setDemographics({ ...demographics, state: e.target.value })
+                  }
+                >
+                  <MenuItem value="">
+                    <em>None</em>
+                  </MenuItem>
+                  <MenuItem value="A">A</MenuItem>
+                  <MenuItem value="B">B</MenuItem>
+                  <MenuItem value="C">C</MenuItem>
+                </Select>
+              </FormControl>
+              <h6 className="header6">Primary Phone</h6>
+              <FormControl sx={{ mt: 1, mb: 2, width: "100%" }}>
+                <TextField
+                  required
+                  value={demographics?.phone}
+                  id="outlined-required"
+                  label={
+                    demographics.phone !== "" ? "" : "Enter your phone number"
+                  }
+                  onChange={(e) =>
+                    setDemographics({ ...demographics, phone: e.target.value })
+                  }
+                />
+              </FormControl>
+            </div>
           </div>
         </div>
-      </div>
-      <Bottom
-        isDisabled={isDisabled}
-        handleSubmit={addDemographicData}
-        data={demographics}
-        isEdit={location.state}
-      />
-    </form>
+        <Bottom
+          isDisabled={isDisabled}
+          handleSubmit={addDemographicData}
+          data={demographics}
+          isEdit={location.state}
+        />
+      </form>
+    </AnimatedPage>
   );
 };
 

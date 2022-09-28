@@ -3,19 +3,20 @@ import {
   FormControlLabel,
   Radio,
   RadioGroup,
-} from '@mui/material';
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import BackButton from '../../components/buttons/BackButton';
-import PrimaryButton from '../../components/buttons/PrimaryButton';
-import * as actionCreators from '../../state/actionCreators/index';
-import store from '../../state/store';
-import styles from '../../styles/Survey.module.css';
+} from "@mui/material";
+import React, { useState } from "react";
+import { useDispatch } from "react-redux";
+import { bindActionCreators } from "redux";
+import AnimatedPage from "../../components/Animation/Pages";
+import BackButton from "../../components/buttons/BackButton";
+import PrimaryButton from "../../components/buttons/PrimaryButton";
+import * as actionCreators from "../../state/actionCreators/index";
+import store from "../../state/store";
+import styles from "../../styles/Survey.module.css";
 
 const Survey = () => {
   const dispatch = useDispatch();
-  const [ans, setAns] = useState('');
+  const [ans, setAns] = useState("");
   const state = store?.getState()?.data?.survey;
 
   const { addSurveyData } = bindActionCreators(actionCreators, dispatch);
@@ -29,34 +30,35 @@ const Survey = () => {
     <div className={styles.surveyContainer}>
       <div className={styles.surveyWrapper}>
         <small>Question 1 from 4</small>
-        <h5 className='header5'>{state?.question}</h5>
+        <h5 className="header5">{state?.question}</h5>
         <FormControl>
           <RadioGroup
-            aria-labelledby='demo-radio-buttons-group-label'
-            defaultValue='female'
-            name='radio-buttons-group'>
+            aria-labelledby="demo-radio-buttons-group-label"
+            defaultValue="female"
+            name="radio-buttons-group"
+          >
             <FormControlLabel
-              value='Option 1'
+              value="Option 1"
               control={<Radio />}
-              label='Option 1'
+              label="Option 1"
               onClick={(e) => setAns(e.target.value)}
             />
             <FormControlLabel
-              value='Option 2'
+              value="Option 2"
               control={<Radio />}
-              label='Option 2'
+              label="Option 2"
               onClick={(e) => setAns(e.target.value)}
             />
             <FormControlLabel
-              value='Option 3'
+              value="Option 3"
               control={<Radio />}
-              label='Option 3'
+              label="Option 3"
               onClick={(e) => setAns(e.target.value)}
             />
             <FormControlLabel
-              value='Option 4'
+              value="Option 4"
               control={<Radio />}
-              label='Option 4'
+              label="Option 4"
               onClick={(e) => setAns(e.target.value)}
             />
           </RadioGroup>
@@ -65,13 +67,13 @@ const Survey = () => {
           <PrimaryButton
             handleSubmit={submitSurveyData}
             data={ans}
-            text='Next'
-            url='/kiosk/thanks'
+            text="Next"
+            url="/kiosk/thanks"
           />
         </div>
       </div>
       <div className={styles.backBtnContainer}>
-        <BackButton text='Back to Home' url='/' />
+        <BackButton text="Back to Home" url="/" />
       </div>
     </div>
   );

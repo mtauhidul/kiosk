@@ -224,12 +224,23 @@ small {
     font-size: 30px;
     line-height: 40px;
   }
+
+  .header2 {
+    font-size: 22px;
+    line-height: 30px;
+    white-space: nowrap;
+  }
 }
 
 @media screen and (max-width: 400px) {
   .header1 {
     font-size: 20px;
     line-height: 40px;
+  }
+
+  .header2 {
+    font-size: 1rem;
+    line-height: 30px;
   }
 }
 
@@ -251,9 +262,9 @@ small {
   color: var(--primary) !important;
 }
 
-@media screen and (max-width: 400px) {
+@media screen and (max-width: 600px) {
   .primaryButton {
-    width: 100% !important;
+    width: 200px !important;
   }
 }
 

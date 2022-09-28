@@ -18,6 +18,14 @@
 @media screen and (max-width: 600px) {
   .socialCardContainer {
     gap: 1rem;
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .socialCardContainer {
+    padding-bottom: 100px;
   }
 }
 

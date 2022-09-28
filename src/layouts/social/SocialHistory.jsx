@@ -7,6 +7,7 @@ import Bottom from "../../components/Bottom/Bottom";
 import SocialCard from "../../components/socialCard/SocialCard";
 import * as actionCreators from "../../state/actionCreators/index";
 import store from "../../state/store";
+import AnimatedPage from "../../components/Animation/Pages";
 
 const SocialHistory = () => {
   const dispatch = useDispatch();
@@ -22,22 +23,24 @@ const SocialHistory = () => {
     setData(state);
   }, []);
   return (
-    <Box
-      sx={{
-        width: "100%",
-        minHeight: { xs: "100vh", sm: "85vh" },
-        position: "relative",
-      }}
-    >
-      <h3 className="header3">SMOKER OR NON-SMOKER?</h3>
-      <br />
-      <SocialCard data={data} setData={setData} />
-      <Bottom
-        isEdit={location.state}
-        handleSubmit={addSocialHistory}
-        data={data}
-      />
-    </Box>
+    <AnimatedPage>
+      <Box
+        sx={{
+          width: "100%",
+          minHeight: { xs: "100vh", sm: "85vh" },
+          position: "relative",
+        }}
+      >
+        <h3 className="header3">SMOKER OR NON-SMOKER?</h3>
+        <br />
+        <SocialCard data={data} setData={setData} />
+        <Bottom
+          isEdit={location.state}
+          handleSubmit={addSocialHistory}
+          data={data}
+        />
+      </Box>
+    </AnimatedPage>
   );
 };
 

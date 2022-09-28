@@ -6,6 +6,7 @@ import Bottom from "../../components/Bottom/Bottom";
 import styles from "../../styles/InsuranceDocs.module.css";
 import UploadCard from "../../components/cards/UploadCard";
 import useReviewImages from "../../views/useReviewImages";
+import AnimatedPage from "../../components/Animation/Pages";
 
 const SecInsuranceDocs = () => {
   // window.sessionStorage.setItem("insuranceType", "secondary");
@@ -23,9 +24,10 @@ const SecInsuranceDocs = () => {
   }, [docs.secInsuranceFront, docs.secInsuranceBack]);
 
   return (
-    <div className={styles.documentsContainer}>
-      <div className={styles.cardsContainer}>
-        {/* <ScanCard
+    <AnimatedPage>
+      <div className={styles.documentsContainer}>
+        <div className={styles.cardsContainer}>
+          {/* <ScanCard
           id="insuranceCardFront"
           title="INSURANCE CARD"
           subTitle="Front"
@@ -50,31 +52,34 @@ const SecInsuranceDocs = () => {
           btnText="Upload insurance card"
         /> */}
 
-        <UploadCard
-          id="secInsuranceFront"
-          title="INSURANCE CARD"
-          subTitle="Front"
-          img={
-            docs.secInsuranceFront ? docs.secInsuranceFront : InsuranceCardFront
-          }
-          alt="card"
-          btnText="Upload insurance card"
-          addFile={addFile}
-        />
-        <UploadCard
-          id="secInsuranceBack"
-          title="INSURANCE CARD"
-          subTitle="Back"
-          img={
-            docs.secInsuranceBack ? docs.secInsuranceBack : InsuranceCardBack
-          }
-          alt="card"
-          btnText="Upload insurance card"
-          addFile={addFile}
-        />
+          <UploadCard
+            id="secInsuranceFront"
+            title="INSURANCE CARD"
+            subTitle="Front"
+            img={
+              docs.secInsuranceFront
+                ? docs.secInsuranceFront
+                : InsuranceCardFront
+            }
+            alt="card"
+            btnText="Upload insurance card"
+            addFile={addFile}
+          />
+          <UploadCard
+            id="secInsuranceBack"
+            title="INSURANCE CARD"
+            subTitle="Back"
+            img={
+              docs.secInsuranceBack ? docs.secInsuranceBack : InsuranceCardBack
+            }
+            alt="card"
+            btnText="Upload insurance card"
+            addFile={addFile}
+          />
+        </div>
+        <Bottom isDisabled={isDisabled} />
       </div>
-      <Bottom isDisabled={isDisabled} />
-    </div>
+    </AnimatedPage>
   );
 };
 

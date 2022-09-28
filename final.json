@@ -1,0 +1,313 @@
+{
+  "appointment_date": {
+    "value": "2019-01-01 00:00:00.000000",
+    "name": "Appointment Date",
+    "priority": true
+  },
+
+  "appointment_start_time": {
+    "value": "2019-01-01 00:00:00.000000",
+    "name": "Appointment Start Time",
+    "priority": true
+  },
+  "is_televisit": {
+    "value": "No",
+    "name": "Is Televisit",
+    "priority": false
+  },
+  "call_start_time": {
+    "value": "2019-01-01 00:00:00.000000",
+    "name": "Call Start Time",
+    "priority": false
+  },
+  "call_end_time": {
+    "value": "2019-01-01 00:00:00.000000",
+    "name": "Call End Time",
+    "priority": false
+  },
+  "call_duration": {
+    "value": "0",
+    "name": "Call Duration",
+    "priority": false
+  },
+  "encounter_id": {
+    "value": "789528",
+    "name": "Encounter ID",
+    "priority": false
+  },
+  "Appointment_created_by": {
+    "value": "Akram, Aussie",
+    "name": "Appointment Created By User",
+    "priority": false
+  },
+  "visit_type": {
+    "value": "Televisit",
+    "name": "Visit Type",
+    "priority": true
+  },
+  "visit_status": {
+    "value": "INSV : Insurance Verified",
+    "name": "Visit Status",
+    "priority": true
+  },
+  "case_label": {
+    "value": "Televisit",
+    "name": "Case Label",
+    "priority": true
+  },
+  "visit_count": {
+    "value": "1",
+    "name": "Visit Count",
+    "priority": false
+  },
+  "patient_count": {
+    "value": "1",
+    "name": "Patient Count",
+    "priority": false
+  },
+  "patient_name": {
+    "value": "Test, Patient",
+    "name": "Patient Name",
+    "priority": true
+  },
+  "patient_first_name": {
+    "value": "Patient",
+    "name": "Patient First Name",
+    "priority": true
+  },
+  "patient_last_name": {
+    "value": "Test",
+    "name": "Patient Last Name",
+    "priority": true
+  },
+  "patient_middle_initial": {
+    "value": "D",
+    "name": "Patient Middle Initial",
+    "priority": false
+  },
+  "patient_acct_no": {
+    "value": "123456789",
+    "name": "Patient Account Number",
+    "priority": false
+  },
+  "patient_dob": {
+    "value": "2019-01-01 00:00:00.000000",
+    "name": "Patient DOB",
+    "priority": true
+  },
+  "patient_gender": {
+    "value": "female",
+    "name": "Patient Gender",
+    "priority": false
+  },
+  "patient_address_line_1": {
+    "value": "24306 FOREST CANOPY DR",
+    "name": "Patient Address Line 1",
+    "priority": false
+  },
+  "patient_address_line_2": {
+    "value": "",
+    "name": "Patient Address Line 2",
+    "priority": false
+  },
+  "patient_city": {
+    "value": "Cypress",
+    "name": "Patient City",
+    "priority": false
+  },
+  "patient_state": {
+    "value": "TX",
+    "name": "Patient State",
+    "priority": false
+  },
+  "patient_zip": {
+    "value": "77433",
+    "name": "Patient Zip Code",
+    "priority": false
+  },
+  "patient_full_address": {
+    "value": "24306 FOREST CANOPY DR  KATY TX 77493-3088",
+    "name": "Patient Full Address",
+    "priority": false
+  },
+  "patient_race": {
+    "value": "Akram, Aussie",
+    "name": "Patient Race",
+    "priority": false
+  },
+  "patient_ethnicity": {
+    "value": "",
+    "name": "Patient Ethnicity",
+    "priority": false
+  },
+  "patient_home_phone": {
+    "value": "626-622-3292",
+    "name": "Patient Home Phone",
+    "priority": false
+  },
+  "patient_cell_phone": {
+    "value": "626-622-3292",
+    "name": "Patient Cell Phone",
+    "priority": false
+  },
+  "Patient Work Phone": {
+    "value": "626-622-3292",
+    "name": "Patient Work Phone",
+    "priority": false
+  },
+  "patient_email": {
+    "value": "tierratyman@live.com",
+    "name": "Patient E-mail",
+    "priority": false
+  },
+  "Patient Status": {
+    "value": "Active",
+    "name": "Patient Status",
+    "priority": false
+  },
+  "dont_send_statements": {
+    "value": "No",
+    "name": "Don't Send Statements",
+    "priority": false
+  },
+  "patient_deceased": {
+    "value": "No",
+    "name": "Patient Deceased",
+    "priority": false
+  },
+  "patient_age_group": {
+    "value": "Between 18 - 64  Yrs",
+    "name": "Patient Age Group",
+    "priority": false
+  },
+  "appointment_facility_name": {
+    "value": "Your Total Foot Care Specialist",
+    "name": "Appointment Facility Name",
+    "priority": true
+  },
+  "appointment_facility_pos": {
+    "value": "11",
+    "name": "Appointment Facility POS",
+    "priority": false
+  },
+  "appointment_facility_group_name": {
+    "value": "Facility Not In Group",
+    "name": "Appointment Facility Group Name",
+    "priority": false
+  },
+  "department_name": {
+    "value": "Unknown",
+    "name": "Department Name",
+    "priority": false
+  },
+  "practice_name": {
+    "value": "Practice Not Defined",
+    "name": "Practice Name",
+    "priority": false
+  },
+  "appointment_provider_name": {
+    "value": "Sandoval, Maria",
+    "name": "Appointment Provider Name",
+    "priority": true
+  },
+  "appointment_provider_npi": {
+    "value": "1234567890",
+    "name": "Appointment Provider NPI",
+    "priority": false
+  },
+  "appointment_referring_provider_name": {
+    "value": "Unknown, Provider ",
+    "name": "Appointment Referring Provider Name",
+    "priority": false
+  },
+  "appointment_referring_provider_npi": {
+    "value": "",
+    "name": "Appointment Referring Provider NPI",
+    "priority": false
+  },
+  "Resource Provider Name": {
+    "value": "Sandoval, Maria",
+    "name": "Resource Provider Name",
+    "priority": true
+  },
+  "resource_provider_npi": {
+    "value": "1234567890",
+    "name": "Resource Provider NPI",
+    "priority": false
+  },
+  "demographics_pcp_name": {
+    "value": "Unknown, Provider ",
+    "name": "Demographics PCP Name",
+    "priority": false
+  },
+  "demographics_pcp_npi": {
+    "value": "",
+    "name": "Demographics PCP NPI",
+    "priority": false
+  },
+  "demographics_referring_provider_name": {
+    "value": "Allison, Rocio",
+    "name": "Demographics Referring Provider Name",
+    "priority": false
+  },
+  "demographics_referring_provider_npi": {
+    "value": "1234567890",
+    "name": "Demographics Referring Provider NPI",
+    "priority": false
+  },
+  "demographics_rendering_provider_name": {
+    "value": "Unknown, Provider",
+    "name": "Demographics Rendering Provider Name",
+    "priority": false
+  },
+  "demographics_rendering_provider_npi": {
+    "value": "",
+    "name": "Demographics Rendering Provider NPI",
+    "priority": false
+  },
+  "primary_insurance_name": {
+    "value": "Community Health Choice",
+    "name": "Primary Insurance Name",
+    "priority": false
+  },
+  "primary_insurance_subscriber_no": {
+    "value": "1234567890",
+    "name": "Primary Insurance Subscriber No",
+    "priority": false
+  },
+  "secondary_insurance_name": {
+    "value": "",
+    "name": "Secondary Insurance Name",
+    "priority": false
+  },
+  "secondary_insurance_subscriber_no": {
+    "value": "",
+    "name": "Secondary Insurance Subscriber No",
+    "priority": false
+  },
+  "tertiary_insurance_name": {
+    "value": "",
+    "name": "Tertiary Insurance Name",
+    "priority": false
+  },
+  "tertiary_insurance_subscriber_no": {
+    "value": "",
+    "name": "Tertiary Insurance Subscriber No",
+    "priority": false
+  },
+  "sliding_fee_schedule": {
+    "value": "Unknown",
+    "name": "Sliding Fee Schedule",
+    "priority": false
+  },
+  "total_visit_count": {
+    "value": "",
+    "name": "Total(Visit Count)",
+    "priority": false
+  },
+  "count_distinct_patient_acct_no": {
+    "value": "",
+    "name": "Count Distinct(Patient Acct No)",
+    "priority": false
+  }
+}

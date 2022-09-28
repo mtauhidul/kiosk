@@ -42,6 +42,11 @@
 }
 
 @media screen and (max-width: 930px) {
+  .informationContainer {
+    min-height: 100vh;
+    padding-bottom: 80px;
+  }
+
   .formWrapper {
     flex-direction: column;
   }

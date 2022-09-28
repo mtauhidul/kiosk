@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useLocation } from "react-router-dom";
 import { bindActionCreators } from "redux";
+import AnimatedPage from "../../components/Animation/Pages";
 import Bottom from "../../components/Bottom/Bottom";
 import * as actionCreators from "../../state/actionCreators/index";
 import store from "../../state/store";
@@ -68,211 +69,215 @@ const InInformation = () => {
   const { addPrimaryInsurance } = bindActionCreators(actionCreators, dispatch);
 
   return (
-    <form className={styles.informationContainer}>
-      <div className={styles.eligibilityFormWrapper}>
-        <h3 className="header3">Eligibility</h3>
-        <br />
-        <div className={styles.eligibilityForm}>
-          <div className={styles.inputWrapper}>
-            <h6 className="header6">Active Date</h6>
-            <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
-              <TextField
-                required
-                value={primaryInsurance.activeDate}
-                id="outlined-required"
-                disabled
-              />
-            </FormControl>
-          </div>
-          <div className={styles.inputWrapper}>
-            <h6 className="header6">Copay for Specialist</h6>
-            <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "stretch",
-                }}
-              >
+    <AnimatedPage>
+      <form className={styles.informationContainer}>
+        <div className={styles.eligibilityFormWrapper}>
+          <h3 className="header3">Eligibility</h3>
+          <br />
+          <div className={styles.eligibilityForm}>
+            <div className={styles.inputWrapper}>
+              <h6 className="header6">Active Date</h6>
+              <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
+                <TextField
+                  required
+                  value={primaryInsurance.activeDate}
+                  id="outlined-required"
+                  disabled
+                />
+              </FormControl>
+            </div>
+            <div className={styles.inputWrapper}>
+              <h6 className="header6">Copay for Specialist</h6>
+              <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
                 <div
                   style={{
-                    width: "20px",
-                    marginRight: "5px",
-                    height: "55px",
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center",
+                    justifyContent: "stretch",
                   }}
                 >
-                  $
-                </div>
+                  <div
+                    style={{
+                      width: "20px",
+                      marginRight: "5px",
+                      height: "55px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    $
+                  </div>
 
-                <TextField
-                  style={{
-                    flex: "1",
-                  }}
-                  disabled
-                  required
-                  id="outlined-required"
-                  value={primaryInsurance.copayForSpecialist}
-                  onChange={(e) => {
-                    setPrimaryInsurance({
-                      ...primaryInsurance,
-                      copayForSpecialist: e.target.value,
-                    });
-                  }}
-                />
-              </div>
-            </FormControl>
+                  <TextField
+                    style={{
+                      flex: "1",
+                    }}
+                    disabled
+                    required
+                    id="outlined-required"
+                    value={primaryInsurance.copayForSpecialist}
+                    onChange={(e) => {
+                      setPrimaryInsurance({
+                        ...primaryInsurance,
+                        copayForSpecialist: e.target.value,
+                      });
+                    }}
+                  />
+                </div>
+              </FormControl>
+            </div>
           </div>
         </div>
-      </div>
-      <br />
-      <div className={styles.eligibilityFormWrapper}>
-        <h3 className="header3">GENERAL INFO</h3>
         <br />
-        <div className={styles.eligibilityForm}>
-          <div className={styles.inputWrapper}>
-            <h6 className="header6">Primary Insurance</h6>
-            <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
-              <TextField
-                required
-                value={primaryInsurance.insuranceName}
-                onChange={(e) =>
-                  setPrimaryInsurance({
-                    ...primaryInsurance,
-                    insuranceName: e.target.value,
-                  })
-                }
-                id="outlined-required"
-                label={
-                  primaryInsurance.insuranceName !== "" ? "" : "Insurance name"
-                }
-              />
-            </FormControl>
-            <h6 className="header6">Member ID</h6>
-            <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
-              <TextField
-                required
-                value={primaryInsurance.memberId}
-                onChange={(e) =>
-                  setPrimaryInsurance({
-                    ...primaryInsurance,
-                    memberId: e.target.value,
-                  })
-                }
-                id="outlined-required"
-                label={
-                  primaryInsurance.memberId !== "" ? "" : "Enter member ID"
-                }
-              />
-            </FormControl>
-            <h6 className="header6">Group Number</h6>
-            <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
-              <TextField
-                required
-                value={primaryInsurance.groupNumber}
-                onChange={(e) =>
-                  setPrimaryInsurance({
-                    ...primaryInsurance,
-                    groupNumber: e.target.value,
-                  })
-                }
-                id="outlined-required"
-                label={
-                  primaryInsurance.groupNumber !== ""
-                    ? ""
-                    : "Enter your group number"
-                }
-              />
-            </FormControl>
-          </div>
-          <div className={styles.inputWrapper}>
-            <h6 className="header6">Copay</h6>
-            <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "stretch",
-                }}
-              >
+        <div className={styles.eligibilityFormWrapper}>
+          <h3 className="header3">GENERAL INFO</h3>
+          <br />
+          <div className={styles.eligibilityForm}>
+            <div className={styles.inputWrapper}>
+              <h6 className="header6">Primary Insurance</h6>
+              <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
+                <TextField
+                  required
+                  value={primaryInsurance.insuranceName}
+                  onChange={(e) =>
+                    setPrimaryInsurance({
+                      ...primaryInsurance,
+                      insuranceName: e.target.value,
+                    })
+                  }
+                  id="outlined-required"
+                  label={
+                    primaryInsurance.insuranceName !== ""
+                      ? ""
+                      : "Insurance name"
+                  }
+                />
+              </FormControl>
+              <h6 className="header6">Member ID</h6>
+              <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
+                <TextField
+                  required
+                  value={primaryInsurance.memberId}
+                  onChange={(e) =>
+                    setPrimaryInsurance({
+                      ...primaryInsurance,
+                      memberId: e.target.value,
+                    })
+                  }
+                  id="outlined-required"
+                  label={
+                    primaryInsurance.memberId !== "" ? "" : "Enter member ID"
+                  }
+                />
+              </FormControl>
+              <h6 className="header6">Group Number</h6>
+              <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
+                <TextField
+                  required
+                  value={primaryInsurance.groupNumber}
+                  onChange={(e) =>
+                    setPrimaryInsurance({
+                      ...primaryInsurance,
+                      groupNumber: e.target.value,
+                    })
+                  }
+                  id="outlined-required"
+                  label={
+                    primaryInsurance.groupNumber !== ""
+                      ? ""
+                      : "Enter your group number"
+                  }
+                />
+              </FormControl>
+            </div>
+            <div className={styles.inputWrapper}>
+              <h6 className="header6">Copay</h6>
+              <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
                 <div
                   style={{
-                    width: "20px",
-                    marginRight: "5px",
-                    height: "55px",
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center",
+                    justifyContent: "stretch",
                   }}
                 >
-                  $
-                </div>
+                  <div
+                    style={{
+                      width: "20px",
+                      marginRight: "5px",
+                      height: "55px",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    $
+                  </div>
 
+                  <TextField
+                    sx={{
+                      flex: "1",
+                    }}
+                    disabled
+                    required
+                    id="outlined-required"
+                    value={primaryInsurance.copay}
+                    onChange={(e) => {
+                      setPrimaryInsurance({
+                        ...primaryInsurance,
+                        copay: e.target.value,
+                      });
+                    }}
+                  />
+                </div>
+              </FormControl>
+              <h6 className="header6">Group Name</h6>
+              <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
                 <TextField
-                  sx={{
-                    flex: "1",
-                  }}
-                  disabled
                   required
-                  id="outlined-required"
-                  value={primaryInsurance.copay}
-                  onChange={(e) => {
+                  value={primaryInsurance.groupName}
+                  onChange={(e) =>
                     setPrimaryInsurance({
                       ...primaryInsurance,
-                      copay: e.target.value,
-                    });
-                  }}
+                      groupName: e.target.value,
+                    })
+                  }
+                  id="outlined-required"
+                  label={
+                    primaryInsurance.groupName !== "" ? "" : "Enter group name"
+                  }
                 />
-              </div>
-            </FormControl>
-            <h6 className="header6">Group Name</h6>
-            <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
-              <TextField
-                required
-                value={primaryInsurance.groupName}
-                onChange={(e) =>
-                  setPrimaryInsurance({
-                    ...primaryInsurance,
-                    groupName: e.target.value,
-                  })
-                }
-                id="outlined-required"
-                label={
-                  primaryInsurance.groupName !== "" ? "" : "Enter group name"
-                }
-              />
-            </FormControl>
-            <h6 className="header6">Phone Number</h6>
-            <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
-              <TextField
-                required
-                value={primaryInsurance.phoneNumber}
-                onChange={(e) =>
-                  setPrimaryInsurance({
-                    ...primaryInsurance,
-                    phoneNumber: e.target.value,
-                  })
-                }
-                id="outlined-required"
-                label={
-                  primaryInsurance.phoneNumber !== ""
-                    ? ""
-                    : "Enter your phone number"
-                }
-              />
-            </FormControl>
+              </FormControl>
+              <h6 className="header6">Phone Number</h6>
+              <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
+                <TextField
+                  required
+                  value={primaryInsurance.phoneNumber}
+                  onChange={(e) =>
+                    setPrimaryInsurance({
+                      ...primaryInsurance,
+                      phoneNumber: e.target.value,
+                    })
+                  }
+                  id="outlined-required"
+                  label={
+                    primaryInsurance.phoneNumber !== ""
+                      ? ""
+                      : "Enter your phone number"
+                  }
+                />
+              </FormControl>
+            </div>
           </div>
         </div>
-      </div>
-      <Bottom
-        isEdit={location.state}
-        isDisabled={isDisabled}
-        handleSubmit={addPrimaryInsurance}
-        data={primaryInsurance}
-      />
-    </form>
+        <Bottom
+          isEdit={location.state}
+          isDisabled={isDisabled}
+          handleSubmit={addPrimaryInsurance}
+          data={primaryInsurance}
+        />
+      </form>
+    </AnimatedPage>
   );
 };
 

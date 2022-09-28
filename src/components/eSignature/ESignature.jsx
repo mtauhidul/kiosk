@@ -40,12 +40,12 @@ const ESignature = ({ handleSubmit, title, url, policyFile }) => {
         </h6>
         <div
           className={styles.canvasWrapper}
-          style={{ width: width > 700 ? "600px" : `${width / 1.3}px` }}
+          style={{ width: width > 700 ? "500px" : `${width / 1.3}px` }}
         >
           <SignatureCanvas
             ref={sigCanvas}
             canvasProps={{
-              width: width > 700 ? "600px" : `${width / 1.3}px`,
+              width: width > 700 ? "500px" : `${width / 1.3}px`,
               height: 280,
               className: "sigCanvas",
             }}

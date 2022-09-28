@@ -43,6 +43,8 @@
   top: 10%;
   left: 95%;
   transform: translate(-50%, -50%);
+  height: 50px !important;
+  width: 50px !important;
 }
 
 @media screen and (max-width: 900px) {
