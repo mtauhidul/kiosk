@@ -373,7 +373,7 @@ const Preview = () => {
                 icon={FamilyIcon}
                 title='Family History'
                 text='Does (Did) your mother or father have diabetes?'
-                info={[familyHistory.diabetes.toUpperCase()]}
+                info={[familyHistory?.diabetes?.toUpperCase()]}
               />
 
               <PreviewCard
@@ -398,7 +398,7 @@ const Preview = () => {
                 url='/kiosk/social_history'
                 icon={SocialIcon}
                 title='Social History'
-                text={socialHistory?.smoke.toUpperCase()}
+                text={socialHistory?.smoke?.toUpperCase()}
                 info={[]}
               />
 

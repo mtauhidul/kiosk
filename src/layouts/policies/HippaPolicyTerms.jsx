@@ -1,7 +1,7 @@
-import React from "react";
-import policy from "../../assets/policy.pdf";
-import AnimatedPage from "../../components/Animation/Pages";
-import PdfViewer from "./PdfViewer";
+import React from 'react';
+import policy from '../../assets/hippa.pdf';
+import AnimatedPage from '../../components/Animation/Pages';
+import PdfViewer from './PdfViewer';
 
 const HippaPolicyTerms = () => {
   return (
