@@ -1,7 +1,7 @@
-import { addDoc, collection, getDocs } from 'firebase/firestore';
+import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
 import { db } from './firebase';
 
-export const addPatient = async (patient) => {
+export const addPatient = async (patient, id) => {
   const data = {
     patient: patient,
     others: {
@@ -326,13 +326,26 @@ export const addPatient = async (patient) => {
   };
 
   try {
-    const kioskRef = await addDoc(collection(db, 'kiosk'), data);
-    const returnPatient = { id: kioskRef.id, status: 'success' };
-    return returnPatient;
+    const patientsDataRef = doc(db, 'patientsData', id);
+    const response = await updateDoc(patientsDataRef, {
+      kiosk: data,
+      arrTime: new Date(),
+    });
+    if (response === undefined) {
+      return data;
+    }
   } catch (e) {
     return e;
   }
 };
+
+// try {
+//   const kioskRef = await addDoc(collection(db, 'kiosk'), data);
+//   const returnPatient = { id: kioskRef.id, status: 'success' };
+//   return returnPatient;
+// } catch (e) {
+//   return e;
+// }
 
 // Get all data from patientsData collection
 export const getPatientsData = async function () {

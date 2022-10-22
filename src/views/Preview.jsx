@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { Link } from 'react-router-dom';
 import CalendarIcon from '../assets/icons/calender.svg';
 import FamilyIcon from '../assets/icons/family.svg';
@@ -30,10 +30,12 @@ import { date, formatAMPM, getDayName } from '../utils/formatAMPM';
 import useReviewImages from './useReviewImages';
 
 import { addPatient } from '../apis/api';
+import { PatientContext } from '../App';
 import AnimatedPage from '../components/Animation/Pages';
 
 const Preview = () => {
   const state = store?.getState()?.data;
+  const [patient, setPatient] = useContext(PatientContext);
   const navigate = useNavigate();
   const [loading, setLoading] = React.useState(false);
 
@@ -89,7 +91,7 @@ const Preview = () => {
   const postData = async () => {
     try {
       setLoading(true);
-      const res = await addPatient(state);
+      const res = await addPatient(state, patient.id);
       console.log(res);
       setLoading(false);
 
