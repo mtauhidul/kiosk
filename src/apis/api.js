@@ -1,4 +1,4 @@
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, getDocs } from 'firebase/firestore';
 import { db } from './firebase';
 
 export const addPatient = async (patient) => {
@@ -332,4 +332,17 @@ export const addPatient = async (patient) => {
   } catch (e) {
     return e;
   }
+};
+
+// Get all data from patientsData collection
+export const getPatientsData = async function () {
+  const allData = [];
+  const querySnapshot = await getDocs(collection(db, 'patientsData'));
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+    data.id = doc.id;
+    allData.push(data);
+    return allData;
+  });
+  return allData;
 };
