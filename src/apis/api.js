@@ -395,6 +395,7 @@ export const addPatient = async (patient, id) => {
             patient: docSnap.data().data[13],
             id: docSnap.id,
             appointment: docSnap.data().data[1],
+            room: '',
           });
 
           const updateRes = await updateDoc(updateRef, {
