@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import CalendarIcon from '../assets/icons/calender.svg';
 import FamilyIcon from '../assets/icons/family.svg';
@@ -42,6 +42,10 @@ const Preview = () => {
   const dispatch = useDispatch();
   const { removeUserData } = bindActionCreators(actionCreators, dispatch);
   const { addFile } = useReviewImages();
+
+  useEffect(() => {
+    setPatient(JSON.parse(window.sessionStorage.getItem('patient')));
+  }, []);
 
   const monthsLong = {
     January: '01',
@@ -92,8 +96,16 @@ const Preview = () => {
     try {
       setLoading(true);
       const res = await addPatient(state, patient.id);
-      console.log(res);
       setLoading(false);
+
+      if (res.status === 'Already checked-in' && res.id) {
+        removeUserData();
+        toast.error('Patient already checked in!');
+
+        setTimeout(() => {
+          navigate('/');
+        }, 4000);
+      }
 
       if (res.status === 'success' && res.id) {
         removeUserData();

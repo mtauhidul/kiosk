@@ -1,8 +1,8 @@
 export function removeDuplicates(arr) {
-  return arr.filter((item, index) => arr.indexOf(item) === index);
+  return arr.filter((item, index) => arr?.indexOf(item) === index);
 }
 export function addDuplicates(arr) {
-  return arr.filter((item, index) => arr.indexOf(item) === index);
+  return arr.filter((item, index) => arr?.indexOf(item) === index);
 }
 
 export const checkduplicity = (arrayData) => {

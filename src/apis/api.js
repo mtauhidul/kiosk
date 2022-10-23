@@ -1,7 +1,14 @@
-import { collection, doc, getDocs, updateDoc } from 'firebase/firestore';
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  updateDoc,
+} from 'firebase/firestore';
 import { db } from './firebase';
 
 export const addPatient = async (patient, id) => {
+  // console.log(patient, id);
   const data = {
     patient: patient,
     others: {
@@ -325,17 +332,84 @@ export const addPatient = async (patient, id) => {
     },
   };
 
-  try {
-    const patientsDataRef = doc(db, 'patientsData', id);
-    const response = await updateDoc(patientsDataRef, {
-      kiosk: data,
-      arrTime: new Date(),
+  const patientsDataRef = doc(db, 'patientsData', id);
+
+  const response = await updateDoc(patientsDataRef, {
+    kiosk: data,
+    arrTime: new Date(),
+  });
+
+  if (response === undefined) {
+    const doctors = [];
+
+    const doctorsSnapshot = await getDocs(collection(db, 'dashboard'));
+    doctorsSnapshot.forEach((doc) => {
+      const data = doc.data();
+      data.id = doc.id;
+      doctors.push(data);
+
+      return doctors;
     });
-    if (response === undefined) {
-      return data;
+
+    // console.log({ doctors });
+
+    const patientRef = doc(db, 'patientsData', id);
+    const docSnap = await getDoc(patientRef);
+
+    const fetchedData = docSnap.data();
+
+    // console.log(fetchedData.data[45]);
+
+    if (docSnap.exists()) {
+      if (fetchedData.data[45]) {
+        const doctor = `${fetchedData.data[45].split(', ')[1]} ${
+          fetchedData.data[45].split(', ')[0]
+        }`;
+
+        const targetDoctor = doctors.find((d) =>
+          doctor.toLowerCase().includes(d.dr.toLowerCase())
+        );
+
+        // console.log({ targetDoctor });
+
+        // console.log(fetchedData.kiosk.others.Appointment_created_by.value);
+
+        const isAvailable = targetDoctor.count.filter((p) => {
+          return `${p.patient.split(', ')[1]} ${
+            p.patient.split(', ')[0]
+          }`.includes(fetchedData.kiosk.others.Appointment_created_by.value);
+        });
+
+        // console.log({ isAvailable });
+
+        // console.log(isAvailable);
+        if (isAvailable.length > 0) {
+          const returnPatient = {
+            id: docSnap.id,
+            status: 'Already checked-in',
+          };
+          return returnPatient;
+        } else {
+          const updateRef = doc(db, 'dashboard', targetDoctor.id);
+          targetDoctor.count.push({
+            patient: docSnap.data().data[13],
+            id: docSnap.id,
+          });
+
+          const updateRes = await updateDoc(updateRef, {
+            count: targetDoctor.count,
+          });
+          if (updateRes === undefined) {
+            const returnPatient = { id: docSnap.id, status: 'success' };
+            return returnPatient;
+          }
+        }
+      }
+    } else {
+      // doc.data() will be undefined in this case
+      console.log('No such document!');
     }
-  } catch (e) {
-    return e;
+    doctors.length = 0;
   }
 };
 

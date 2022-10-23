@@ -83,6 +83,7 @@ const General = () => {
     });
     if (targetPatient && targetPatient.id) {
       setPatient(targetPatient);
+      window.sessionStorage.setItem('patient', JSON.stringify(targetPatient));
       setIsChecked(true);
       setTimeout(() => {
         setLoading(false);
