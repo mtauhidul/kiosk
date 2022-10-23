@@ -394,10 +394,13 @@ export const addPatient = async (patient, id) => {
           targetDoctor.count.push({
             patient: docSnap.data().data[13],
             id: docSnap.id,
+            appointment: docSnap.data().data[1],
           });
 
           const updateRes = await updateDoc(updateRef, {
-            count: targetDoctor.count,
+            count: targetDoctor.count.sort((a, b) =>
+              a.appointment > b.appointment ? 1 : -1
+            ),
           });
           if (updateRes === undefined) {
             const returnPatient = { id: docSnap.id, status: 'success' };
