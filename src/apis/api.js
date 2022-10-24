@@ -362,25 +362,25 @@ export const addPatient = async (patient, id) => {
 
     if (docSnap.exists()) {
       if (fetchedData.data[45]) {
-        const doctor = `${fetchedData.data[45].split(', ')[1]} ${
+        const patientDoctor = `${fetchedData.data[45].split(', ')[1]} ${
           fetchedData.data[45].split(', ')[0]
         }`;
 
-        const targetDoctor = doctors.find((d) =>
-          doctor.toLowerCase().includes(d.dr.toLowerCase())
+        const doctor = doctors.find((d) =>
+          patientDoctor.toLowerCase().includes(d.name.toLowerCase())
         );
 
-        // console.log({ targetDoctor });
+        console.log({ doctor });
 
         // console.log(fetchedData.kiosk.others.Appointment_created_by.value);
 
-        const isAvailable = targetDoctor.count.filter((p) => {
+        const isAvailable = doctor.count.filter((p) => {
           return `${p.patient.split(', ')[1]} ${
             p.patient.split(', ')[0]
           }`.includes(fetchedData.kiosk.others.Appointment_created_by.value);
         });
 
-        // console.log({ isAvailable });
+        console.log({ isAvailable });
 
         // console.log(isAvailable);
         if (isAvailable.length > 0) {
@@ -390,8 +390,8 @@ export const addPatient = async (patient, id) => {
           };
           return returnPatient;
         } else {
-          const updateRef = doc(db, 'dashboard', targetDoctor.id);
-          targetDoctor.count.push({
+          const updateRef = doc(db, 'dashboard', doctor.id);
+          doctor.count.push({
             patient: docSnap.data().data[13],
             id: docSnap.id,
             appointment: docSnap.data().data[1],
@@ -399,7 +399,7 @@ export const addPatient = async (patient, id) => {
           });
 
           const updateRes = await updateDoc(updateRef, {
-            count: targetDoctor.count.sort((a, b) =>
+            count: doctor.count.sort((a, b) =>
               a.appointment > b.appointment ? 1 : -1
             ),
           });
