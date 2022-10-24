@@ -336,7 +336,7 @@ export const addPatient = async (patient, id) => {
 
   const response = await updateDoc(patientsDataRef, {
     kiosk: data,
-    arrTime: new Date(),
+    arrTime: new Date().toISOString(),
   });
 
   if (response === undefined) {
