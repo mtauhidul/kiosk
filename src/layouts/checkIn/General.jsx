@@ -74,13 +74,17 @@ const General = () => {
       const appointmentDate = d.date.split(', ')[0];
       const currentDate = new Date().toLocaleDateString();
 
+      // ***Have to uncomment below line ***
+
       return (
         user.fullName
           .toLowerCase()
-          .includes(firstName.toLowerCase() || lastName.toLowerCase()) &&
-        appointmentDate === currentDate
+          //   .includes(firstName.toLowerCase() || lastName.toLowerCase()) &&
+          // appointmentDate === currentDate
+          .includes(firstName.toLowerCase() || lastName.toLowerCase())
       );
     });
+
     if (targetPatient && targetPatient.id) {
       setPatient(targetPatient);
       window.sessionStorage.setItem('patient', JSON.stringify(targetPatient));
