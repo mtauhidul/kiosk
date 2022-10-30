@@ -361,16 +361,16 @@ export const addPatient = async (patient, id) => {
     // console.log(fetchedData.data[45]);
 
     if (docSnap.exists()) {
-      if (fetchedData.data[45]) {
-        const patientDoctor = `${fetchedData.data[45].split(', ')[1]} ${
-          fetchedData.data[45].split(', ')[0]
+      if (fetchedData.data[41]) {
+        const patientDoctor = `${fetchedData.data[41].split(', ')[1]} ${
+          fetchedData.data[41].split(', ')[0]
         }`;
 
-        const doctor = doctors.find((d) =>
-          patientDoctor.toLowerCase().includes(d.name.toLowerCase())
-        );
+        const doctor = doctors.find((d) => {
+          return patientDoctor.toLowerCase().includes(d.id?.toLowerCase());
+        });
 
-        console.log({ doctor });
+        console.log({ patientDoctor });
 
         // console.log(fetchedData.kiosk.others.Appointment_created_by.value);
 
@@ -399,9 +399,7 @@ export const addPatient = async (patient, id) => {
           });
 
           const updateRes = await updateDoc(updateRef, {
-            count: doctor.count.sort((a, b) =>
-              a.appointment > b.appointment ? 1 : -1
-            ),
+            count: doctor.count,
           });
           if (updateRes === undefined) {
             const returnPatient = { id: docSnap.id, status: 'success' };

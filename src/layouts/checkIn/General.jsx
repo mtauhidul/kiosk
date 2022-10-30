@@ -79,11 +79,13 @@ const General = () => {
       return (
         user.fullName
           .toLowerCase()
-          //   .includes(firstName.toLowerCase() || lastName.toLowerCase()) &&
-          // appointmentDate === currentDate
-          .includes(firstName.toLowerCase() || lastName.toLowerCase())
+          .includes(firstName.toLowerCase() || lastName.toLowerCase()) &&
+        appointmentDate === currentDate &&
+        d.duration === ''
       );
     });
+
+    console.log(data);
 
     if (targetPatient && targetPatient.id) {
       setPatient(targetPatient);
