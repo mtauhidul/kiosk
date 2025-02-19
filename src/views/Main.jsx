@@ -1,4 +1,3 @@
-import * as React from "react";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import { Button } from "@mui/material";
 import AppBar from "@mui/material/AppBar";
@@ -10,8 +9,8 @@ import ListItem from "@mui/material/ListItem";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
+import * as React from "react";
 import { useNavigate } from "react-router-dom";
-import Logo from "../assets/images/logo.svg";
 import useWindowSize from "../hooks/useWindowSize";
 import styles from "../styles/Main.module.css";
 import { listItems } from "../utils/Menus";
@@ -61,24 +60,6 @@ export default function Main(props) {
       onClick={toggleDrawer(anchor, false)}
       onKeyDown={toggleDrawer(anchor, false)}
     >
-      <List
-        sx={{
-          position: "sticky",
-          top: 0,
-          backgroundColor: "#fff",
-          zIndex: 999,
-          display: "flex",
-          justifyContent: "center",
-        }}
-      >
-        <img
-          onClick={() => navigate("/")}
-          className={styles.drawerLogo}
-          src={Logo}
-          alt="Logo"
-        />
-      </List>
-
       <List>
         {listItems.map((item, index) => (
           <ListItem button key={index} className={styles.listItem}>
@@ -177,14 +158,7 @@ export default function Main(props) {
               backgroundColor: "#fff",
               zIndex: 999,
             }}
-          >
-            <img
-              onClick={() => navigate("/")}
-              className={styles.drawerLogo}
-              src={Logo}
-              alt="Logo"
-            />
-          </Toolbar>
+          ></Toolbar>
           <List>
             {listItems.map((item, index) => (
               <ListItem button key={index} className={styles.listItem}>
