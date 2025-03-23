@@ -78,6 +78,20 @@ const General = () => {
 
   const { addUserInfo } = bindActionCreators(actionCreators, dispatch);
 
+  // Helper function to parse date of birth
+  const parseDOB = (dobDate) => {
+    if (!dobDate) return { day: "", month: "", year: "" };
+
+    const date = new Date(dobDate);
+    if (isNaN(date.getTime())) return { day: "", month: "", year: "" };
+
+    return {
+      day: date.getDate().toString(),
+      month: (date.getMonth() + 1).toString(), // JavaScript months are 0-indexed
+      year: date.getFullYear().toString(),
+    };
+  };
+
   const verifyAppointment = async () => {
     if (!encounterId.trim()) {
       toast.error("Please enter your Encounter ID");
@@ -90,14 +104,18 @@ const General = () => {
       // Call the checkAppointment API function with the encounter ID
       const response = await checkAppointment(encounterId);
 
-      if (response.status === "success") {
+      console.log("API Response:", response); // Debug the actual response structure
+
+      // Check both success formats to be safe (response.success or response.status === "success")
+      if (response.success || response.status === "success") {
         // Store appointment data in patient context
         const appointmentData = {
           id: encounterId,
           data: response.data,
-          // Add any other necessary fields from the response
           date: new Date().toLocaleDateString(),
         };
+
+        console.log("Appointment data:", appointmentData);
 
         setPatient(appointmentData);
         window.sessionStorage.setItem(
@@ -105,13 +123,28 @@ const General = () => {
           JSON.stringify(appointmentData)
         );
 
-        // Set verification status and update user data with encounterId
+        // Extract patient details from the response
+        const patientData = response.data;
+        const patientName =
+          patientData.patientName ||
+          patientData.fullName ||
+          `${patientData.patientFirstName || ""} ${
+            patientData.patientLastName || ""
+          }`.trim();
+
+        // Parse DOB from the patientDOB field if available
+        const dobInfo = parseDOB(patientData.patientDOB);
+
+        // Set verification status and update user data with all available info
         setVerified(true);
         setUser({
-          ...user,
+          fullName: patientName || "",
+          day: dobInfo.day,
+          month: dobInfo.month,
+          year: dobInfo.year,
+          // Use appointmentFacilityName as default location if available
+          location: patientData.appointmentFacilityName || "",
           encounterId: encounterId,
-          // If API returns patient name, you can pre-fill it here
-          fullName: response.data?.fullName || user.fullName,
         });
 
         setLoading(false);
@@ -121,15 +154,31 @@ const General = () => {
       } else {
         // Handle error response
         setLoading(false);
-        toast.error(
+        // Log the exact error response for debugging
+        console.error("Error response structure:", response);
+
+        // Try to extract error message from different possible response formats
+        const errorMessage =
           response.message ||
-            "No appointment found. Please contact the hospital."
-        );
+          (response.data && response.data.message) ||
+          "No appointment found. Please contact the hospital.";
+
+        toast.error(errorMessage);
       }
     } catch (error) {
       setLoading(false);
-      toast.error("Error verifying appointment. Please try again.");
+      // Log detailed error information
       console.error("Appointment verification error:", error);
+
+      // Try to extract more detailed error information if available
+      const errorMessage =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        "Error verifying appointment. Please try again.";
+
+      toast.error(errorMessage);
     }
   };
 
@@ -140,6 +189,7 @@ const General = () => {
       encounterId: encounterId,
     };
     addUserInfo(userData);
+    navigate("/select-identity");
   };
 
   return (
@@ -204,7 +254,15 @@ const General = () => {
                     label="Full Name"
                   />
                 </FormControl>
-                <h6 className="header6">Date of Birth</h6>
+                <h6
+                  className="header6"
+                  style={{
+                    marginTop: "20px",
+                    marginBottom: "10px",
+                  }}
+                >
+                  Date of Birth
+                </h6>
                 <DOB setData={setUser} data={user} />
               </div>
               <div id={styles.locationSelector} className={styles.form}>

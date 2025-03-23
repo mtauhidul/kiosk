@@ -1,21 +1,81 @@
 import {
+  Box,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
   TextField,
-  Box,
 } from "@mui/material";
-import { useLocation } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
+import { useLocation } from "react-router-dom";
 import { bindActionCreators } from "redux";
+import AnimatedPage from "../../components/Animation/Pages";
 import Bottom from "../../components/Bottom/Bottom";
 import DOB from "../../components/DOB/DOB";
 import * as actionCreators from "../../state/actionCreators/index";
 import store from "../../state/store";
 import styles from "../../styles/Information.module.css";
-import AnimatedPage from "../../components/Animation/Pages";
+
+// US States array with abbreviations and full names
+const usStates = [
+  { value: "AL", label: "Alabama" },
+  { value: "AK", label: "Alaska" },
+  { value: "AZ", label: "Arizona" },
+  { value: "AR", label: "Arkansas" },
+  { value: "CA", label: "California" },
+  { value: "CO", label: "Colorado" },
+  { value: "CT", label: "Connecticut" },
+  { value: "DE", label: "Delaware" },
+  { value: "FL", label: "Florida" },
+  { value: "GA", label: "Georgia" },
+  { value: "HI", label: "Hawaii" },
+  { value: "ID", label: "Idaho" },
+  { value: "IL", label: "Illinois" },
+  { value: "IN", label: "Indiana" },
+  { value: "IA", label: "Iowa" },
+  { value: "KS", label: "Kansas" },
+  { value: "KY", label: "Kentucky" },
+  { value: "LA", label: "Louisiana" },
+  { value: "ME", label: "Maine" },
+  { value: "MD", label: "Maryland" },
+  { value: "MA", label: "Massachusetts" },
+  { value: "MI", label: "Michigan" },
+  { value: "MN", label: "Minnesota" },
+  { value: "MS", label: "Mississippi" },
+  { value: "MO", label: "Missouri" },
+  { value: "MT", label: "Montana" },
+  { value: "NE", label: "Nebraska" },
+  { value: "NV", label: "Nevada" },
+  { value: "NH", label: "New Hampshire" },
+  { value: "NJ", label: "New Jersey" },
+  { value: "NM", label: "New Mexico" },
+  { value: "NY", label: "New York" },
+  { value: "NC", label: "North Carolina" },
+  { value: "ND", label: "North Dakota" },
+  { value: "OH", label: "Ohio" },
+  { value: "OK", label: "Oklahoma" },
+  { value: "OR", label: "Oregon" },
+  { value: "PA", label: "Pennsylvania" },
+  { value: "RI", label: "Rhode Island" },
+  { value: "SC", label: "South Carolina" },
+  { value: "SD", label: "South Dakota" },
+  { value: "TN", label: "Tennessee" },
+  { value: "TX", label: "Texas" },
+  { value: "UT", label: "Utah" },
+  { value: "VT", label: "Vermont" },
+  { value: "VA", label: "Virginia" },
+  { value: "WA", label: "Washington" },
+  { value: "WV", label: "West Virginia" },
+  { value: "WI", label: "Wisconsin" },
+  { value: "WY", label: "Wyoming" },
+  { value: "DC", label: "District of Columbia" },
+  { value: "AS", label: "American Samoa" },
+  { value: "GU", label: "Guam" },
+  { value: "MP", label: "Northern Mariana Islands" },
+  { value: "PR", label: "Puerto Rico" },
+  { value: "VI", label: "U.S. Virgin Islands" },
+];
 
 const Information = () => {
   const dispatch = useDispatch();
@@ -190,7 +250,9 @@ const Information = () => {
               </FormControl>
             </div>
             <div className={styles.formRight}>
-              <h6 className="header6">Date of Birth</h6>
+              <h6 className="header6" style={{ marginBottom: "10px" }}>
+                Date of Birth
+              </h6>
               <DOB setData={setUser} data={user} />
               <h6 style={{ marginTop: "17px" }} className="header6">
                 Apartment, suite, etc (optional)
@@ -211,18 +273,16 @@ const Information = () => {
               <h6 className="header6">State</h6>
               <FormControl sx={{ mt: 1, mb: 2, width: "100%" }}>
                 {demographics.state === "" ? (
-                  <InputLabel id="demo-simple-select-helper-label">
-                    State
-                  </InputLabel>
+                  <InputLabel id="state-select-label">State</InputLabel>
                 ) : (
                   <></>
                 )}
 
                 <Select
-                  labelId="demo-simple-select-helper-label"
-                  id="demo-simple-select-helper"
+                  labelId="state-select-label"
+                  id="state-select"
                   value={demographics?.state}
-                  label={demographics.state !== "" ? "" : "Location"}
+                  label={demographics.state !== "" ? "" : "State"}
                   onChange={(e) =>
                     setDemographics({ ...demographics, state: e.target.value })
                   }
@@ -230,9 +290,11 @@ const Information = () => {
                   <MenuItem value="">
                     <em>None</em>
                   </MenuItem>
-                  <MenuItem value="A">A</MenuItem>
-                  <MenuItem value="B">B</MenuItem>
-                  <MenuItem value="C">C</MenuItem>
+                  {usStates.map((state) => (
+                    <MenuItem key={state.value} value={state.value}>
+                      {state.label}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
               <h6 className="header6">Primary Phone</h6>
