@@ -1,15 +1,16 @@
 .cardImg {
-    margin-top: 20px;
+  margin-top: 20px;
+  padding: 10px;
 }
 
 .cardImg img {
-    margin: 0 auto;
-    width: 105px;
-    height: 70px;
-    border-radius: 6px;
-    object-fit: cover;
+  margin: 0 auto;
+  width: 100%;
+  height: 120px;
+  border-radius: 6px;
+  object-fit: contain;
 }
 
 #violateText {
-    color: var(--primary) !important;
+  color: var(--primary) !important;
 }

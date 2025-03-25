@@ -158,7 +158,7 @@ const Information = () => {
                 <TextField
                   required
                   disabled
-                  value={user?.fullName}
+                  value={user?.fullName?.split(", ").reverse().join(" ")}
                   id="outlined-required"
                   onChange={(e) =>
                     setDemographics({

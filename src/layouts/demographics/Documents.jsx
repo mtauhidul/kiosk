@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import DriversLicense from "../../assets/images/driversLic.svg";
 import PatientsPicture from "../../assets/images/patientsPic.svg";
 import Bottom from "../../components/Bottom/Bottom";
-import UploadCard from "../../components/cards/UploadCard";
+import ScanCard from "../../components/cards/ScanCard";
 import styles from "../../styles/Documents.module.css";
 import useReviewImages from "../../views/useReviewImages";
 
@@ -31,16 +31,16 @@ const Documents = () => {
   return (
     <div className={styles.documentsContainer}>
       <div className={styles.cardsContainer}>
-        {/* <ScanCard
+        <ScanCard
           id="patientsPicture"
           title="PATIENT’S PICTURE"
           subTitle=""
-          img={state.patientsPicture ? state.patientsPicture : PatientsPicture}
+          img={docs.patientsPicture ? docs.patientsPicture : PatientsPicture}
           alt="card"
           btnText="Take a picture"
-        /> */}
+        />
 
-        <UploadCard
+        {/* <UploadCard
           id="patientsPicture"
           title="PATIENT’S PICTURE"
           subTitle=""
@@ -48,18 +48,18 @@ const Documents = () => {
           alt="card"
           btnText="Upload a picture"
           addFile={addFile}
-        />
+        /> */}
 
-        {/* <ScanCard
+        <ScanCard
           id="driversLicense"
           title="DRIVER’S LICENSE"
           subTitle=""
-          img={state.driversLicense ? state.driversLicense : DriversLicense}
+          img={docs.driverLicense ? docs.driverLicense : DriversLicense}
           alt="card"
           btnText="Scan card"
-        /> */}
+        />
 
-        <UploadCard
+        {/* <UploadCard
           id="driversLicense"
           title="DRIVER’S LICENSE"
           subTitle=""
@@ -67,7 +67,7 @@ const Documents = () => {
           alt="card"
           btnText="Upload card"
           addFile={addFile}
-        />
+        /> */}
       </div>
       <Bottom isDisabled={isDisabled} />
     </div>

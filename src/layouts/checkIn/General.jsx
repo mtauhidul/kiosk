@@ -246,7 +246,7 @@ const General = () => {
                 >
                   <TextField
                     required
-                    value={user?.fullName}
+                    value={user?.fullName?.split(", ").reverse().join(" ")}
                     onChange={(e) =>
                       setUser({ ...user, fullName: e.target.value })
                     }

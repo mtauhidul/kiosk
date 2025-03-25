@@ -1,3 +1,4 @@
 {
-  "cSpell.words": ["hippa"]
+  "cSpell.words": ["hippa"],
+  "postman.settings.dotenv-detection-notification-visibility": false
 }
