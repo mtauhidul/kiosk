@@ -24,6 +24,8 @@ const Appointment = () => {
       const formattedName =
         nameParts.length > 1 ? `${nameParts[1]} ${nameParts[0]}` : nameParts[0];
       setName(formattedName);
+      const [firstName] = formattedName.split(" ");
+      setName(firstName);
     }
 
     // Set appointment time

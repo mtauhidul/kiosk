@@ -290,8 +290,6 @@ const General = () => {
                     <MenuItem value="Your Total Foot Care Specialist">
                       Your Total Foot Care Specialist
                     </MenuItem>
-                    <MenuItem value="Location B">Location B</MenuItem>
-                    <MenuItem value="Location C">Location C</MenuItem>
                   </Select>
                 </FormControl>
               </div>
