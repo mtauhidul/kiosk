@@ -44,9 +44,6 @@ const InInformation = () => {
     if (
       primaryInsurance.insuranceName === "" ||
       primaryInsurance.memberId === "" ||
-      primaryInsurance.groupName === "" ||
-      primaryInsurance.groupNumber === "" ||
-      primaryInsurance.phoneNumber === "" ||
       primaryInsurance.copay === "" ||
       primaryInsurance.copayForSpecialist === "" ||
       primaryInsurance.activeDate === ""
@@ -174,7 +171,6 @@ const InInformation = () => {
               <h6 className="header6">Group Number</h6>
               <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
                 <TextField
-                  required
                   value={primaryInsurance.groupNumber}
                   onChange={(e) =>
                     setPrimaryInsurance({
@@ -234,7 +230,6 @@ const InInformation = () => {
               <h6 className="header6">Group Name</h6>
               <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
                 <TextField
-                  required
                   value={primaryInsurance.groupName}
                   onChange={(e) =>
                     setPrimaryInsurance({
@@ -251,7 +246,6 @@ const InInformation = () => {
               <h6 className="header6">Phone Number</h6>
               <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
                 <TextField
-                  required
                   value={primaryInsurance.phoneNumber}
                   onChange={(e) =>
                     setPrimaryInsurance({

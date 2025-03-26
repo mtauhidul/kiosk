@@ -43,9 +43,6 @@ const SecInInformation = () => {
     if (
       secInsurance.insuranceName === "" ||
       secInsurance.memberId === "" ||
-      secInsurance.groupName === "" ||
-      secInsurance.groupNumber === "" ||
-      secInsurance.phoneNumber === "" ||
       secInsurance.copay === "" ||
       secInsurance.copayForSpecialist === "" ||
       secInsurance.activeDate === ""
@@ -156,6 +153,7 @@ const SecInInformation = () => {
               <h6 className="header6">Member ID</h6>
               <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
                 <TextField
+                  required
                   value={secInsurance.memberId}
                   onChange={(e) =>
                     setSecInsurance({

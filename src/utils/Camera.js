@@ -470,12 +470,19 @@ const Camera = () => {
     setProcessedImage(null);
   };
 
+  // FIXED: This function was incorrectly defined and nested
   const useImage = () => {
-    if (!processedImage && !imgSrc) return;
+    if (!processedImage && !imgSrc) {
+      console.log("No image captured");
+      return;
+    }
 
     const finalImage = processedImage || imgSrc;
     const state = store.getState();
     const insuranceType = window.sessionStorage.getItem("insuranceType");
+
+    console.log("Using image for:", id);
+    console.log("Insurance type:", insuranceType);
 
     try {
       // Update state based on the ID parameter
@@ -497,6 +504,7 @@ const Camera = () => {
         navigate("/kiosk/demographics_documents");
       } else if (id === "insuranceCardFront") {
         if (insuranceType?.includes("primary")) {
+          console.log("Saving primary insurance front");
           dispatch(
             actionCreators.addPrimaryInsurance({
               ...state.data.primaryInsurance,
@@ -505,6 +513,27 @@ const Camera = () => {
           );
           navigate("/kiosk/insurance_documents");
         } else {
+          console.log("Saving secondary insurance front");
+          dispatch(
+            actionCreators.addSecondaryInsurance({
+              ...state.data.secondaryInsurance,
+              insuranceCardFront: finalImage,
+            })
+          );
+          navigate("/kiosk/insurance_docs_secondary");
+        }
+      } else if (id === "insuranceCardBack") {
+        if (insuranceType?.includes("primary")) {
+          console.log("Saving primary insurance back");
+          dispatch(
+            actionCreators.addPrimaryInsurance({
+              ...state.data.primaryInsurance,
+              insuranceCardBack: finalImage,
+            })
+          );
+          navigate("/kiosk/insurance_documents");
+        } else {
+          console.log("Saving secondary insurance back");
           dispatch(
             actionCreators.addSecondaryInsurance({
               ...state.data.secondaryInsurance,
@@ -513,6 +542,8 @@ const Camera = () => {
           );
           navigate("/kiosk/insurance_docs_secondary");
         }
+      } else {
+        console.error("Unknown image type ID:", id);
       }
     } catch (error) {
       console.error("Error saving image:", error);
@@ -645,8 +676,8 @@ const Camera = () => {
         </div>
       )}
 
-      {/* Add CSS styles */}
-      <style jsx>{`
+      <style>
+        {`
         .camera-container {
           display: flex;
           flex-direction: column;
@@ -874,7 +905,8 @@ const Camera = () => {
             min-width: 100px;
           }
         }
-      `}</style>
+      `}
+      </style>
     </div>
   );
 };

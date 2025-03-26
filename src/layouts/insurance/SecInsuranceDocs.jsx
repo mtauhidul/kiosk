@@ -1,82 +1,91 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import InsuranceCardBack from "../../assets/images/insuranceBack.svg";
 import InsuranceCardFront from "../../assets/images/insuranceFront.svg";
-import Bottom from "../../components/Bottom/Bottom";
-// import ScanCard from "../../components/cards/ScanCard";
-import styles from "../../styles/InsuranceDocs.module.css";
-import UploadCard from "../../components/cards/UploadCard";
-import useReviewImages from "../../views/useReviewImages";
 import AnimatedPage from "../../components/Animation/Pages";
+import Bottom from "../../components/Bottom/Bottom";
+import ScanCard from "../../components/cards/ScanCard";
+import styles from "../../styles/InsuranceDocs.module.css";
 
 const SecInsuranceDocs = () => {
-  // window.sessionStorage.setItem("insuranceType", "secondary");
-  // const state = store?.getState()?.data?.secondaryInsurance;
-
+  // Use Redux hooks instead of direct store access
+  const secondaryInsurance = useSelector(
+    (state) => state.data.secondaryInsurance
+  );
   const [isDisabled, setIsDisabled] = useState(true);
-  const { addFile, docs } = useReviewImages();
 
+  // Set insurance type in session storage only once on component mount
   useEffect(() => {
-    if (docs.secInsuranceFront === "" || docs.secInsuranceBack === "") {
-      setIsDisabled(true);
-    } else {
+    window.sessionStorage.setItem("insuranceType", "secondary");
+    console.log("Insurance type set to: secondary");
+  }, []);
+
+  // Check if both front and back images exist to enable the next button
+  useEffect(() => {
+    console.log(
+      "Secondary Insurance Front:",
+      secondaryInsurance.insuranceCardFront ? "Exists" : "Missing"
+    );
+    console.log(
+      "Secondary Insurance Back:",
+      secondaryInsurance.insuranceCardBack ? "Exists" : "Missing"
+    );
+
+    if (
+      secondaryInsurance.insuranceCardFront &&
+      secondaryInsurance.insuranceCardBack
+    ) {
+      console.log(
+        "Both secondary insurance images exist, enabling Next button"
+      );
       setIsDisabled(false);
+    } else {
+      console.log("Missing secondary insurance images, disabling Next button");
+      setIsDisabled(true);
     }
-  }, [docs.secInsuranceFront, docs.secInsuranceBack]);
+  }, [
+    secondaryInsurance.insuranceCardFront,
+    secondaryInsurance.insuranceCardBack,
+  ]);
+
+  // Function to verify image is valid
+  const verifyImage = (imageUrl) => {
+    if (!imageUrl) return false;
+    if (typeof imageUrl !== "string") return false;
+    if (imageUrl.startsWith("data:image")) return true;
+    return false;
+  };
 
   return (
     <AnimatedPage>
       <div className={styles.documentsContainer}>
         <div className={styles.cardsContainer}>
-          {/* <ScanCard
-          id="insuranceCardFront"
-          title="INSURANCE CARD"
-          subTitle="Front"
-          img={
-            state.insuranceCardFront
-              ? state.insuranceCardFront
-              : InsuranceCardFront
-          }
-          alt="card"
-          btnText="Upload insurance card"
-        />
-        <ScanCard
-          id="insuranceCardBack"
-          title="INSURANCE CARD"
-          subTitle="Back"
-          img={
-            state.insuranceCardBack
-              ? state.insuranceCardBack
-              : InsuranceCardBack
-          }
-          alt="card"
-          btnText="Upload insurance card"
-        /> */}
-
-          <UploadCard
-            id="secInsuranceFront"
-            title="INSURANCE CARD"
+          <ScanCard
+            id="insuranceCardFront"
+            title="SECONDARY INSURANCE"
             subTitle="Front"
             img={
-              docs.secInsuranceFront
-                ? docs.secInsuranceFront
+              verifyImage(secondaryInsurance.insuranceCardFront)
+                ? secondaryInsurance.insuranceCardFront
                 : InsuranceCardFront
             }
-            alt="card"
-            btnText="Upload insurance card"
-            addFile={addFile}
+            alt="secondary insurance card front"
+            btnText="Scan insurance card"
           />
-          <UploadCard
-            id="secInsuranceBack"
-            title="INSURANCE CARD"
+          <ScanCard
+            id="insuranceCardBack"
+            title="SECONDARY INSURANCE"
             subTitle="Back"
             img={
-              docs.secInsuranceBack ? docs.secInsuranceBack : InsuranceCardBack
+              verifyImage(secondaryInsurance.insuranceCardBack)
+                ? secondaryInsurance.insuranceCardBack
+                : InsuranceCardBack
             }
-            alt="card"
-            btnText="Upload insurance card"
-            addFile={addFile}
+            alt="secondary insurance card back"
+            btnText="Scan insurance card"
           />
         </div>
+
         <Bottom isDisabled={isDisabled} />
       </div>
     </AnimatedPage>
