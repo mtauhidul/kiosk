@@ -18,7 +18,7 @@ import ShoeIcon from "../assets/icons/shoe.svg";
 import SocialIcon from "../assets/icons/social.svg";
 import SurgicalIcon from "../assets/icons/surgical.svg";
 import Logo from "../assets/images/logo.svg";
-import UploadCard from "../components/cards/UploadCard";
+import ScanCard from "../components/cards/ScanCard";
 import PreviewCard from "../components/previewCard/PreviewCard";
 import * as actionCreators from "../state/actionCreators/index";
 import store from "../state/store";
@@ -461,47 +461,43 @@ const Preview = () => {
             margin: "1.5rem 0 3rem 0",
           }}
         >
-          <UploadCard
+          <ScanCard
             id="insuranceCardFront"
             title="PRI INSURANCE CARD"
             subTitle="Front"
             img={primaryInsurance?.insuranceCardFront}
             alt="Insurance Card"
             btnText="Review"
-            addFile={addFile}
           />
 
-          <UploadCard
+          <ScanCard
             id="insuranceCardBack"
             title="PRI INSURANCE CARD"
             subTitle="Back"
             img={primaryInsurance?.insuranceCardBack}
             alt="Insurance Card"
             btnText="Review"
-            addFile={addFile}
           />
 
           {secondaryInsurance?.insuranceName && (
-            <UploadCard
+            <ScanCard
               id="secInsuranceFront"
               title="SEC INSURANCE CARD"
               subTitle="Front"
               img={secondaryInsurance?.insuranceCardFront}
               alt="Insurance Card"
               btnText="Review"
-              addFile={addFile}
             />
           )}
 
           {secondaryInsurance?.insuranceName && (
-            <UploadCard
+            <ScanCard
               id="secInsuranceBack"
               title=" SEC INSURANCE CARD"
               subTitle="Back"
               img={secondaryInsurance?.insuranceCardBack}
               alt="Insurance Card"
               btnText="Review"
-              addFile={addFile}
             />
           )}
         </Box>
