@@ -23,6 +23,9 @@ const SecInInformation = () => {
     groupName: "",
     groupNumber: "",
     phoneNumber: "",
+    // Add these fields to preserve the card images
+    insuranceCardFront: null,
+    insuranceCardBack: null,
   });
 
   useEffect(() => {
@@ -36,6 +39,9 @@ const SecInInformation = () => {
       groupName: state?.groupName || "",
       groupNumber: state?.groupNumber || "",
       phoneNumber: state?.phoneNumber || "",
+      // Preserve the insurance card images
+      insuranceCardFront: state?.insuranceCardFront || null,
+      insuranceCardBack: state?.insuranceCardBack || null,
     });
   }, []);
 
@@ -66,6 +72,17 @@ const SecInInformation = () => {
     actionCreators,
     dispatch
   );
+
+  // Custom submit handler to preserve card images
+  const handleSubmit = (data) => {
+    // Make sure we're keeping the insurance card images when updating
+    addSecondaryInsurance({
+      ...data,
+      // Keep the card images even if they're not part of the form
+      insuranceCardFront: secInsurance.insuranceCardFront,
+      insuranceCardBack: secInsurance.insuranceCardBack,
+    });
+  };
 
   return (
     <AnimatedPage>
@@ -133,7 +150,7 @@ const SecInInformation = () => {
           <br />
           <div className={styles.eligibilityForm}>
             <div className={styles.inputWrapper}>
-              <h6 className="header6">Primary Insurance</h6>
+              <h6 className="header6">Secondary Insurance</h6>
               <FormControl sx={{ mb: 3, mt: 1, width: "100%" }}>
                 <TextField
                   required
@@ -264,7 +281,7 @@ const SecInInformation = () => {
         <Bottom
           isEdit={location.state}
           isDisabled={isDisabled}
-          handleSubmit={addSecondaryInsurance}
+          handleSubmit={handleSubmit}
           data={secInsurance}
         />
       </form>

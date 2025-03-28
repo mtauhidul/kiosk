@@ -98,8 +98,8 @@ const Information = () => {
     zipcode: "",
     phone: "",
     email: "",
-    patientsPicture: "",
-    driversLicense: "",
+    patientsPicture: null,
+    driversLicense: null,
   });
 
   useEffect(() => {
@@ -122,14 +122,13 @@ const Information = () => {
     demographics.zipcode,
     demographics.phone,
     demographics.email,
-    demographics.patientsPicture,
-    demographics.driversLicense,
   ]);
 
   useEffect(() => {
     const predefinedData = store?.getState()?.data?.userInfo;
     setUser(predefinedData);
     const state = store?.getState()?.data?.demographicsInfo;
+
     setDemographics({
       address: state?.address || "",
       address2: state?.address2 || "",
@@ -139,11 +138,24 @@ const Information = () => {
       phone: state?.phone || "",
       email: state?.email || "",
       user: predefinedData,
+      // Preserve the images
+      patientsPicture: state?.patientsPicture || null,
+      driversLicense: state?.driversLicense || null,
     });
-    // setDemographics({ ...state, user: predefinedData });
   }, []);
 
   const { addDemographicData } = bindActionCreators(actionCreators, dispatch);
+
+  // Custom submit handler to preserve image data
+  const handleSubmit = (data) => {
+    // Make sure we're keeping the images when updating
+    addDemographicData({
+      ...data,
+      // Keep the images even if they're not part of the form
+      patientsPicture: demographics.patientsPicture,
+      driversLicense: demographics.driversLicense,
+    });
+  };
 
   return (
     <AnimatedPage>
@@ -316,7 +328,7 @@ const Information = () => {
         </div>
         <Bottom
           isDisabled={isDisabled}
-          handleSubmit={addDemographicData}
+          handleSubmit={handleSubmit}
           data={demographics}
           isEdit={location.state}
         />

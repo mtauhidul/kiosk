@@ -24,6 +24,9 @@ const InInformation = () => {
     groupName: "",
     groupNumber: "",
     phoneNumber: "",
+    // Add these fields to preserve the card images
+    insuranceCardFront: null,
+    insuranceCardBack: null,
   });
 
   useEffect(() => {
@@ -37,6 +40,9 @@ const InInformation = () => {
       groupName: state?.groupName || "",
       groupNumber: state?.groupNumber || "",
       phoneNumber: state?.phoneNumber || "",
+      // Preserve the insurance card images
+      insuranceCardFront: state?.insuranceCardFront || null,
+      insuranceCardBack: state?.insuranceCardBack || null,
     });
   }, []);
 
@@ -64,6 +70,17 @@ const InInformation = () => {
   ]);
 
   const { addPrimaryInsurance } = bindActionCreators(actionCreators, dispatch);
+
+  // Custom submit handler to preserve card images
+  const handleSubmit = (data) => {
+    // Make sure we're keeping the insurance card images when updating
+    addPrimaryInsurance({
+      ...data,
+      // Keep the card images even if they're not part of the form
+      insuranceCardFront: primaryInsurance.insuranceCardFront,
+      insuranceCardBack: primaryInsurance.insuranceCardBack,
+    });
+  };
 
   return (
     <AnimatedPage>
@@ -267,7 +284,7 @@ const InInformation = () => {
         <Bottom
           isEdit={location.state}
           isDisabled={isDisabled}
-          handleSubmit={addPrimaryInsurance}
+          handleSubmit={handleSubmit}
           data={primaryInsurance}
         />
       </form>
