@@ -1,13 +1,19 @@
-import { Button } from "@mui/material";
-import Box from "@mui/material/Box";
-import Container from "@mui/material/Container";
-import Grid from "@mui/material/Grid";
-import Stack from "@mui/material/Stack";
+import {
+  Avatar,
+  Box,
+  Button,
+  Container,
+  Grid,
+  Paper,
+  Typography,
+} from "@mui/material";
 import React, { useContext, useEffect } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { bindActionCreators } from "redux";
+
+// Icons
 import CalendarIcon from "../assets/icons/calender.svg";
 import FamilyIcon from "../assets/icons/family.svg";
 import EditIcon from "../assets/icons/icons8-edit.svg";
@@ -18,17 +24,19 @@ import ShoeIcon from "../assets/icons/shoe.svg";
 import SocialIcon from "../assets/icons/social.svg";
 import SurgicalIcon from "../assets/icons/surgical.svg";
 import Logo from "../assets/images/logo.svg";
+
+// Components
+import AnimatedPage from "../components/Animation/Pages";
 import ScanCard from "../components/cards/ScanCard";
 import PreviewCard from "../components/previewCard/PreviewCard";
-import * as actionCreators from "../state/actionCreators/index";
-import store from "../state/store";
-import styles from "../styles/Preview.module.css";
-import { date, formatAMPM, getDayName } from "../utils/formatAMPM";
-import useReviewImages from "./useReviewImages";
 
+// State and API
 import { addPatient } from "../apis/api";
 import { PatientContext } from "../App";
-import AnimatedPage from "../components/Animation/Pages";
+import * as actionCreators from "../state/actionCreators/index";
+import store from "../state/store";
+import { date, formatAMPM, getDayName } from "../utils/formatAMPM";
+import useReviewImages from "./useReviewImages";
 
 const Preview = () => {
   const state = store?.getState()?.data;
@@ -138,20 +146,107 @@ const Preview = () => {
     new Date().getDay()
   )}, ${formatAMPM(new Date())}, ${date}`;
 
-  return (
-    <AnimatedPage>
-      <Container maxWidth="xl">
-        <Stack
-          spacing={2}
-          direction="row"
-          justifyContent="space-between"
-          alignItems="center"
+  // Format birth date to handle different month formats
+  const formatBirthday = (userInfo) => {
+    if (!userInfo?.day || !userInfo?.year) {
+      return "Not provided";
+    }
+
+    let month;
+    if (!userInfo?.month) {
+      month = "";
+    } else if (monthsLong[userInfo.month]) {
+      month = monthsLong[userInfo.month];
+    } else {
+      // Make sure numeric months are formatted with leading zero if needed
+      const numMonth = parseInt(userInfo.month, 10);
+      month =
+        numMonth > 0 && numMonth < 10 ? `0${numMonth}` : `${userInfo.month}`;
+    }
+
+    return month
+      ? `${userInfo?.day}/${month}/${userInfo?.year}`
+      : `${userInfo?.day}/${userInfo?.year}`;
+  };
+
+  const renderInfoItem = (label, value) => (
+    <Box sx={{ mb: 1.5 }}>
+      <Typography
+        variant="caption"
+        color="text.secondary"
+        sx={{ display: "block" }}
+      >
+        {label}
+      </Typography>
+      <Typography variant="body1" fontWeight="500">
+        {value || "—"}
+      </Typography>
+    </Box>
+  );
+
+  const renderInsuranceCard = (insurance, title, editPath) => {
+    if (
+      !insurance ||
+      (!title.includes("Secondary") && !insurance.insuranceName)
+    )
+      return null;
+
+    return (
+      <Box
+        sx={{
+          mt: title.includes("Secondary") ? 2 : 0,
+          pt: title.includes("Secondary") ? 2 : 0,
+          borderTop: title.includes("Secondary")
+            ? "1px solid rgba(0, 0, 0, 0.12)"
+            : "none",
+        }}
+      >
+        <Box
           sx={{
-            padding: "2rem 0",
-            marginBottom: "2rem",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            mb: 1,
           }}
         >
-          <img src={Logo} alt="Logo" />
+          <Typography variant="subtitle2" color="text.secondary">
+            {title}
+          </Typography>
+          <Link to={editPath} state={{ edit: true }}>
+            <img src={EditIcon} alt="Edit" style={{ width: 18, height: 18 }} />
+          </Link>
+        </Box>
+
+        {insurance.insuranceName && (
+          <>
+            <Typography variant="body1" fontWeight="500" gutterBottom>
+              {insurance.insuranceName}
+            </Typography>
+            {renderInfoItem("Member ID", insurance.memberId)}
+            {renderInfoItem("Group Number", insurance.groupNumber)}
+            {renderInfoItem("Group Name", insurance.groupName)}
+            {renderInfoItem("Phone Number", insurance.phoneNumber)}
+            {renderInfoItem("Copay", "$110.00")}
+          </>
+        )}
+      </Box>
+    );
+  };
+
+  return (
+    <AnimatedPage>
+      <Container maxWidth="xl" sx={{ pb: 6 }}>
+        {/* Header with Logo and Approve Button */}
+        <Box
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            py: { xs: 2, md: 3 },
+            mb: { xs: 2, md: 3 },
+          }}
+        >
+          <img src={Logo} alt="Logo" style={{ maxHeight: 45 }} />
           <Button
             disabled={loading}
             onClick={() => postData()}
@@ -159,348 +254,297 @@ const Preview = () => {
             variant="contained"
             size="medium"
             sx={{
+              fontWeight: 600,
+              minWidth: 120,
               "&:disabled": {
-                backgroundColor: "gray !important",
+                backgroundColor: "rgba(0, 0, 0, 0.38) !important",
                 color: "white !important",
-                cursor: "not-allowed",
               },
             }}
           >
             {loading ? "Approving..." : "Approve"}
           </Button>
-        </Stack>
+        </Box>
 
-        <Grid container spacing={2}>
+        <Grid container spacing={3}>
+          {/* Left Column */}
           <Grid item xs={12} md={5}>
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center",
-                gap: "1rem",
-                boxShadow: "rgb(4 20 43 / 10%) 0px 5px 20px",
-                padding: "1rem 0.5rem",
-              }}
+            {/* Patient Profile Card */}
+            <Paper
+              elevation={1}
+              sx={{ mb: 3, overflow: "hidden", borderRadius: 2 }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", gap: 2, p: 2 }}>
+                <Avatar
+                  src={demographicsInfo?.patientsPicture}
+                  alt={demographicsInfo?.user?.fullName}
+                  sx={{ width: 80, height: 80 }}
+                />
+                <Typography
+                  variant="h5"
+                  fontWeight="500"
+                  sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
+                >
+                  {demographicsInfo?.user?.fullName}
+                </Typography>
+              </Box>
+            </Paper>
+
+            {/* Appointment Card */}
+            <Paper
+              elevation={1}
+              sx={{ mb: 3, borderRadius: 2, overflow: "hidden" }}
             >
               <Box
                 sx={{
-                  height: "80px",
-                  width: "80px",
-                  borderRadius: "50%",
-                  overflow: "hidden",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  px: 2,
+                  py: 1.5,
+                  bgcolor: "rgba(0, 0, 0, 0.04)",
                 }}
               >
                 <img
-                  style={{
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                  }}
-                  src={demographicsInfo?.patientsPicture}
-                  alt="Patient"
+                  src={CalendarIcon}
+                  alt="Calendar"
+                  style={{ width: 20, height: 20 }}
                 />
+                <Typography variant="subtitle1" fontWeight="500">
+                  Last doctor's visit
+                </Typography>
               </Box>
-              <h2
-                className="header2"
-                style={{
-                  whiteSpace: "nowrap",
-                  fontSize: "1.5rem",
+              <Box sx={{ p: 2 }}>
+                <Typography variant="body1" fontWeight="600">
+                  {appointmentTimeAndDate}
+                </Typography>
+              </Box>
+            </Paper>
+
+            {/* Insurance Card */}
+            <Paper elevation={1} sx={{ borderRadius: 2, overflow: "hidden" }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 1,
+                  px: 2,
+                  py: 1.5,
+                  bgcolor: "rgba(0, 0, 0, 0.04)",
                 }}
               >
-                {demographicsInfo?.user?.fullName}
-              </h2>
-            </Box>
+                <img
+                  src={InsuranceIcon}
+                  alt="Insurance"
+                  style={{ width: 20, height: 20 }}
+                />
+                <Typography variant="subtitle1" fontWeight="500">
+                  Insurance
+                </Typography>
+              </Box>
 
-            <Box
-              id={styles.item_8}
-              style={{
-                marginTop: "1rem",
-                boxShadow: "rgb(4 20 43 / 5%) 0px 5px 20px",
-              }}
-            >
-              <div className={styles.item_8_header}>
-                <img src={CalendarIcon} alt="Calendar" />
-                <h6 className="header6">Last doctor's visits</h6>
-              </div>
-              <div className={styles.item_8_body}>
-                <strong>{appointmentTimeAndDate}</strong>
-              </div>
-            </Box>
+              <Box sx={{ display: "flex", p: 2 }}>
+                <Box sx={{ width: "30%", pr: 2 }}>
+                  {renderInfoItem("Active Date", "Sep 30, 2014")}
+                  {renderInfoItem("Copay for Specialist", "$40.00")}
+                </Box>
 
-            <Box
-              sx={{
-                marginTop: "1rem",
-                boxShadow: "rgb(4 20 43 / 10%) 0px 5px 20px",
-              }}
-            >
-              <div className={styles.insuranceHeader}>
-                <img src={InsuranceIcon} alt="Insurance" />
-                <h6 className="header6">Insurance</h6>
-              </div>
-              <div className={styles.insuranceCardBody}>
-                <div className={styles.insuranceCardLeft}>
-                  <br />
-                  <small>Active Date</small>
-                  <strong>Sep 30, 2014</strong>
-                  <small>Copay for Specialist</small>
-                  <strong>$40.00</strong>
-                </div>
-                <div className={styles.insuranceCardRight}>
-                  <br />
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "row",
-                      justifyContent: "space-between",
-                      width: "100%",
-                    }}
-                  >
-                    <small>Primary Insurance </small>
-
-                    <Link
-                      to={{
-                        pathname: `/kiosk/insurance_information`,
-                      }}
-                      state={{ edit: true }}
-                      style={{
-                        marginLeft: "60px",
-                      }}
-                    >
-                      <img
-                        style={{
-                          width: "20px",
-                          height: "20px",
-                        }}
-                        src={EditIcon}
-                        alt="Edit"
-                      />
-                    </Link>
-                  </div>
-
-                  <strong>{primaryInsurance?.insuranceName}</strong>
-                  <small>Member ID</small>
-                  <strong>{primaryInsurance?.memberId}</strong>
-                  <small>Group Number</small>
-                  <strong>{primaryInsurance?.groupNumber}</strong>
-                  <small>Copay</small>
-                  <strong>$110.00</strong>
-                  <small>Group Name</small>
-                  <strong>{primaryInsurance?.groupName}</strong>
-                  <small>Phone Number</small>
-                  <strong>{primaryInsurance?.phoneNumber}</strong>
-
-                  {secondaryInsurance?.insuranceName && (
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        borderTop: "1px solid lightgrey",
-                        width: "100%",
-                      }}
-                    >
-                      <br />
-                      <div
-                        style={{
-                          display: "flex",
-                          flexDirection: "row",
-                          justifyContent: "space-between",
-                          width: "100%",
-                        }}
-                      >
-                        <small>Secondary Insurance </small>
-
-                        <Link
-                          to={{
-                            pathname: `/kiosk/insurance_info_secondary`,
-                          }}
-                          state={{ edit: true }}
-                          style={{
-                            marginLeft: "auto",
-                          }}
-                        >
-                          <img
-                            style={{
-                              width: "20px",
-                              height: "20px",
-                            }}
-                            src={EditIcon}
-                            alt="Edit"
-                          />
-                        </Link>
-                      </div>
-                      <strong>{secondaryInsurance?.insuranceName}</strong>
-                      <small>Member ID</small>
-                      <strong>{secondaryInsurance?.memberId}</strong>
-                      <small>Group Number</small>
-                      <strong>{secondaryInsurance?.groupNumber}</strong>
-                      <small>Copay</small>
-                      <strong>$110.00</strong>
-                      <small>Group Name</small>
-                      <strong>{secondaryInsurance?.groupName}</strong>
-                      <small>Phone Number</small>
-                      <strong>{secondaryInsurance?.phoneNumber}</strong>
-                    </div>
+                <Box
+                  sx={{
+                    width: "70%",
+                    pl: 1,
+                    borderLeft: "1px solid rgba(0, 0, 0, 0.12)",
+                  }}
+                >
+                  {renderInsuranceCard(
+                    primaryInsurance,
+                    "Primary Insurance",
+                    "/kiosk/insurance_information"
                   )}
-                </div>
-              </div>
-            </Box>
+
+                  {renderInsuranceCard(
+                    secondaryInsurance,
+                    "Secondary Insurance",
+                    "/kiosk/insurance_info_secondary"
+                  )}
+                </Box>
+              </Box>
+            </Paper>
           </Grid>
 
+          {/* Right Column */}
           <Grid item xs={12} md={7}>
-            <div
-              id={styles.item_9}
-              style={{
-                boxShadow: "rgb(4 20 43 / 5%) 0px 5px 20px",
-              }}
-            >
-              <div className={styles.item_9_content}>
-                <small>Date of birth</small>
-                <strong>
-                  {userInfo?.day}/{monthsLong[userInfo?.month]}/{userInfo?.year}
-                </strong>
-                <small>Primary Phone</small>
-                <strong>{demographicsInfo?.phone}</strong>
-                <small>Email Address</small>
-                <strong
-                  style={{
-                    textTransform: "lowercase",
-                  }}
-                >
-                  {demographicsInfo?.email}
-                </strong>
-                <small>Address</small>
-                <strong>{demographicsInfo?.address}</strong>
-                <small>Apartment, suite, etc (optional)</small>
-                <strong>{demographicsInfo?.address2}</strong>
-                <small>Zipcode</small>
-                <strong>{demographicsInfo?.zipcode}</strong>
-              </div>
-              <div className={styles.item_9_content}>
+            {/* Personal Information */}
+            <Paper elevation={1} sx={{ p: 2.5, mb: 3, borderRadius: 2 }}>
+              <Box
+                sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
+              >
+                <Typography variant="h6" fontWeight="500">
+                  Personal Information
+                </Typography>
                 <Link
-                  to={{
-                    pathname: `/kiosk/demographics_Information`,
-                  }}
+                  to="/kiosk/demographics_Information"
                   state={{ edit: true }}
-                  style={{
-                    marginLeft: "auto",
-                  }}
                 >
-                  <img src={EditIcon} alt="Edit" />
+                  <img
+                    src={EditIcon}
+                    alt="Edit"
+                    style={{ width: 20, height: 20 }}
+                  />
                 </Link>
+              </Box>
 
-                <small>State</small>
-                <strong>{demographicsInfo?.state}</strong>
-                <small>City</small>
-                <strong>{demographicsInfo?.city}</strong>
-              </div>
-            </div>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  {renderInfoItem("Date of birth", formatBirthday(userInfo))}
+                  {renderInfoItem("Primary Phone", demographicsInfo?.phone)}
+                  {renderInfoItem(
+                    "Email Address",
+                    demographicsInfo?.email?.toLowerCase()
+                  )}
+                  {renderInfoItem("Address", demographicsInfo?.address)}
+                  {renderInfoItem(
+                    "Apartment, suite, etc (optional)",
+                    demographicsInfo?.address2
+                  )}
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  {renderInfoItem("Zipcode", demographicsInfo?.zipcode)}
+                  {renderInfoItem("State", demographicsInfo?.state)}
+                  {renderInfoItem("City", demographicsInfo?.city)}
+                </Grid>
+              </Grid>
+            </Paper>
 
-            <Box className={styles.patients_info}>
-              <PreviewCard
-                url="/kiosk/allergies_add"
-                icon={InsuranceIcon}
-                title="Allergies"
-                text="Active allergies:"
-                info={allergies}
-              />
-              <PreviewCard
-                url="/kiosk/medications_add"
-                icon={MedicationsIcon}
-                title="Medications"
-                text=""
-                info={medications}
-              />
-              <PreviewCard
-                url="/kiosk/family_history"
-                icon={FamilyIcon}
-                title="Family History"
-                text="Does (Did) your mother or father have diabetes?"
-                info={[familyHistory?.diabetes?.toUpperCase()]}
-              />
+            {/* Medical Information Cards */}
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <PreviewCard
+                  url="/kiosk/allergies_add"
+                  icon={InsuranceIcon}
+                  title="Allergies"
+                  text="Active allergies:"
+                  info={allergies}
+                />
+              </Grid>
 
-              <PreviewCard
-                url="/kiosk/medical_add"
-                icon={MedicalIcon}
-                title="Medical History"
-                text="Past medical history:"
-                info={medicalHistory}
-              />
+              <Grid item xs={12} sm={6}>
+                <PreviewCard
+                  url="/kiosk/medications_add"
+                  icon={MedicationsIcon}
+                  title="Medications"
+                  text=""
+                  info={medications}
+                />
+              </Grid>
 
-              {/* Surgical History */}
-              <PreviewCard
-                url="/kiosk/surgical_add"
-                icon={SurgicalIcon}
-                title="Surgical History"
-                text=""
-                info={surgicalHistory}
-              />
+              <Grid item xs={12} sm={6}>
+                <PreviewCard
+                  url="/kiosk/family_history"
+                  icon={FamilyIcon}
+                  title="Family History"
+                  text="Does (Did) your mother or father have diabetes?"
+                  info={[familyHistory?.diabetes?.toUpperCase()]}
+                />
+              </Grid>
 
-              {/* Social History */}
-              <PreviewCard
-                url="/kiosk/social_history"
-                icon={SocialIcon}
-                title="Social History"
-                text={socialHistory?.smoke?.toUpperCase()}
-                info={[]}
-              />
+              <Grid item xs={12} sm={6}>
+                <PreviewCard
+                  url="/kiosk/medical_add"
+                  icon={MedicalIcon}
+                  title="Medical History"
+                  text="Past medical history:"
+                  info={medicalHistory}
+                />
+              </Grid>
 
-              {/* Shoe Size */}
-              <PreviewCard
-                url="/kiosk/shoe_size"
-                icon={ShoeIcon}
-                title="Shoe Size"
-                text="Choose your shoe size"
-                info={[shoeSize?.shoeSize]}
-              />
-            </Box>
+              <Grid item xs={12} sm={6}>
+                <PreviewCard
+                  url="/kiosk/surgical_add"
+                  icon={SurgicalIcon}
+                  title="Surgical History"
+                  text=""
+                  info={surgicalHistory}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <PreviewCard
+                  url="/kiosk/social_history"
+                  icon={SocialIcon}
+                  title="Social History"
+                  text={socialHistory?.smoke?.toUpperCase()}
+                  info={[]}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <PreviewCard
+                  url="/kiosk/shoe_size"
+                  icon={ShoeIcon}
+                  title="Shoe Size"
+                  text="Choose your shoe size"
+                  info={[shoeSize?.shoeSize]}
+                />
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
 
-        <Box
-          className={styles.patients_info}
-          sx={{
-            margin: "1.5rem 0 3rem 0",
-          }}
-        >
-          <ScanCard
-            id="insuranceCardFront"
-            title="PRI INSURANCE CARD"
-            subTitle="Front"
-            img={primaryInsurance?.insuranceCardFront}
-            alt="Insurance Card"
-            btnText="Review"
-          />
+        {/* Document Scans Section */}
+        <Typography variant="h6" fontWeight="500" sx={{ mt: 4, mb: 2 }}>
+          Uploaded Documents
+        </Typography>
 
-          <ScanCard
-            id="insuranceCardBack"
-            title="PRI INSURANCE CARD"
-            subTitle="Back"
-            img={primaryInsurance?.insuranceCardBack}
-            alt="Insurance Card"
-            btnText="Review"
-          />
-
-          {secondaryInsurance?.insuranceName && (
+        <Grid container spacing={2}>
+          <Grid item xs={12} sm={6} md={3}>
             <ScanCard
-              id="secInsuranceFront"
-              title="SEC INSURANCE CARD"
+              id="insuranceCardFront"
+              title="PRI INSURANCE CARD"
               subTitle="Front"
-              img={secondaryInsurance?.insuranceCardFront}
+              img={primaryInsurance?.insuranceCardFront}
               alt="Insurance Card"
               btnText="Review"
             />
+          </Grid>
+
+          <Grid item xs={12} sm={6} md={3}>
+            <ScanCard
+              id="insuranceCardBack"
+              title="PRI INSURANCE CARD"
+              subTitle="Back"
+              img={primaryInsurance?.insuranceCardBack}
+              alt="Insurance Card"
+              btnText="Review"
+            />
+          </Grid>
+
+          {secondaryInsurance?.insuranceName && (
+            <Grid item xs={12} sm={6} md={3}>
+              <ScanCard
+                id="secInsuranceFront"
+                title="SEC INSURANCE CARD"
+                subTitle="Front"
+                img={secondaryInsurance?.insuranceCardFront}
+                alt="Insurance Card"
+                btnText="Review"
+              />
+            </Grid>
           )}
 
           {secondaryInsurance?.insuranceName && (
-            <ScanCard
-              id="secInsuranceBack"
-              title=" SEC INSURANCE CARD"
-              subTitle="Back"
-              img={secondaryInsurance?.insuranceCardBack}
-              alt="Insurance Card"
-              btnText="Review"
-            />
+            <Grid item xs={12} sm={6} md={3}>
+              <ScanCard
+                id="secInsuranceBack"
+                title="SEC INSURANCE CARD"
+                subTitle="Back"
+                img={secondaryInsurance?.insuranceCardBack}
+                alt="Insurance Card"
+                btnText="Review"
+              />
+            </Grid>
           )}
-        </Box>
+        </Grid>
       </Container>
     </AnimatedPage>
   );
