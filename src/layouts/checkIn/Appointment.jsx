@@ -1,5 +1,5 @@
 import { Box, Card, CardContent } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import CalendarIcon from "../../assets/icons/calender.svg";
 import LocationIcon from "../../assets/icons/location.svg";

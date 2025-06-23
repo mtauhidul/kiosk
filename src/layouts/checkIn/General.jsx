@@ -42,6 +42,9 @@ const General = () => {
 
   const navigate = useNavigate();
 
+  // Test encounter ID for flying testers
+  const TEST_ENCOUNTER_ID = "TEST123";
+
   useEffect(() => {
     // Only load saved state if we're already verified (e.g., on page refresh)
     const state = store?.getState()?.data?.userInfo;
@@ -99,6 +102,40 @@ const General = () => {
     }
 
     setLoading(true);
+
+    // Check if it's the test encounter ID
+    if (encounterId === TEST_ENCOUNTER_ID) {
+      // Simulate test patient data
+      const testPatientData = {
+        id: TEST_ENCOUNTER_ID,
+        data: {
+          patientName: "Test Patient",
+          patientDOB: "1990-01-01",
+          appointmentFacilityName: "Your Total Foot Care Specialist",
+        },
+        date: new Date().toLocaleDateString(),
+      };
+
+      setPatient(testPatientData);
+      window.sessionStorage.setItem("patient", JSON.stringify(testPatientData));
+
+      // Set test user data
+      setVerified(true);
+      setUser({
+        fullName: "Test Patient",
+        day: "1",
+        month: "1",
+        year: "1990",
+        location: "Your Total Foot Care Specialist",
+        encounterId: TEST_ENCOUNTER_ID,
+      });
+
+      setLoading(false);
+      toast.success(
+        "Test appointment verified! Please complete your information."
+      );
+      return;
+    }
 
     try {
       // Call the checkAppointment API function with the encounter ID
@@ -211,6 +248,28 @@ const General = () => {
                 placeholder="Enter the ID provided with your appointment"
               />
             </FormControl>
+
+            {/* Test Encounter ID Display */}
+            <Box
+              sx={{
+                mb: 2,
+                p: 2,
+                backgroundColor: "#f5f5f5",
+                borderRadius: 1,
+                border: "1px dashed #ccc",
+              }}
+            >
+              <p
+                style={{
+                  margin: 0,
+                  fontSize: "14px",
+                  color: "#666",
+                  fontStyle: "italic",
+                }}
+              >
+                For testing purposes, use: <strong>{TEST_ENCOUNTER_ID}</strong>
+              </p>
+            </Box>
 
             {!loading ? (
               <Button
