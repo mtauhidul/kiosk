@@ -21,12 +21,12 @@ const Documents = () => {
   // }, [demographics.driversLicense, demographics.patientsPicture]);
 
   useEffect(() => {
-    if (docs.patientsPicture === "" || docs.driversLicense === "") {
+    if (docs.patientsPicture === "" || docs.driverLicense === "") {
       setIsDisabled(true);
     } else {
       setIsDisabled(false);
     }
-  }, [docs.driversLicense, docs.patientsPicture]);
+  }, [docs.driverLicense, docs.patientsPicture]);
 
   return (
     <div className={styles.documentsContainer}>

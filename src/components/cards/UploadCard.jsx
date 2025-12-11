@@ -22,14 +22,14 @@ const UploadCard = ({
 
   return (
     <Card
-      sx={{ width: width, height: "auto", pb: "16px", textAlign: "center" }}
+      sx={{ width: width, height: "auto", pb: "16px", textAlign: "center", borderRadius: "12px" }}
     >
       <CardHeader subheader={title} />
       <h6 style={{ marginTop: "-15px" }} className="header6">
         {subTitle}
       </h6>
       <div className={styles.cardImg}>
-        <img src={img} alt={alt} />
+        <img src={img} alt={alt} style={{ borderRadius: "12px", width: "100%", height: "100%", objectFit: "cover" }} />
       </div>
 
       <Button

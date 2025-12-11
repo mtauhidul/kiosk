@@ -64,6 +64,7 @@ const Appointment = () => {
               justifyContent: "space-between",
               flexWrap: "wrap",
               alignItems: "center",
+              borderRadius: "12px",
             }}
           >
             <Box
@@ -115,7 +116,7 @@ const Appointment = () => {
                 width: { xs: "100%", md: "50%" },
                 height: 300,
                 border: 0,
-                borderRadius: "4px",
+                borderRadius: "12px",
                 padding: "10px",
               }}
               src={mapUrl}

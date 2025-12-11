@@ -32,9 +32,9 @@ const CollectTicket = () => {
         </div>
         <div>
           <h5 className='header5'>
-            WOULD YOU LIKE TO SHARE YOUR LAST VISIT EXPERIENCE WITH US?
+            WOULD YOU LIKE TO HELP US IMPROVE?
           </h5>
-          <small>Just 4 questions survey</small>
+          <small>Just 1 question survey</small>
         </div>
         {nextPath && lastPath && (
           <div className={styles.btnWrapper}>

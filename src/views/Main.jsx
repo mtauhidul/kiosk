@@ -11,6 +11,7 @@ import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
 import * as React from "react";
 import { useNavigate } from "react-router-dom";
+import Logo from "../assets/images/logo.svg";
 import useWindowSize from "../hooks/useWindowSize";
 import styles from "../styles/Main.module.css";
 import { listItems } from "../utils/Menus";
@@ -157,8 +158,13 @@ export default function Main(props) {
               top: 0,
               backgroundColor: "#fff",
               zIndex: 999,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
             }}
-          ></Toolbar>
+          >
+            <img src={Logo} alt="Logo" className={styles.drawerLogo} />
+          </Toolbar>
           <List>
             {listItems.map((item, index) => (
               <ListItem button key={index} className={styles.listItem}>

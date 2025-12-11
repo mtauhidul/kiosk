@@ -12,12 +12,16 @@ import styles from "../../styles/Medications.module.css";
 import { arrangeListOfItems } from "../../utils/arrangeListOfItems";
 
 const medicationList = [
-  "Medication 1",
-  "Medication 2",
-  "Medication 3",
-  "Medication 4",
-  "Medication 5",
-  "Medication 6",
+  "Aspirin",
+  "Ibuprofen",
+  "Metformin",
+  "Lisinopril",
+  "Atorvastatin",
+  "Levothyroxine",
+  "Amlodipine",
+  "Metoprolol",
+  "Omeprazole",
+  "Losartan",
 ];
 
 const Medications = () => {

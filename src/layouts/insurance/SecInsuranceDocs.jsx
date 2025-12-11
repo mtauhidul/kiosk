@@ -61,7 +61,7 @@ const SecInsuranceDocs = () => {
       <div className={styles.documentsContainer}>
         <div className={styles.cardsContainer}>
           <ScanCard
-            id="insuranceCardFront"
+            id="secInsuranceFront"
             title="SECONDARY INSURANCE"
             subTitle="Front"
             img={
@@ -73,7 +73,7 @@ const SecInsuranceDocs = () => {
             btnText="Scan insurance card"
           />
           <ScanCard
-            id="insuranceCardBack"
+            id="secInsuranceBack"
             title="SECONDARY INSURANCE"
             subTitle="Back"
             img={

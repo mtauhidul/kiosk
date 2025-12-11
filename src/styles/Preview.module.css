@@ -38,7 +38,7 @@
   flex-direction: row;
   align-items: center;
   padding: 10px 20px;
-  border-radius: 8px;
+  border-radius: 12px;
 }
 
 #item_1 img {
@@ -46,7 +46,7 @@
   width: 90px;
   height: 60px;
   object-fit: cover;
-  border-radius: 4px;
+  border-radius: 12px;
 }
 
 #item_2 {
@@ -106,7 +106,7 @@
   border: 1px solid var(--border);
   display: flex;
   flex-direction: column;
-  border-radius: 8px;
+  border-radius: 12px;
 }
 
 .insuranceHeader {
@@ -197,7 +197,7 @@
 #item_8 {
   background-color: var(--white);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 12px;
   grid-row-start: 8;
   grid-column-start: 4;
 
@@ -236,7 +236,7 @@
   flex-direction: row;
   justify-content: space-between;
   padding: 30px 20px;
-  border-radius: 8px;
+  border-radius: 12px;
 }
 
 .item_9_content {

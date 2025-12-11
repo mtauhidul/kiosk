@@ -119,7 +119,7 @@ class OpenCVUtils {
   }
 }
 
-const ScanCard = ({ id, title, subTitle, alt, btnText }) => {
+const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
   const dispatch = useDispatch();
   const webcamRef = useRef(null);
   const canvasRef = useRef(null);
@@ -151,7 +151,7 @@ const ScanCard = ({ id, title, subTitle, alt, btnText }) => {
   };
 
   // State variables
-  const [currentImage, setCurrentImage] = useState(getImageFromState());
+  const [currentImage, setCurrentImage] = useState(getImageFromState() || img);
   const [openCamera, setOpenCamera] = useState(false);
   const [imgSrc, setImgSrc] = useState(null);
   const [processedImage, setProcessedImage] = useState(null);
@@ -165,8 +165,9 @@ const ScanCard = ({ id, title, subTitle, alt, btnText }) => {
 
   // Update currentImage whenever the state changes
   useEffect(() => {
-    setCurrentImage(getImageFromState());
-  }, [demographicsInfo, primaryInsurance, secondaryInsurance]);
+    const stateImage = getImageFromState();
+    setCurrentImage(stateImage || img);
+  }, [demographicsInfo, primaryInsurance, secondaryInsurance, img]);
 
   // Determine document type
   const isPortrait = id === "patientsPicture";
@@ -304,9 +305,11 @@ const ScanCard = ({ id, title, subTitle, alt, btnText }) => {
             return;
           }
 
-          const ctx = canvas.getContext("2d");
+          const ctx = canvas.getContext("2d", { alpha: false });
           canvas.width = img.width;
           canvas.height = img.height;
+          ctx.imageSmoothingEnabled = true;
+          ctx.imageSmoothingQuality = "high";
           ctx.drawImage(img, 0, 0);
 
           try {
@@ -315,13 +318,11 @@ const ScanCard = ({ id, title, subTitle, alt, btnText }) => {
             } else if (isCard) {
               await processCard(canvas);
             } else {
-              // If no specific processing needed, just use the captured image
-              setProcessedImage(canvas.toDataURL("image/jpeg", 0.95));
+              setProcessedImage(canvas.toDataURL("image/jpeg", 0.98));
             }
             resolve();
           } catch (error) {
-            // If processing fails, still use the original image
-            setProcessedImage(canvas.toDataURL("image/jpeg", 0.95));
+            setProcessedImage(canvas.toDataURL("image/jpeg", 0.98));
             console.error("Image processing error:", error);
             resolve();
           }
@@ -338,7 +339,7 @@ const ScanCard = ({ id, title, subTitle, alt, btnText }) => {
 
   const processCard = async (canvas) => {
     if (!cvReady || !window.cv) {
-      setProcessedImage(canvas.toDataURL("image/jpeg", 0.95));
+      setProcessedImage(canvas.toDataURL("image/jpeg", 0.98));
       return;
     }
 
@@ -398,21 +399,39 @@ const ScanCard = ({ id, title, subTitle, alt, btnText }) => {
           }
         }
 
-        // If we found a suitable rectangle, crop to it
         if (bestRect) {
-          const cropped = src.roi(bestRect);
+          // Add padding around the detected card (10% on each side)
+          const padding = 0.1;
+          const paddedX = Math.max(0, bestRect.x - bestRect.width * padding);
+          const paddedY = Math.max(0, bestRect.y - bestRect.height * padding);
+          const paddedWidth = Math.min(
+            bestRect.width * (1 + 2 * padding),
+            src.cols - paddedX
+          );
+          const paddedHeight = Math.min(
+            bestRect.height * (1 + 2 * padding),
+            src.rows - paddedY
+          );
+
+          const paddedRect = new cv.Rect(
+            Math.floor(paddedX),
+            Math.floor(paddedY),
+            Math.floor(paddedWidth),
+            Math.floor(paddedHeight)
+          );
+
+          const cropped = src.roi(paddedRect);
           const outCanvas = document.createElement("canvas");
-          outCanvas.width = bestRect.width;
-          outCanvas.height = bestRect.height;
+          outCanvas.width = paddedRect.width;
+          outCanvas.height = paddedRect.height;
           cv.imshow(outCanvas, cropped);
 
-          const result = outCanvas.toDataURL("image/jpeg", 0.95);
+          const result = outCanvas.toDataURL("image/jpeg", 0.98);
           setProcessedImage(result);
 
           cropped.delete();
         } else {
-          // If no suitable rectangle found, use the original image
-          setProcessedImage(canvas.toDataURL("image/jpeg", 0.95));
+          setProcessedImage(canvas.toDataURL("image/jpeg", 0.98));
         }
       } finally {
         // Clean up OpenCV resources
@@ -425,13 +444,13 @@ const ScanCard = ({ id, title, subTitle, alt, btnText }) => {
       }
     } catch (error) {
       console.error("Error in card processing:", error);
-      setProcessedImage(canvas.toDataURL("image/jpeg", 0.95));
+      setProcessedImage(canvas.toDataURL("image/jpeg", 0.98));
     }
   };
 
   const processPortrait = async (canvas) => {
     if (!cvReady || !window.cv) {
-      setProcessedImage(canvas.toDataURL("image/jpeg", 0.95));
+      setProcessedImage(canvas.toDataURL("image/jpeg", 0.98));
       return;
     }
 
@@ -457,28 +476,43 @@ const ScanCard = ({ id, title, subTitle, alt, btnText }) => {
               // Detect faces
               faceCascade.detectMultiScale(gray, faces, 1.1, 4);
 
-              // If faces detected, crop to the first face
               if (faces.size() > 0) {
                 const face = faces.get(0);
-                const margin = 40; // Add margin around the face
+                const faceWidth = face.width;
+                const faceHeight = face.height;
+                const faceCenterX = face.x + faceWidth / 2;
+                const faceCenterY = face.y + faceHeight / 2;
 
-                // Calculate crop bounds with margin, ensuring they stay within image bounds
-                const cropX = Math.max(face.x - margin, 0);
-                const cropY = Math.max(face.y - margin, 0);
-                const cropW = Math.min(
-                  face.width + margin * 2,
-                  src.cols - cropX
-                );
-                const cropH = Math.min(
-                  face.height + margin * 2,
-                  src.rows - cropY
-                );
+                const targetAspectRatio = 3 / 4;
+                const portraitWidth = faceWidth * 4;
+                const portraitHeight = portraitWidth / targetAspectRatio;
 
-                // Create a standard 3:4 portrait
+                const cropX = Math.max(faceCenterX - portraitWidth / 2, 0);
+                const cropY = Math.max(faceCenterY - portraitHeight * 0.25, 0);
+                const cropW = Math.min(portraitWidth, src.cols - cropX);
+                const cropH = Math.min(portraitHeight, src.rows - cropY);
+
                 const outCanvas = document.createElement("canvas");
-                outCanvas.width = 300;
-                outCanvas.height = 400;
-                const ctx = outCanvas.getContext("2d");
+                const ctx = outCanvas.getContext("2d", { alpha: false });
+                ctx.imageSmoothingEnabled = true;
+                ctx.imageSmoothingQuality = "high";
+
+                const sourceAspect = cropW / cropH;
+                const targetAspect = 3 / 4;
+
+                let finalWidth, finalHeight;
+                
+                if (sourceAspect > targetAspect) {
+                  finalHeight = 800;
+                  finalWidth = finalHeight * sourceAspect;
+                } else {
+                  finalWidth = 600;
+                  finalHeight = finalWidth / sourceAspect;
+                }
+
+                outCanvas.width = finalWidth;
+                outCanvas.height = finalHeight;
+
                 ctx.drawImage(
                   canvas,
                   cropX,
@@ -487,28 +521,25 @@ const ScanCard = ({ id, title, subTitle, alt, btnText }) => {
                   cropH,
                   0,
                   0,
-                  300,
-                  400
+                  finalWidth,
+                  finalHeight
                 );
 
-                const result = outCanvas.toDataURL("image/jpeg", 0.95);
+                const result = outCanvas.toDataURL("image/jpeg", 0.98);
                 setProcessedImage(result);
               } else {
-                // If no faces found, use the original image
-                setProcessedImage(canvas.toDataURL("image/jpeg", 0.95));
+                setProcessedImage(canvas.toDataURL("image/jpeg", 0.98));
               }
             } finally {
               // Clean up
               if (faces) faces.delete();
             }
           } else {
-            // If face classifier couldn't be loaded
-            setProcessedImage(canvas.toDataURL("image/jpeg", 0.95));
+            setProcessedImage(canvas.toDataURL("image/jpeg", 0.98));
           }
         } catch (faceError) {
           console.error("Face detection setup error:", faceError);
-          // Fallback to original image if face detection fails
-          setProcessedImage(canvas.toDataURL("image/jpeg", 0.95));
+          setProcessedImage(canvas.toDataURL("image/jpeg", 0.98));
         }
       } finally {
         // Clean up OpenCV resources
@@ -517,7 +548,7 @@ const ScanCard = ({ id, title, subTitle, alt, btnText }) => {
       }
     } catch (error) {
       console.error("Error in portrait processing:", error);
-      setProcessedImage(canvas.toDataURL("image/jpeg", 0.95));
+      setProcessedImage(canvas.toDataURL("image/jpeg", 0.98));
     }
   };
 
@@ -652,14 +683,14 @@ const ScanCard = ({ id, title, subTitle, alt, btnText }) => {
   return (
     <>
       <Card
-        sx={{ width: 240, height: "auto", pb: "16px", textAlign: "center" }}
+        sx={{ width: 240, height: "auto", pb: "16px", textAlign: "center", borderRadius: "12px" }}
       >
         <CardHeader subheader={title} />
         <h6 style={{ marginTop: "-15px" }} className="header6">
           {subTitle}
         </h6>
         <div className={styles.cardImg}>
-          <img src={currentImage} alt={alt} />
+          <img src={currentImage} alt={alt} style={{ borderRadius: "12px", width: "100%", height: "100%", objectFit: "cover" }} />
         </div>
         <Button
           onClick={openCameraDialog}
@@ -720,7 +751,7 @@ const ScanCard = ({ id, title, subTitle, alt, btnText }) => {
                 sx={{
                   bgcolor: "rgba(255, 255, 255, 0.9)",
                   p: 1.5,
-                  borderRadius: 1,
+                  borderRadius: "12px",
                   mb: 2,
                   textAlign: "center",
                   boxShadow: "0 2px 5px rgba(0, 0, 0, 0.1)",
@@ -743,7 +774,7 @@ const ScanCard = ({ id, title, subTitle, alt, btnText }) => {
                 justifyContent: "center",
                 overflow: "hidden",
                 bgcolor: "#000",
-                borderRadius: 2,
+                borderRadius: "12px",
                 mb: 2,
               }}
             >
@@ -756,15 +787,18 @@ const ScanCard = ({ id, title, subTitle, alt, btnText }) => {
                       audio={false}
                       ref={webcamRef}
                       screenshotFormat="image/jpeg"
+                      screenshotQuality={1}
                       videoConstraints={{
                         facingMode: cameraMode,
-                        width: { ideal: 1280 },
-                        height: { ideal: 720 },
+                        width: { ideal: 1920, min: 1280 },
+                        height: { ideal: 1080, min: 720 },
+                        aspectRatio: isPortrait ? 0.75 : 1.586,
                       }}
                       style={{
                         width: "100%",
                         height: "100%",
                         objectFit: "contain",
+                        borderRadius: "12px",
                       }}
                     />
                   )}
@@ -815,6 +849,7 @@ const ScanCard = ({ id, title, subTitle, alt, btnText }) => {
                       width: "100%",
                       height: "100%",
                       objectFit: "contain",
+                      borderRadius: "12px",
                     }}
                   />
                 </Box>

@@ -11,11 +11,16 @@ import styles from "../../styles/Surgeries.module.css";
 import { arrangeListOfItems } from "../../utils/arrangeListOfItems";
 
 const surgeryList = [
-  "Surgery",
-  "Some long name of surgeries",
-  "Surgery 1",
-  "Surgery 2",
-  "Surgery 3",
+  "Appendectomy",
+  "Cholecystectomy (Gallbladder Removal)",
+  "Hernia Repair",
+  "Tonsillectomy",
+  "Cataract Surgery",
+  "Knee Arthroscopy",
+  "Hip Replacement",
+  "Cesarean Section (C-Section)",
+  "Hysterectomy",
+  "Coronary Artery Bypass Graft (CABG)",
 ];
 
 const SurgicalHistory = () => {

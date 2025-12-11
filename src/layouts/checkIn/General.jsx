@@ -255,7 +255,7 @@ const General = () => {
                 mb: 2,
                 p: 2,
                 backgroundColor: "#f5f5f5",
-                borderRadius: 1,
+                borderRadius: "12px",
                 border: "1px dashed #ccc",
               }}
             >

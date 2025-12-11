@@ -15,7 +15,7 @@ const initialState = {
   hippaPolicy: {},
   practicePolicies: {},
   survey: {
-    question: "LOREM IPSUM DOLOR SIT AMET, CONSECTETUR ADIPICING?",
+    question: "How did you hear about our practice?",
     answer: "",
   },
 };

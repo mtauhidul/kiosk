@@ -251,7 +251,7 @@ small {
 .primaryButton {
   height: 50px !important;
   width: 250px !important;
-  background-color: var(--bg) !important;
+  background-color: var(--primary) !important;
   border: 1px solid var(--primary) !important;
   font-weight: 600 !important;
   font-size: 15px !important;
@@ -259,7 +259,8 @@ small {
   text-transform: capitalize !important;
   margin-left: 10px !important;
   box-shadow: none !important;
-  color: var(--primary) !important;
+  color: var(--white) !important;
+  border-radius: 12px !important;
 }
 
 @media screen and (max-width: 600px) {
@@ -269,8 +270,8 @@ small {
 }
 
 .primaryButton:hover {
-  background-color: var(--primary) !important;
-  color: var(--white) !important;
+  background-color: var(--bg) !important;
+  color: var(--primary) !important;
 }
 
 .backHomeButton {
@@ -285,6 +286,7 @@ small {
   box-shadow: none !important;
   margin: 0 auto !important;
   margin-top: 50px !important;
+  border-radius: 12px !important;
 }
 
 .backButton {
@@ -307,6 +309,7 @@ small {
   box-shadow: none !important;
   margin: 0 auto !important;
   margin-top: 30px !important;
+  border-radius: 12px !important;
 }
 
 .binaryButton:hover,
@@ -355,5 +358,5 @@ small {
   border: 1px solid var(--primary) !important;
   background: var(--lightBg);
   border: 1px solid var(--border) !important;
-  border-radius: 8px;
+  border-radius: 12px;
 }

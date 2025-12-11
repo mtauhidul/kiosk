@@ -1,6 +1,6 @@
 import * as React from "react";
 import toast from "react-hot-toast";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
 import store from "../state/store";
 import * as actionCreators from "../state/actionCreators";
@@ -16,15 +16,12 @@ const useReviewImages = () => {
   });
   const dispatch = useDispatch();
 
-  // actions
+  const demographicsInfo = useSelector((state) => state.data?.demographicsInfo);
+  const primaryInsurance = useSelector((state) => state.data?.primaryInsurance);
+  const secondaryInsurance = useSelector((state) => state.data?.secondaryInsurance);
+
   const { addPrimaryInsurance, addSecondaryInsurance, addDemographicData } =
     bindActionCreators(actionCreators, dispatch);
-
-  // states
-
-  const demographicState = store?.getState()?.data?.demographicsInfo;
-  const primaryInsuranceState = store?.getState()?.data?.primaryInsurance;
-  const secondaryInsuranceState = store?.getState()?.data?.secondaryInsurance;
 
   const addFile = React.useCallback(
     (id, file) => {
@@ -55,7 +52,7 @@ const useReviewImages = () => {
         case "patientsPicture":
           return (reader.onload = (readerEvent) => {
             addDemographicData({
-              ...demographicState,
+              ...demographicsInfo,
               patientsPicture: readerEvent.target.result,
             });
             setDocs({
@@ -66,7 +63,7 @@ const useReviewImages = () => {
         case "driversLicense":
           return (reader.onload = (readerEvent) => {
             addDemographicData({
-              ...demographicState,
+              ...demographicsInfo,
               driversLicense: readerEvent.target.result,
             });
             setDocs({
@@ -77,7 +74,7 @@ const useReviewImages = () => {
         case "insuranceCardFront":
           return (reader.onload = (readerEvent) => {
             addPrimaryInsurance({
-              ...primaryInsuranceState,
+              ...primaryInsurance,
               insuranceCardFront: readerEvent.target.result,
             });
             setDocs({
@@ -88,7 +85,7 @@ const useReviewImages = () => {
         case "insuranceCardBack":
           return (reader.onload = (readerEvent) => {
             addPrimaryInsurance({
-              ...primaryInsuranceState,
+              ...primaryInsurance,
               insuranceCardBack: readerEvent.target.result,
             });
 
@@ -100,7 +97,7 @@ const useReviewImages = () => {
         case "secInsuranceFront":
           return (reader.onload = (readerEvent) => {
             addSecondaryInsurance({
-              ...secondaryInsuranceState,
+              ...secondaryInsurance,
               insuranceCardFront: readerEvent.target.result,
             });
             setDocs({
@@ -111,7 +108,7 @@ const useReviewImages = () => {
         case "secInsuranceBack":
           return (reader.onload = (readerEvent) => {
             addSecondaryInsurance({
-              ...secondaryInsuranceState,
+              ...secondaryInsurance,
               insuranceCardBack: readerEvent.target.result,
             });
             setDocs({
@@ -128,19 +125,15 @@ const useReviewImages = () => {
   );
 
   React.useEffect(() => {
-    const demographicState = store?.getState()?.data?.demographicsInfo;
-    const primaryInsuranceState = store?.getState()?.data?.primaryInsurance;
-    const secondaryInsuranceState = store?.getState()?.data?.secondaryInsurance;
-
     setDocs({
-      driverLicense: demographicState.driversLicense || "",
-      patientsPicture: demographicState.patientsPicture || "",
-      insuranceCardFront: primaryInsuranceState.insuranceCardFront || "",
-      insuranceCardBack: primaryInsuranceState.insuranceCardBack || "",
-      secInsuranceFront: secondaryInsuranceState.insuranceCardFront || "",
-      secInsuranceBack: secondaryInsuranceState.insuranceCardBack || "",
+      driverLicense: demographicsInfo?.driversLicense || "",
+      patientsPicture: demographicsInfo?.patientsPicture || "",
+      insuranceCardFront: primaryInsurance?.insuranceCardFront || "",
+      insuranceCardBack: primaryInsurance?.insuranceCardBack || "",
+      secInsuranceFront: secondaryInsurance?.insuranceCardFront || "",
+      secInsuranceBack: secondaryInsurance?.insuranceCardBack || "",
     });
-  }, []);
+  }, [demographicsInfo, primaryInsurance, secondaryInsurance]);
 
   return {
     docs,

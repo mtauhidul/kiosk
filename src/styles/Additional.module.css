@@ -12,7 +12,7 @@
     border: 1px solid var(--border);
     box-sizing: border-box;
     box-shadow: 0px 4px 40px rgba(108, 109, 138, 0.1);
-    border-radius: 10px;
+    border-radius: 12px;
     text-align: center;
 }
 

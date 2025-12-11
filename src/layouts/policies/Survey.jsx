@@ -29,36 +29,47 @@ const Survey = () => {
   return (
     <div className={styles.surveyContainer}>
       <div className={styles.surveyWrapper}>
-        <small>Question 1 from 4</small>
+        <small>Question 1 from 1</small>
         <h5 className="header5">{state?.question}</h5>
         <FormControl>
           <RadioGroup
             aria-labelledby="demo-radio-buttons-group-label"
-            defaultValue="female"
             name="radio-buttons-group"
           >
             <FormControlLabel
-              value="Option 1"
+              value="Friend or Family Referral"
               control={<Radio />}
-              label="Option 1"
+              label="Friend or Family Referral"
               onClick={(e) => setAns(e.target.value)}
             />
             <FormControlLabel
-              value="Option 2"
+              value="Doctor Referral"
               control={<Radio />}
-              label="Option 2"
+              label="Doctor Referral"
               onClick={(e) => setAns(e.target.value)}
             />
             <FormControlLabel
-              value="Option 3"
+              value="Online Search (Google, Bing, etc.)"
               control={<Radio />}
-              label="Option 3"
+              label="Online Search (Google, Bing, etc.)"
               onClick={(e) => setAns(e.target.value)}
             />
             <FormControlLabel
-              value="Option 4"
+              value="Insurance Provider Directory"
               control={<Radio />}
-              label="Option 4"
+              label="Insurance Provider Directory"
+              onClick={(e) => setAns(e.target.value)}
+            />
+            <FormControlLabel
+              value="Social Media"
+              control={<Radio />}
+              label="Social Media"
+              onClick={(e) => setAns(e.target.value)}
+            />
+            <FormControlLabel
+              value="Advertisement (Print, Radio, TV)"
+              control={<Radio />}
+              label="Advertisement (Print, Radio, TV)"
               onClick={(e) => setAns(e.target.value)}
             />
           </RadioGroup>
