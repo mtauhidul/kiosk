@@ -103,6 +103,23 @@ const Information = () => {
   });
 
   useEffect(() => {
+    // Load pre-populated data from Redux store
+    const state = store?.getState()?.data?.demographicsInfo;
+    if (state) {
+      setDemographics(prev => ({
+        ...prev,
+        address: state.address || "",
+        address2: state.address2 || "",
+        city: state.city || "",
+        state: state.state || "",
+        zipcode: state.zipcode || "",
+        phone: state.phone || "",
+        email: state.email || "",
+      }));
+    }
+  }, []);
+
+  useEffect(() => {
     if (
       demographics.address === "" ||
       demographics.city === "" ||

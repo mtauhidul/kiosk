@@ -13,18 +13,86 @@ import {
   addUserInfo,
 } from "../state/actionCreators"; // Import action creators
 import store from "../state/store"; // Import Redux store
+import { 
+  verifyEncounterIdFromFirestore, 
+  submitKioskDataToFirestore 
+} from "../firebase/firestoreService";
 
-// Set the base URL for the API
+// Set the base URL for the API (legacy endpoints)
 const API_BASE_URL =
   process.env.REACT_APP_API_URL || "http://localhost:5001/api";
 
-// Create axios instance with base configuration
+// Create axios instance with base configuration (legacy)
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
 });
+
+/**
+ * Verify encounter ID with Firestore
+ * @param {string} encounterId - Encounter ID to verify
+ * @returns {Promise} - API response with patient info
+ */
+export const verifyEncounterId = async (encounterId) => {
+  try {
+    const patient = await verifyEncounterIdFromFirestore(encounterId);
+    
+    if (!patient) {
+      return {
+        status: "error",
+        message: "Encounter ID not found. Please check your appointment confirmation.",
+      };
+    }
+    
+    // Check if already checked in
+    if (patient.checkInStatus && patient.checkInStatus !== "not-checked-in") {
+      return {
+        status: "error",
+        message: "This patient has already checked in today.",
+      };
+    }
+
+    return {
+      status: "success",
+      data: patient, // Return all patient data from Firestore
+    };
+  } catch (error) {
+    console.error("Error verifying encounter ID:", error);
+    return {
+      status: "error",
+      message: "Failed to verify Encounter ID. Please try again.",
+    };
+  }
+};
+
+/**
+ * Submit kiosk data to Firestore
+ * @param {string} patientId - Patient ID from verification
+ * @param {Object} kioskData - Complete kiosk form data
+ * @returns {Promise} - API response
+ */
+export const submitKioskData = async (patientId, kioskData) => {
+  try {
+    const kioskDataId = await submitKioskDataToFirestore(patientId, kioskData);
+
+    return {
+      status: "success",
+      data: {
+        kioskDataId,
+        message: "Check-in completed successfully!",
+      },
+    };
+  } catch (error) {
+    console.error("Error submitting kiosk data:", error);
+    
+    return {
+      status: "error",
+      message: "Failed to submit check-in data. Please try again.",
+    };
+  }
+};
 
 /**
  * Check if patient has appointment using encounter ID
@@ -389,6 +457,8 @@ export const getAppointment = async (encounterId) => {
 };
 
 const apiFunctions = {
+  verifyEncounterId,
+  submitKioskData,
   checkAppointment,
   addPatient,
   getPatientsData,

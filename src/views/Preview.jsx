@@ -31,7 +31,7 @@ import ScanCard from "../components/cards/ScanCard";
 import PreviewCard from "../components/previewCard/PreviewCard";
 
 // State and API
-import { addPatient } from "../apis/api";
+import { submitKioskData } from "../apis/api";
 import { PatientContext } from "../App";
 import * as actionCreators from "../state/actionCreators/index";
 import store from "../state/store";
@@ -89,70 +89,89 @@ const Preview = () => {
     try {
       setLoading(true);
 
-      const isTestMode = !patient || !patient.id || patient.id === 'test' || patient.id === null || patient.id === undefined || patient.id.toUpperCase().includes('TEST');
+      // Get patient ID and encounter ID from session storage
+      const patientId = sessionStorage.getItem("patientId");
+      const encounterId = sessionStorage.getItem("encounterId");
 
-      if (isTestMode) {
-        await new Promise(resolve => setTimeout(resolve, 1500));
-        setLoading(false);
-        removeUserData();
-        toast.success("Your appointment was checked in successfully");
-        setTimeout(() => {
-          navigate("/");
-        }, 3100);
+      if (!patientId || !encounterId) {
+        toast.error("Session expired. Please start over.");
+        setTimeout(() => navigate("/"), 2000);
         return;
       }
 
-      const formattedData = {
-        userInfo: userInfo,
-        demographicsInfo: demographicsInfo,
-        primaryInsurance: primaryInsurance,
-        secondaryInsurance: secondaryInsurance,
-        medicalInfo: {
-          allergies: allergies,
-          medications: medications,
-          medicalHistory: medicalHistory,
-          surgicalHistory: surgicalHistory,
-          familyHistory: familyHistory,
-          socialHistory: socialHistory,
-          shoeSize: shoeSize,
+      // Format data for V2 API (removed userInfo section)
+      const kioskData = {
+        patientId: patientId,
+        encounterId: encounterId,
+        demographicsInfo: {
+          address: demographicsInfo?.address || "",
+          city: demographicsInfo?.city || "",
+          zipcode: demographicsInfo?.zipcode || "",
+          email: demographicsInfo?.email || "",
+          address2: demographicsInfo?.address2 || "",
+          state: demographicsInfo?.state || "",
+          phone: demographicsInfo?.phone || "",
         },
-        uploadedPictures: [
-          demographicsInfo?.patientsPicture,
-          primaryInsurance?.insuranceCardFront,
-          primaryInsurance?.insuranceCardBack,
-          secondaryInsurance?.insuranceCardFront,
-          secondaryInsurance?.insuranceCardBack,
-        ].filter(Boolean),
+        allergies: allergies || [],
+        medications: medications || [],
+        familyHistory: familyHistory || {
+          diabetes: false,
+          heartDisease: false,
+          hypertension: false,
+          stroke: false,
+          kidneyDisease: false,
+        },
+        medicalHistory: medicalHistory || [],
+        surgicalHistory: surgicalHistory || [],
+        socialHistory: socialHistory || {
+          smoke: false,
+          alcohol: false,
+          drugUse: false,
+        },
+        shoeSize: {
+          shoeSize: shoeSize?.size || "",
+        },
+        hippaPolicy: {
+          signature: state.hippaPolicy?.signature || "",
+          agreedAt: new Date().toISOString(),
+        },
+        practicePolicies: {
+          signature: state.practicePolicies?.signature || "",
+          agreedAt: new Date().toISOString(),
+        },
+        survey: {
+          question: state.survey?.question || "",
+          answer: state.survey?.answer || "",
+        },
+        checkInTime: new Date().toISOString(),
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
       };
 
-      const res = await addPatient(formattedData, patient.id);
+      const res = await submitKioskData(patientId, kioskData);
 
       setLoading(false);
 
       if (res.status === "error") {
         toast.error(res.message || "Failed to check in");
-
-        if (res.message?.includes("already checked in")) {
-          removeUserData();
-          setTimeout(() => {
-            navigate("/");
-          }, 4000);
+        
+        if (res.details && Array.isArray(res.details)) {
+          console.error("Validation errors:", res.details);
         }
       } else if (res.status === "success") {
         removeUserData();
-        toast.success("Your appointment was checked in successfully");
+        sessionStorage.removeItem("patientId");
+        sessionStorage.removeItem("encounterId");
+        toast.success("Your appointment was checked in successfully!");
 
         setTimeout(() => {
           navigate("/");
-        }, 3100);
+        }, 3000);
       }
     } catch (error) {
       setLoading(false);
-      removeUserData();
-      toast.success("Your appointment was checked in successfully");
-      setTimeout(() => {
-        navigate("/");
-      }, 3100);
+      console.error("Error during check-in:", error);
+      toast.error("An unexpected error occurred. Please try again.");
     }
   };
 

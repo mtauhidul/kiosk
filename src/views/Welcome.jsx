@@ -25,7 +25,7 @@ const Welcome = () => {
               </h5>
               <br />
               <br />
-              <PrimaryButton text="Start Here" url="/kiosk/checkIn_General" />
+              <PrimaryButton text="Start Here" url="/encounter-verification" />
             </div>
           </div>
           <div className={styles.heroBg}>

@@ -1,7 +1,6 @@
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { getPatientsData } from './apis/api';
 import Routings from './utils/Routings';
 
 export const PatientsDataContext = createContext();
@@ -11,16 +10,8 @@ const App = () => {
   const [data, setData] = useState([]);
   const [patient, setPatient] = useState({});
 
-  const getAllPatientsData = async () => {
-    const response = await getPatientsData();
-    if (response) {
-      setData(response);
-    }
-  };
-
-  useEffect(() => {
-    getAllPatientsData();
-  }, []);
+  // Note: Patient data is now fetched via encounter ID verification
+  // No need to fetch all patients on mount
 
   return (
     <PatientsDataContext.Provider value={[data, setData]}>

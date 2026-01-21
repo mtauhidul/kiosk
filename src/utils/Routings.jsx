@@ -5,6 +5,7 @@ import ESign from "../views/ESign";
 import Main from "../views/Main";
 import Preview from "../views/Preview";
 import Welcome from "../views/Welcome";
+import EncounterVerification from "../views/EncounterVerification";
 import Camera from "./Camera";
 import { modules } from "./Modules";
 
@@ -15,6 +16,7 @@ const Routings = () => {
     <AnimatePresence exitBeforeEnter>
       <Routes key={location.pathname} location={location}>
         <Route path="/" element={<Welcome />} />
+        <Route path="/encounter-verification" element={<EncounterVerification />} />
         {modules.map((module, index) => {
           return (
             <Route

@@ -46,21 +46,79 @@ const General = () => {
   const TEST_ENCOUNTER_ID = "TEST123";
 
   useEffect(() => {
-    // Only load saved state if we're already verified (e.g., on page refresh)
-    const state = store?.getState()?.data?.userInfo;
-    if (state && state.encounterId) {
-      setEncounterId(state.encounterId);
-      setUser({
-        fullName: state.fullName || "",
-        day: state.day || "",
-        month: state.month || "",
-        year: state.year || "",
-        location: state.location || "",
-        encounterId: state.encounterId || "",
-      });
+    // Load encounter ID and patient ID from session (set by EncounterVerification page)
+    const storedEncounterId = sessionStorage.getItem("encounterId");
+    const storedPatientId = sessionStorage.getItem("patientId");
+    
+    if (storedEncounterId && storedPatientId) {
+      console.log("Loading pre-verified encounter:", storedEncounterId);
+      setEncounterId(storedEncounterId);
       setVerified(true);
+      
+      // Load patient data from session
+      const storedPatient = sessionStorage.getItem("patient");
+      if (storedPatient) {
+        try {
+          const patientDataWrapper = JSON.parse(storedPatient);
+          const patientData = patientDataWrapper.data;
+          
+          setPatient(patientDataWrapper);
+          
+          // Auto-populate form with Firestore data
+          if (patientData) {
+            // Full Name - check multiple possible fields
+            const fullName = patientData.firstName && patientData.lastName 
+              ? `${patientData.firstName} ${patientData.lastName}`
+              : patientData.fullName || 
+                patientData.patientName ||
+                (patientData.patientFirstName && patientData.patientLastName 
+                  ? `${patientData.patientFirstName} ${patientData.patientLastName}`
+                  : "");
+            
+            // Date of Birth - check multiple possible field names
+            const dobValue = patientData.dateOfBirth || 
+                           patientData.patientDOB || 
+                           patientData.patient_dob ||
+                           patientData.dob ||
+                           "";
+            
+            const dobInfo = parseDOB(dobValue);
+            
+            // Location - check multiple possible field names
+            const location = patientData.facilityName || 
+                           patientData.appointmentFacilityName || 
+                           patientData.appointment_facility_name ||
+                           patientData.facility ||
+                           "";
+            
+            console.log("Auto-populating form with:", {
+              fullName,
+              dobValue,
+              dobInfo,
+              location,
+              encounterId: storedEncounterId,
+              rawPatientData: patientData
+            });
+            
+            setUser({
+              fullName: fullName,
+              day: dobInfo.day,
+              month: dobInfo.month,
+              year: dobInfo.year,
+              location: location,
+              encounterId: storedEncounterId,
+            });
+          }
+        } catch (e) {
+          console.error("Error parsing stored patient data:", e);
+        }
+      }
+    } else {
+      // No pre-verified encounter, redirect back to verification
+      console.warn("No encounter verification found, redirecting...");
+      navigate("/encounter-verification");
     }
-  }, []);
+  }, [navigate]);
 
   useEffect(() => {
     // Only check form completion if already verified
@@ -83,16 +141,27 @@ const General = () => {
 
   // Helper function to parse date of birth
   const parseDOB = (dobDate) => {
-    if (!dobDate) return { day: "", month: "", year: "" };
+    if (!dobDate) {
+      console.log("parseDOB: No DOB provided");
+      return { day: "", month: "", year: "" };
+    }
 
+    console.log("parseDOB: Parsing date:", dobDate);
     const date = new Date(dobDate);
-    if (isNaN(date.getTime())) return { day: "", month: "", year: "" };
+    
+    if (isNaN(date.getTime())) {
+      console.log("parseDOB: Invalid date format:", dobDate);
+      return { day: "", month: "", year: "" };
+    }
 
-    return {
+    const result = {
       day: date.getDate().toString(),
       month: (date.getMonth() + 1).toString(), // JavaScript months are 0-indexed
       year: date.getFullYear().toString(),
     };
+    
+    console.log("parseDOB: Parsed result:", result);
+    return result;
   };
 
   const verifyAppointment = async () => {
@@ -346,8 +415,11 @@ const General = () => {
                     <MenuItem value="">
                       <em>None</em>
                     </MenuItem>
-                    <MenuItem value="Your Total Foot Care Specialist">
-                      Your Total Foot Care Specialist
+                    <MenuItem value="KATY">
+                      KATY
+                    </MenuItem>
+                    <MenuItem value="CYPRESS">
+                      CYPRESS
                     </MenuItem>
                   </Select>
                 </FormControl>
