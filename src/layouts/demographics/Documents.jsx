@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import DriversLicense from "../../assets/images/driversLic.svg";
 import PatientsPicture from "../../assets/images/patientsPic.svg";
 import Bottom from "../../components/Bottom/Bottom";
@@ -10,7 +10,7 @@ const Documents = () => {
   // const dispatch = useDispatch();
   // const state = store?.getState()?.data?.demographicsInfo;
   const [isDisabled, setIsDisabled] = useState(true);
-  const { addFile, docs } = useReviewImages();
+  const { docs } = useReviewImages();
 
   // useEffect(() => {
   //   const state = store?.getState()?.data?.demographicsInfo;

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import LoveImg from "../../assets/images/love.svg";
 import AnimatedPage from "../../components/Animation/Pages";
@@ -11,7 +11,7 @@ const Thanks = () => {
     setTimeout(() => {
       navigate("/preview");
     }, 5000);
-  }, []);
+  }, [navigate]);
 
   return (
     <AnimatedPage>

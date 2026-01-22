@@ -1,6 +1,4 @@
 import { Button } from "@mui/material";
-import { Link } from "react-router-dom";
-import React from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import swal from "sweetalert";
 import PrinterImg from "../../assets/images/printer.svg";

@@ -19,12 +19,11 @@ import AnimatedPage from "../../components/Animation/Pages";
 import Bottom from "../../components/Bottom/Bottom";
 import DOB from "../../components/DOB/DOB";
 import * as actionCreators from "../../state/actionCreators/index";
-import store from "../../state/store";
 import styles from "../../styles/General.module.css";
 
 const General = () => {
-  const [data, setData] = useContext(PatientsDataContext);
-  const [patient, setPatient] = useContext(PatientContext);
+  const [, setData] = useContext(PatientsDataContext);
+  const [, setPatient] = useContext(PatientContext);
   const dispatch = useDispatch();
   const { removeUserData } = bindActionCreators(actionCreators, dispatch);
   const [isDisabled, setIsDisabled] = useState(false);
@@ -49,57 +48,60 @@ const General = () => {
     // Load encounter ID and patient ID from session (set by EncounterVerification page)
     const storedEncounterId = sessionStorage.getItem("encounterId");
     const storedPatientId = sessionStorage.getItem("patientId");
-    
+
     if (storedEncounterId && storedPatientId) {
       console.log("Loading pre-verified encounter:", storedEncounterId);
       setEncounterId(storedEncounterId);
       setVerified(true);
-      
+
       // Load patient data from session
       const storedPatient = sessionStorage.getItem("patient");
       if (storedPatient) {
         try {
           const patientDataWrapper = JSON.parse(storedPatient);
           const patientData = patientDataWrapper.data;
-          
+
           setPatient(patientDataWrapper);
-          
+
           // Auto-populate form with Firestore data
           if (patientData) {
             // Full Name - check multiple possible fields
-            const fullName = patientData.firstName && patientData.lastName 
-              ? `${patientData.firstName} ${patientData.lastName}`
-              : patientData.fullName || 
-                patientData.patientName ||
-                (patientData.patientFirstName && patientData.patientLastName 
-                  ? `${patientData.patientFirstName} ${patientData.patientLastName}`
-                  : "");
-            
+            const fullName =
+              patientData.firstName && patientData.lastName
+                ? `${patientData.firstName} ${patientData.lastName}`
+                : patientData.fullName ||
+                  patientData.patientName ||
+                  (patientData.patientFirstName && patientData.patientLastName
+                    ? `${patientData.patientFirstName} ${patientData.patientLastName}`
+                    : "");
+
             // Date of Birth - check multiple possible field names
-            const dobValue = patientData.dateOfBirth || 
-                           patientData.patientDOB || 
-                           patientData.patient_dob ||
-                           patientData.dob ||
-                           "";
-            
+            const dobValue =
+              patientData.dateOfBirth ||
+              patientData.patientDOB ||
+              patientData.patient_dob ||
+              patientData.dob ||
+              "";
+
             const dobInfo = parseDOB(dobValue);
-            
+
             // Location - check multiple possible field names
-            const location = patientData.facilityName || 
-                           patientData.appointmentFacilityName || 
-                           patientData.appointment_facility_name ||
-                           patientData.facility ||
-                           "";
-            
+            const location =
+              patientData.facilityName ||
+              patientData.appointmentFacilityName ||
+              patientData.appointment_facility_name ||
+              patientData.facility ||
+              "";
+
             console.log("Auto-populating form with:", {
               fullName,
               dobValue,
               dobInfo,
               location,
               encounterId: storedEncounterId,
-              rawPatientData: patientData
+              rawPatientData: patientData,
             });
-            
+
             setUser({
               fullName: fullName,
               day: dobInfo.day,
@@ -148,7 +150,7 @@ const General = () => {
 
     console.log("parseDOB: Parsing date:", dobDate);
     const date = new Date(dobDate);
-    
+
     if (isNaN(date.getTime())) {
       console.log("parseDOB: Invalid date format:", dobDate);
       return { day: "", month: "", year: "" };
@@ -159,7 +161,7 @@ const General = () => {
       month: (date.getMonth() + 1).toString(), // JavaScript months are 0-indexed
       year: date.getFullYear().toString(),
     };
-    
+
     console.log("parseDOB: Parsed result:", result);
     return result;
   };
@@ -201,7 +203,7 @@ const General = () => {
 
       setLoading(false);
       toast.success(
-        "Test appointment verified! Please complete your information."
+        "Test appointment verified! Please complete your information.",
       );
       return;
     }
@@ -226,7 +228,7 @@ const General = () => {
         setPatient(appointmentData);
         window.sessionStorage.setItem(
           "patient",
-          JSON.stringify(appointmentData)
+          JSON.stringify(appointmentData),
         );
 
         // Extract patient details from the response
@@ -255,7 +257,7 @@ const General = () => {
 
         setLoading(false);
         toast.success(
-          "Appointment verified! Please complete your information."
+          "Appointment verified! Please complete your information.",
         );
       } else {
         // Handle error response
@@ -415,12 +417,8 @@ const General = () => {
                     <MenuItem value="">
                       <em>None</em>
                     </MenuItem>
-                    <MenuItem value="KATY">
-                      KATY
-                    </MenuItem>
-                    <MenuItem value="CYPRESS">
-                      CYPRESS
-                    </MenuItem>
+                    <MenuItem value="KATY">KATY</MenuItem>
+                    <MenuItem value="CYPRESS">CYPRESS</MenuItem>
                   </Select>
                 </FormControl>
               </div>

@@ -10,7 +10,7 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Webcam from "react-webcam";
 import * as actionCreators from "../../state/actionCreators/index";
@@ -39,7 +39,7 @@ class OpenCVUtils {
         ) {
           window.faceCascadeClassifier = new window.cv.CascadeClassifier();
           window.faceCascadeClassifier.load(
-            window.cv.data.haarcascade_frontalface_default
+            window.cv.data.haarcascade_frontalface_default,
           );
           resolve(window.faceCascadeClassifier);
           return;
@@ -71,7 +71,7 @@ class OpenCVUtils {
                   data,
                   true,
                   false,
-                  false
+                  false,
                 );
 
                 window.faceCascadeClassifier =
@@ -83,7 +83,7 @@ class OpenCVUtils {
               }
             } catch (err) {
               this.printError(
-                "Error loading cascade classifier: " + err.message
+                "Error loading cascade classifier: " + err.message,
               );
               reject(err);
             }
@@ -160,14 +160,20 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
   const [loadingError, setLoadingError] = useState(null);
   const [processing, setProcessing] = useState(false);
   const [cameraMode, setCameraMode] = useState(
-    id === "patientsPicture" ? "user" : "environment"
+    id === "patientsPicture" ? "user" : "environment",
   );
 
   // Update currentImage whenever the state changes
   useEffect(() => {
     const stateImage = getImageFromState();
     setCurrentImage(stateImage || img);
-  }, [demographicsInfo, primaryInsurance, secondaryInsurance, img]);
+  }, [
+    demographicsInfo,
+    primaryInsurance,
+    secondaryInsurance,
+    img,
+    getImageFromState,
+  ]);
 
   // Determine document type
   const isPortrait = id === "patientsPicture";
@@ -241,7 +247,7 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
 
         script.onerror = () => {
           setLoadingError(
-            "Failed to load image processing library. Please try again later."
+            "Failed to load image processing library. Please try again later.",
           );
           setLoadingCV(false);
         };
@@ -249,7 +255,7 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
         document.body.appendChild(script);
       } catch (error) {
         setLoadingError(
-          `Error loading image processing library: ${error.message}`
+          `Error loading image processing library: ${error.message}`,
         );
         setLoadingCV(false);
       }
@@ -278,7 +284,7 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
       const screenshot = webcamRef.current.getScreenshot();
       if (!screenshot) {
         setLoadingError(
-          "Failed to capture image. Please ensure camera access is granted."
+          "Failed to capture image. Please ensure camera access is granted.",
         );
         return;
       }
@@ -369,7 +375,7 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
           contours,
           hierarchy,
           cv.RETR_EXTERNAL,
-          cv.CHAIN_APPROX_SIMPLE
+          cv.CHAIN_APPROX_SIMPLE,
         );
 
         // Find the largest rectangle with appropriate aspect ratio
@@ -406,18 +412,18 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
           const paddedY = Math.max(0, bestRect.y - bestRect.height * padding);
           const paddedWidth = Math.min(
             bestRect.width * (1 + 2 * padding),
-            src.cols - paddedX
+            src.cols - paddedX,
           );
           const paddedHeight = Math.min(
             bestRect.height * (1 + 2 * padding),
-            src.rows - paddedY
+            src.rows - paddedY,
           );
 
           const paddedRect = new cv.Rect(
             Math.floor(paddedX),
             Math.floor(paddedY),
             Math.floor(paddedWidth),
-            Math.floor(paddedHeight)
+            Math.floor(paddedHeight),
           );
 
           const cropped = src.roi(paddedRect);
@@ -501,7 +507,7 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
                 const targetAspect = 3 / 4;
 
                 let finalWidth, finalHeight;
-                
+
                 if (sourceAspect > targetAspect) {
                   finalHeight = 800;
                   finalWidth = finalHeight * sourceAspect;
@@ -522,7 +528,7 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
                   0,
                   0,
                   finalWidth,
-                  finalHeight
+                  finalHeight,
                 );
 
                 const result = outCanvas.toDataURL("image/jpeg", 0.98);
@@ -578,14 +584,14 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
           actionCreators.addDemographicData({
             ...demographicsInfo,
             patientsPicture: finalImage,
-          })
+          }),
         );
       } else if (id === "driversLicense") {
         dispatch(
           actionCreators.addDemographicData({
             ...demographicsInfo,
             driversLicense: finalImage,
-          })
+          }),
         );
       } else if (id === "insuranceCardFront") {
         // Primary insurance front
@@ -593,7 +599,7 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
           actionCreators.addPrimaryInsurance({
             ...primaryInsurance,
             insuranceCardFront: finalImage,
-          })
+          }),
         );
       } else if (id === "insuranceCardBack") {
         // Primary insurance back
@@ -601,7 +607,7 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
           actionCreators.addPrimaryInsurance({
             ...primaryInsurance,
             insuranceCardBack: finalImage,
-          })
+          }),
         );
       } else if (id === "secInsuranceFront") {
         // Secondary insurance front
@@ -609,7 +615,7 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
           actionCreators.addSecondaryInsurance({
             ...secondaryInsurance,
             insuranceCardFront: finalImage,
-          })
+          }),
         );
       } else if (id === "secInsuranceBack") {
         // Secondary insurance back
@@ -617,7 +623,7 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
           actionCreators.addSecondaryInsurance({
             ...secondaryInsurance,
             insuranceCardBack: finalImage,
-          })
+          }),
         );
       } else {
         console.error("Unknown image type ID:", id);
@@ -683,14 +689,29 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
   return (
     <>
       <Card
-        sx={{ width: 240, height: "auto", pb: "16px", textAlign: "center", borderRadius: "12px" }}
+        sx={{
+          width: 240,
+          height: "auto",
+          pb: "16px",
+          textAlign: "center",
+          borderRadius: "12px",
+        }}
       >
         <CardHeader subheader={title} />
         <h6 style={{ marginTop: "-15px" }} className="header6">
           {subTitle}
         </h6>
         <div className={styles.cardImg}>
-          <img src={currentImage} alt={alt} style={{ borderRadius: "12px", width: "100%", height: "100%", objectFit: "cover" }} />
+          <img
+            src={currentImage}
+            alt={alt}
+            style={{
+              borderRadius: "12px",
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+            }}
+          />
         </div>
         <Button
           onClick={openCameraDialog}

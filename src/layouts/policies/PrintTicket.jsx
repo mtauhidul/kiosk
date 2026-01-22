@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import WaitImg from "../../assets/images/wait.svg";
 import AnimatedPage from "../../components/Animation/Pages";
@@ -12,7 +12,7 @@ const PrintTicket = () => {
     setTimeout(() => {
       navigate("/kiosk/collect_ticket");
     }, 5000);
-  }, []);
+  }, [navigate]);
 
   return (
     <AnimatedPage>

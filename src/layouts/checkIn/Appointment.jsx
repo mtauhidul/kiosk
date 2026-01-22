@@ -8,6 +8,37 @@ import Bottom from "../../components/Bottom/Bottom";
 import styles from "../../styles/Appointment.module.css";
 import { date, formatAMPM, getDayName } from "../../utils/formatAMPM";
 
+// Facility locations with accurate coordinates and addresses
+const facilityLocations = {
+  KATY: {
+    address: "23230 Red River Drive, Katy, TX 77494",
+    lat: 29.77247574215169,
+    lng: -95.775051,
+  },
+  CYPRESS: {
+    address: "27700 NW Freeway #310, Cypress, TX 77433",
+    lat: 29.987088686955236,
+    lng: -95.73331583870174,
+  },
+  // Fallback for old format
+  "Your Total Foot Care Specialist, Katy": {
+    address: "23230 Red River Drive, Katy, TX 77494",
+    lat: 29.77247574215169,
+    lng: -95.775051,
+  },
+  "Your Total Foot Care Specialist, Cypress": {
+    address: "27700 NW Freeway #310, Cypress, TX 77433",
+    lat: 29.987088686955236,
+    lng: -95.73331583870174,
+  },
+  // Default fallback
+  "Your Total Foot Care Specialist": {
+    address: "23230 Red River Drive, Katy, TX 77494",
+    lat: 29.77247574215169,
+    lng: -95.775051,
+  },
+};
+
 const Appointment = () => {
   // Use Redux selector to get user information directly from store
   const userInfo = useSelector((state) => state.data.userInfo);
@@ -16,46 +47,14 @@ const Appointment = () => {
   const [name, setName] = useState("");
   const [appointmentTime, setAppointmentTime] = useState("");
   const [appointmentDate, setAppointmentDate] = useState("");
-  const [facilityName, setFacilityName] = useState("");
   const [facilityAddress, setFacilityAddress] = useState("");
   const [mapUrl, setMapUrl] = useState("");
-
-  // Facility locations with accurate coordinates and addresses
-  const facilityLocations = {
-    "KATY": {
-      address: "23230 Red River Drive, Katy, TX 77494",
-      lat: 29.77247574215169,
-      lng: -95.775051
-    },
-    "CYPRESS": {
-      address: "27700 NW Freeway #310, Cypress, TX 77433",
-      lat: 29.987088686955236,
-      lng: -95.73331583870174
-    },
-    // Fallback for old format
-    "Your Total Foot Care Specialist, Katy": {
-      address: "23230 Red River Drive, Katy, TX 77494",
-      lat: 29.77247574215169,
-      lng: -95.775051
-    },
-    "Your Total Foot Care Specialist, Cypress": {
-      address: "27700 NW Freeway #310, Cypress, TX 77433",
-      lat: 29.987088686955236,
-      lng: -95.73331583870174
-    },
-    // Default fallback
-    "Your Total Foot Care Specialist": {
-      address: "23230 Red River Drive, Katy, TX 77494",
-      lat: 29.77247574215169,
-      lng: -95.775051
-    }
-  };
 
   useEffect(() => {
     // Load patient data from sessionStorage
     const storedPatient = sessionStorage.getItem("patient");
     let patientData = null;
-    
+
     if (storedPatient) {
       try {
         const patientWrapper = JSON.parse(storedPatient);
@@ -89,11 +88,12 @@ const Appointment = () => {
     }
 
     // Get facility name from userInfo location (selected in General page)
-    const selectedFacility = userInfo?.location || patientData?.facilityName || "KATY";
-    setFacilityName(selectedFacility);
+    const selectedFacility =
+      userInfo?.location || patientData?.facilityName || "KATY";
 
     // Get coordinates and address for selected facility
-    const location = facilityLocations[selectedFacility] || facilityLocations["KATY"];
+    const location =
+      facilityLocations[selectedFacility] || facilityLocations["KATY"];
     setFacilityAddress(location.address);
 
     // Set up Google Maps URL with API key from environment
@@ -105,9 +105,9 @@ const Appointment = () => {
   }, [userInfo, appointmentInfo]);
 
   const greeting = `Hello ${name || ""}`;
-  
+
   // Format appointment display with actual data from Firestore
-  const appointmentTimeAndDate = appointmentDate 
+  const appointmentTimeAndDate = appointmentDate
     ? `${appointmentTime}, ${appointmentDate}`
     : `${getDayName(new Date().getDay())}, ${appointmentTime}, ${date}`;
 

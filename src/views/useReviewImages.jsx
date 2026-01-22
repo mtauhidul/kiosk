@@ -2,7 +2,6 @@ import * as React from "react";
 import toast from "react-hot-toast";
 import { useDispatch, useSelector } from "react-redux";
 import { bindActionCreators } from "redux";
-import store from "../state/store";
 import * as actionCreators from "../state/actionCreators";
 
 const useReviewImages = () => {
@@ -18,7 +17,9 @@ const useReviewImages = () => {
 
   const demographicsInfo = useSelector((state) => state.data?.demographicsInfo);
   const primaryInsurance = useSelector((state) => state.data?.primaryInsurance);
-  const secondaryInsurance = useSelector((state) => state.data?.secondaryInsurance);
+  const secondaryInsurance = useSelector(
+    (state) => state.data?.secondaryInsurance,
+  );
 
   const { addPrimaryInsurance, addSecondaryInsurance, addDemographicData } =
     bindActionCreators(actionCreators, dispatch);
@@ -31,14 +32,14 @@ const useReviewImages = () => {
       const types = ["image/png", "image/jpeg", "image/jpg", "image/webp"];
       if (!types.includes(file.type)) {
         return toast.error(
-          "File type is not supported. Enter a valid format of image."
+          "File type is not supported. Enter a valid format of image.",
         );
       }
 
       // check file size
       if (file.size >= 1024 * 150) {
         return toast.error(
-          "File size is too big. Size must be 150kb or less than 150kb."
+          "File size is too big. Size must be 150kb or less than 150kb.",
         );
       }
 
@@ -121,7 +122,15 @@ const useReviewImages = () => {
           break;
       }
     },
-    [addDemographicData, addPrimaryInsurance, addSecondaryInsurance, docs]
+    [
+      addDemographicData,
+      addPrimaryInsurance,
+      addSecondaryInsurance,
+      docs,
+      demographicsInfo,
+      primaryInsurance,
+      secondaryInsurance,
+    ],
   );
 
   React.useEffect(() => {
