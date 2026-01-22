@@ -40,13 +40,12 @@ import useReviewImages from "./useReviewImages";
 
 const Preview = () => {
   const state = store?.getState()?.data;
-  const [patient, setPatient] = useContext(PatientContext);
+  const [, setPatient] = useContext(PatientContext);
   const navigate = useNavigate();
   const [loading, setLoading] = React.useState(false);
 
   const dispatch = useDispatch();
   const { removeUserData } = bindActionCreators(actionCreators, dispatch);
-  const { addFile } = useReviewImages();
 
   useEffect(() => {
     setPatient(JSON.parse(window.sessionStorage.getItem("patient")));

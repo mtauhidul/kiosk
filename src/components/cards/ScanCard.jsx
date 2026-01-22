@@ -10,7 +10,7 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Webcam from "react-webcam";
 import * as actionCreators from "../../state/actionCreators/index";
@@ -126,12 +126,12 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
 
   // Get the current data from Redux store to always have the latest image
   const state = useSelector((state) => state.data);
-  const demographicsInfo = state.demographicsInfo || {};
-  const primaryInsurance = state.primaryInsurance || {};
-  const secondaryInsurance = state.secondaryInsurance || {};
+  const demographicsInfo = useMemo(() => state.demographicsInfo || {}, [state.demographicsInfo]);
+  const primaryInsurance = useMemo(() => state.primaryInsurance || {}, [state.primaryInsurance]);
+  const secondaryInsurance = useMemo(() => state.secondaryInsurance || {}, [state.secondaryInsurance]);
 
   // Get the appropriate image based on ID
-  const getImageFromState = () => {
+  const getImageFromState = useCallback(() => {
     switch (id) {
       case "patientsPicture":
         return demographicsInfo.patientsPicture;
@@ -148,7 +148,7 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
       default:
         return null;
     }
-  };
+  }, [id, demographicsInfo, primaryInsurance, secondaryInsurance]);
 
   // State variables
   const [currentImage, setCurrentImage] = useState(getImageFromState() || img);

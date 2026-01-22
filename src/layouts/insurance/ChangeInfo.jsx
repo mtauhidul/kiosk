@@ -5,7 +5,6 @@ import Bottom from "../../components/Bottom/Bottom";
 import styles from "../../styles/ChangeInfo.module.css";
 
 const ChangeInfo = () => {
-  const [code, setCode] = useState("");
   window.sessionStorage.removeItem("insuranceType");
   return (
     <div className={styles.mainContainer}>

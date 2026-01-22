@@ -7,7 +7,6 @@ import {
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { bindActionCreators } from "redux";
-import AnimatedPage from "../../components/Animation/Pages";
 import BackButton from "../../components/buttons/BackButton";
 import PrimaryButton from "../../components/buttons/PrimaryButton";
 import * as actionCreators from "../../state/actionCreators/index";

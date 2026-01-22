@@ -6,7 +6,6 @@ import Documents from "../layouts/demographics/Documents";
 import Information from "../layouts/demographics/Information";
 import FamilyHistory from "../layouts/family/FamilyHistory";
 import Additional from "../layouts/insurance/Additional";
-import ChangeInfo from "../layouts/insurance/ChangeInfo";
 import InInformation from "../layouts/insurance/InInformation";
 import InsuranceDocs from "../layouts/insurance/InsuranceDocs";
 import SecInInformation from "../layouts/insurance/SecInInformation";

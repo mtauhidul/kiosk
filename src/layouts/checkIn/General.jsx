@@ -22,10 +22,8 @@ import * as actionCreators from "../../state/actionCreators/index";
 import styles from "../../styles/General.module.css";
 
 const General = () => {
-  const [, setData] = useContext(PatientsDataContext);
   const [, setPatient] = useContext(PatientContext);
   const dispatch = useDispatch();
-  const { removeUserData } = bindActionCreators(actionCreators, dispatch);
   const [isDisabled, setIsDisabled] = useState(false);
   const [verified, setVerified] = useState(false); // Track if encounter ID is verified
   const [loading, setLoading] = useState(false);
@@ -120,7 +118,7 @@ const General = () => {
       console.warn("No encounter verification found, redirecting...");
       navigate("/encounter-verification");
     }
-  }, [navigate]);
+  }, [navigate, setPatient]);
 
   useEffect(() => {
     // Only check form completion if already verified
