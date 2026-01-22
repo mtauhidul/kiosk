@@ -36,7 +36,6 @@ import { PatientContext } from "../App";
 import * as actionCreators from "../state/actionCreators/index";
 import store from "../state/store";
 import { date, formatAMPM, getDayName } from "../utils/formatAMPM";
-import useReviewImages from "./useReviewImages";
 
 const Preview = () => {
   const state = store?.getState()?.data;

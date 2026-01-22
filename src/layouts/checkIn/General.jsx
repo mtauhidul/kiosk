@@ -14,7 +14,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { bindActionCreators } from "redux";
 import { checkAppointment } from "../../apis/api";
-import { PatientContext, PatientsDataContext } from "../../App";
+import { PatientContext } from "../../App";
 import AnimatedPage from "../../components/Animation/Pages";
 import Bottom from "../../components/Bottom/Bottom";
 import DOB from "../../components/DOB/DOB";

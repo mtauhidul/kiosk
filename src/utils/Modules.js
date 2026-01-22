@@ -19,8 +19,6 @@ import HippaPolicy from "../layouts/policies/HippaPolicy";
 import HippaPolicyTerms from "../layouts/policies/HippaPolicyTerms";
 import PracticePolicy from "../layouts/policies/PracticePolicy";
 import PracticePolicyTerms from "../layouts/policies/PracticePolicyTerms";
-import PrintHippa from "../layouts/policies/PrintHippa";
-import PrintPractice from "../layouts/policies/PrintPractice";
 import PrintTicket from "../layouts/policies/PrintTicket";
 import Survey from "../layouts/policies/Survey";
 import Thanks from "../layouts/policies/Thanks";
