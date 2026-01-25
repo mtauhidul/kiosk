@@ -6,14 +6,16 @@ import { bindActionCreators } from "redux";
 import Logo from "../assets/images/logo.svg";
 import AnimatedPage from "../components/Animation/Pages";
 import styles from "../styles/welcome.module.css";
-import { verifyEncounterId } from "../apis/api";
+import { verifyPatientByNameAndDOB } from "../apis/api";
 import * as actionCreators from "../state/actionCreators/index";
 
 const EncounterVerification = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { addDemographicData, addPrimaryInsurance } = bindActionCreators(actionCreators, dispatch);
-  const [encounterId, setEncounterId] = useState("");
+  const { addDemographicData, addPrimaryInsurance, addUserInfo } = bindActionCreators(actionCreators, dispatch);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [patientInfo, setPatientInfo] = useState(null);
@@ -22,27 +24,40 @@ const EncounterVerification = () => {
     setError("");
     setPatientInfo(null);
 
-    if (!encounterId.trim()) {
-      setError("Please enter your Encounter ID");
+    // Validate inputs
+    if (!firstName.trim()) {
+      setError("Please enter your first name");
+      return;
+    }
+    if (!lastName.trim()) {
+      setError("Please enter your last name");
+      return;
+    }
+    if (!dateOfBirth) {
+      setError("Please enter your date of birth");
       return;
     }
 
     setLoading(true);
 
     try {
-      console.log("Verifying encounter ID:", encounterId.trim());
-      const response = await verifyEncounterId(encounterId.trim());
+      console.log("Verifying patient:", firstName.trim(), lastName.trim(), dateOfBirth);
+      const response = await verifyPatientByNameAndDOB(
+        firstName.trim(), 
+        lastName.trim(), 
+        dateOfBirth
+      );
       
       console.log("Verification response:", response);
       
       if (response.status === "success") {
         setPatientInfo(response.data);
         
-        // Store encounter data for later use
-        sessionStorage.setItem("encounterId", encounterId.trim());
+        // Store patient data for later use
         sessionStorage.setItem("patientId", response.data.id);
+        sessionStorage.setItem("encounterId", response.data.encounterId || "");
         
-        // Store complete patient data for General page
+        // Store complete patient data for form prepopulation
         const patientData = {
           id: response.data.id,
           data: response.data,
@@ -50,57 +65,63 @@ const EncounterVerification = () => {
         };
         sessionStorage.setItem("patient", JSON.stringify(patientData));
         
-        // Pre-populate demographics data in Redux
+        // Pre-populate user info in Redux
         const patient = response.data;
+        addUserInfo({
+          firstName: patient.firstName || "",
+          middleName: patient.middleName || "",
+          lastName: patient.lastName || "",
+          dateOfBirth: patient.dateOfBirth || "",
+          gender: patient.gender || "",
+          ssn: "", // Don't store SSN in session
+        });
+        
+        // Pre-populate demographics data in Redux
         if (patient.address || patient.phone || patient.email) {
           addDemographicData({
             address: patient.address?.street || "",
-            address2: "",
+            address2: patient.address?.street2 || "",
             city: patient.address?.city || "",
             state: patient.address?.state || "",
-            zipcode: patient.address?.zipCode || "",
+            zipcode: patient.address?.zipCode || patient.address?.zip || "",
             phone: patient.phone || "",
             email: patient.email || "",
           });
         }
         
-        // Pre-populate insurance data in Redux
+        // Pre-populate insurance data in Redux if available
         if (patient.insurance?.provider || patient.insurance?.policyNumber) {
           addPrimaryInsurance({
             insuranceName: patient.insurance?.provider || "",
             memberId: patient.insurance?.policyNumber || "",
-            groupName: "",
-            groupNumber: "",
-            phoneNumber: "",
-            activeDate: new Date().toLocaleDateString(),
-            copay: "40",
-            copayForSpecialist: "100",
+            groupName: patient.insurance?.groupName || "",
+            groupNumber: patient.insurance?.groupNumber || "",
+            phoneNumber: patient.insurance?.phoneNumber || "",
+            activeDate: patient.insurance?.effectiveDate || new Date().toLocaleDateString(),
+            copay: patient.insurance?.copay || "40",
+            copayForSpecialist: patient.insurance?.specialistCopay || "100",
           });
         }
         
-        console.log("Stored in session:", {
-          encounterId: encounterId.trim(),
-          patientId: response.data.id,
-          patientData
-        });
+        console.log("✅ Patient verified and data prepopulated");
         
         // Navigate to check-in after showing confirmation
         setTimeout(() => {
           navigate("/kiosk/checkIn_General");
         }, 2000);
       } else {
-        setError(response.message || "Encounter ID not found. Please check and try again.");
+        setError(response.message || "Unable to verify your information. Please check and try again.");
       }
     } catch (err) {
       console.error("Error during verification:", err);
-      setError("Unable to verify Encounter ID. Please try again.");
+      setError("Unable to verify your information. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !loading && encounterId.trim()) {
+    if (e.key === 'Enter' && !loading) {
       handleSubmit();
     }
   };
@@ -113,30 +134,64 @@ const EncounterVerification = () => {
             <div>
               <img src={Logo} alt="Logo" />
             </div>
-            <div style={{ maxWidth: "500px" }}>
+            <div style={{ maxWidth: "600px" }}>
               <h1 className="header1">
-                Enter Your Encounter ID
+                Verify Your Appointment
               </h1>
               <br />
               <h5 className="header4">
-                Please enter the Encounter ID provided in your appointment confirmation
+                Please enter your name and date of birth to verify your appointment for today
               </h5>
               <br />
               <br />
 
               <TextField
                 fullWidth
-                label="Encounter ID"
+                label="First Name"
                 variant="outlined"
-                value={encounterId}
-                onChange={(e) => setEncounterId(e.target.value)}
+                value={firstName}
+                onChange={(e) => setFirstName(e.target.value)}
                 onKeyPress={handleKeyPress}
-                placeholder="e.g., 888470"
+                placeholder="John"
                 disabled={loading}
-                sx={{ mb: 3 }}
+                sx={{ mb: 2 }}
                 autoFocus
                 inputProps={{
-                  style: { fontSize: "1.2rem", padding: "16px" }
+                  style: { fontSize: "1.1rem", padding: "14px" }
+                }}
+              />
+
+              <TextField
+                fullWidth
+                label="Last Name"
+                variant="outlined"
+                value={lastName}
+                onChange={(e) => setLastName(e.target.value)}
+                onKeyPress={handleKeyPress}
+                placeholder="Doe"
+                disabled={loading}
+                sx={{ mb: 2 }}
+                inputProps={{
+                  style: { fontSize: "1.1rem", padding: "14px" }
+                }}
+              />
+
+              <TextField
+                fullWidth
+                label="Date of Birth"
+                type="date"
+                variant="outlined"
+                value={dateOfBirth}
+                onChange={(e) => setDateOfBirth(e.target.value)}
+                onKeyPress={handleKeyPress}
+                disabled={loading}
+                sx={{ mb: 3 }}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                inputProps={{
+                  max: new Date().toISOString().split('T')[0], // Can't be future date
+                  style: { fontSize: "1.1rem", padding: "14px" }
                 }}
               />
 
@@ -150,7 +205,7 @@ const EncounterVerification = () => {
                 <Alert severity="success" sx={{ mb: 3 }}>
                   Welcome, {patientInfo.firstName} {patientInfo.lastName}! 
                   <br />
-                  Appointment with {patientInfo.appointmentProviderName}
+                  Appointment with {patientInfo.appointmentProviderName || "your provider"}
                   <br />
                   Redirecting to check-in...
                 </Alert>
@@ -158,7 +213,7 @@ const EncounterVerification = () => {
 
               <Button
                 onClick={handleSubmit}
-                disabled={loading || !encounterId.trim()}
+                disabled={loading || !firstName.trim() || !lastName.trim() || !dateOfBirth}
                 className="primaryButton"
                 variant="contained"
                 size="large"

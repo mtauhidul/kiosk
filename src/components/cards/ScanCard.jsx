@@ -15,6 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 import Webcam from "react-webcam";
 import * as actionCreators from "../../state/actionCreators/index";
 import styles from "../../styles/ScanCard.module.css";
+import { processImage as cloudinaryProcessImage } from "../../services/cloudinaryService";
 
 // OpenCV utility class for image processing
 class OpenCVUtils {
@@ -318,20 +319,10 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
           ctx.imageSmoothingQuality = "high";
           ctx.drawImage(img, 0, 0);
 
-          try {
-            if (isPortrait) {
-              await processPortrait(canvas);
-            } else if (isCard) {
-              await processCard(canvas);
-            } else {
-              setProcessedImage(canvas.toDataURL("image/jpeg", 0.98));
-            }
-            resolve();
-          } catch (error) {
-            setProcessedImage(canvas.toDataURL("image/jpeg", 0.98));
-            console.error("Image processing error:", error);
-            resolve();
-          }
+          // No local processing - send raw image to Cloudinary
+          // Cloudinary will handle all cropping, enhancement, and straightening
+          setProcessedImage(canvas.toDataURL("image/jpeg", 0.98));
+          resolve();
         };
 
         img.onerror = () => {
@@ -567,7 +558,7 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
     setProcessedImage(null);
   };
 
-  const saveImage = () => {
+  const saveImage = async () => {
     if (!processedImage && !imgSrc) {
       console.log("No image captured");
       return;
@@ -578,19 +569,68 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
     console.log("Saving image for:", id);
 
     try {
-      // Update state based on the ID parameter
+      // Process with Cloudinary based on image type
+      let cloudinaryProcessedUrl = finalImage;
+      const useCloudinary = process.env.REACT_APP_USE_CLOUDINARY === "true";
+      
+      if (useCloudinary) {
+        setProcessing(true);
+        console.log("📤 Processing with Cloudinary...");
+        
+        try {
+          const patientId = sessionStorage.getItem("patientId") || "temp";
+          let imageType, options = { patientId };
+          
+          // Determine image type and options
+          if (id === "patientsPicture") {
+            imageType = "portrait";
+          } else if (id === "driversLicense") {
+            imageType = "license";
+            options.side = "front";
+          } else if (id === "insuranceCardFront") {
+            imageType = "insurance";
+            options.insuranceType = "primary";
+            options.side = "front";
+          } else if (id === "insuranceCardBack") {
+            imageType = "insurance";
+            options.insuranceType = "primary";
+            options.side = "back";
+          } else if (id === "secInsuranceFront") {
+            imageType = "insurance";
+            options.insuranceType = "secondary";
+            options.side = "front";
+          } else if (id === "secInsuranceBack") {
+            imageType = "insurance";
+            options.insuranceType = "secondary";
+            options.side = "back";
+          }
+          
+          if (imageType) {
+            const result = await cloudinaryProcessImage(finalImage, imageType, options);
+            cloudinaryProcessedUrl = result.processedUrl;
+            console.log("✅ Cloudinary processing complete:", cloudinaryProcessedUrl);
+          }
+        } catch (cloudinaryError) {
+          console.error("⚠️ Cloudinary processing failed, using original:", cloudinaryError);
+          // Fallback to original image if Cloudinary fails
+        } finally {
+          setProcessing(false);
+        }
+      }
+
+      // Update state based on the ID parameter (use Cloudinary URL if available)
       if (id === "patientsPicture") {
         dispatch(
           actionCreators.addDemographicData({
             ...demographicsInfo,
-            patientsPicture: finalImage,
+            patientsPicture: cloudinaryProcessedUrl,
           }),
         );
       } else if (id === "driversLicense") {
         dispatch(
           actionCreators.addDemographicData({
             ...demographicsInfo,
-            driversLicense: finalImage,
+            driversLicense: cloudinaryProcessedUrl,
           }),
         );
       } else if (id === "insuranceCardFront") {
@@ -598,7 +638,7 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
         dispatch(
           actionCreators.addPrimaryInsurance({
             ...primaryInsurance,
-            insuranceCardFront: finalImage,
+            insuranceCardFront: cloudinaryProcessedUrl,
           }),
         );
       } else if (id === "insuranceCardBack") {
@@ -606,7 +646,7 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
         dispatch(
           actionCreators.addPrimaryInsurance({
             ...primaryInsurance,
-            insuranceCardBack: finalImage,
+            insuranceCardBack: cloudinaryProcessedUrl,
           }),
         );
       } else if (id === "secInsuranceFront") {
@@ -614,7 +654,7 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
         dispatch(
           actionCreators.addSecondaryInsurance({
             ...secondaryInsurance,
-            insuranceCardFront: finalImage,
+            insuranceCardFront: cloudinaryProcessedUrl,
           }),
         );
       } else if (id === "secInsuranceBack") {
@@ -622,7 +662,7 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
         dispatch(
           actionCreators.addSecondaryInsurance({
             ...secondaryInsurance,
-            insuranceCardBack: finalImage,
+            insuranceCardBack: cloudinaryProcessedUrl,
           }),
         );
       } else {

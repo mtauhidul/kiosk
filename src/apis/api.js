@@ -14,15 +14,16 @@ import {
 } from "../state/actionCreators"; // Import action creators
 import store from "../state/store"; // Import Redux store
 import { 
-  verifyEncounterIdFromFirestore, 
+  verifyEncounterIdFromFirestore,
+  verifyPatientByNameAndDOB as verifyPatientByNameAndDOBFirestore,
   submitKioskDataToFirestore 
 } from "../firebase/firestoreService";
 
-// Set the base URL for the API (legacy endpoints)
+// Set the base URL for the API (v2 endpoints)
 const API_BASE_URL =
-  process.env.REACT_APP_API_URL || "http://localhost:5001/api";
+  process.env.REACT_APP_API_URL || "http://localhost:3000/api";
 
-// Create axios instance with base configuration (legacy)
+// Create axios instance with base configuration
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: {
@@ -31,7 +32,48 @@ const api = axios.create({
 });
 
 /**
- * Verify encounter ID with Firestore
+ * Verify patient by name and date of birth
+ * @param {string} firstName - Patient's first name
+ * @param {string} lastName - Patient's last name  
+ * @param {string} dateOfBirth - Date of birth in YYYY-MM-DD format
+ * @returns {Promise} - API response with patient info
+ */
+export const verifyPatientByNameAndDOB = async (firstName, lastName, dateOfBirth) => {
+  try {
+    // Use Firestore for verification
+    const patient = await verifyPatientByNameAndDOBFirestore(firstName, lastName, dateOfBirth);
+    
+    if (!patient) {
+      return {
+        status: "error",
+        message: "No appointment found for today. Please check your information.",
+      };
+    }
+    
+    // Check if already checked in
+    if (patient.checkInStatus && patient.checkInStatus !== "not-checked-in") {
+      return {
+        status: "error",
+        message: "You have already checked in today.",
+      };
+    }
+
+    return {
+      status: "success",
+      data: patient, // Return all patient data from Firestore for form prepopulation
+    };
+  } catch (error) {
+    console.error("Error verifying patient:", error);
+    return {
+      status: "error",
+      message: "Failed to verify information. Please try again.",
+    };
+  }
+};
+
+/**
+ * LEGACY: Verify encounter ID with Firestore
+ * @deprecated Use verifyPatientByNameAndDOB instead
  * @param {string} encounterId - Encounter ID to verify
  * @returns {Promise} - API response with patient info
  */

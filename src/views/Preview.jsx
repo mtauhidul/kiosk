@@ -158,13 +158,13 @@ const Preview = () => {
         }
       } else if (res.status === "success") {
         removeUserData();
-        sessionStorage.removeItem("patientId");
-        sessionStorage.removeItem("encounterId");
+        const encounterId = sessionStorage.getItem("encounterId");
         toast.success("Your appointment was checked in successfully!");
 
         setTimeout(() => {
-          navigate("/");
-        }, 3000);
+          // Navigate to collect ticket page with encounter ID
+          navigate("/collect-ticket", { state: { encounterId } });
+        }, 2000);
       }
     } catch (error) {
       setLoading(false);
