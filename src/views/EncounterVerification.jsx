@@ -1,4 +1,4 @@
-import { Container, TextField, CircularProgress, Alert, Button } from "@mui/material";
+import { Container, TextField, CircularProgress, Alert, Button, Select, MenuItem, FormControl, InputLabel, Box } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -15,10 +15,47 @@ const EncounterVerification = () => {
   const { addDemographicData, addPrimaryInsurance, addUserInfo } = bindActionCreators(actionCreators, dispatch);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [dateOfBirth, setDateOfBirth] = useState("");
+  const [dobMonth, setDobMonth] = useState("");
+  const [dobDay, setDobDay] = useState("");
+  const [dobYear, setDobYear] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [patientInfo, setPatientInfo] = useState(null);
+
+  // Generate years (from 1900 to current year)
+  const currentYear = new Date().getFullYear();
+  const years = Array.from({ length: currentYear - 1899 }, (_, i) => currentYear - i);
+  
+  // Generate days based on selected month and year
+  const getDaysInMonth = () => {
+    if (!dobMonth) return 31;
+    if (!dobYear) return 31;
+    
+    const monthIndex = parseInt(dobMonth) - 1;
+    const year = parseInt(dobYear);
+    
+    return new Date(year, monthIndex + 1, 0).getDate();
+  };
+  
+  const months = [
+    { value: "01", label: "January" },
+    { value: "02", label: "February" },
+    { value: "03", label: "March" },
+    { value: "04", label: "April" },
+    { value: "05", label: "May" },
+    { value: "06", label: "June" },
+    { value: "07", label: "July" },
+    { value: "08", label: "August" },
+    { value: "09", label: "September" },
+    { value: "10", label: "October" },
+    { value: "11", label: "November" },
+    { value: "12", label: "December" },
+  ];
+  
+  const days = Array.from({ length: getDaysInMonth() }, (_, i) => {
+    const day = i + 1;
+    return String(day).padStart(2, "0");
+  });
 
   const handleSubmit = async () => {
     setError("");
@@ -33,10 +70,13 @@ const EncounterVerification = () => {
       setError("Please enter your last name");
       return;
     }
-    if (!dateOfBirth) {
-      setError("Please enter your date of birth");
+    if (!dobMonth || !dobDay || !dobYear) {
+      setError("Please enter your complete date of birth");
       return;
     }
+
+    // Format date as YYYY-MM-DD
+    const dateOfBirth = `${dobYear}-${dobMonth}-${dobDay}`;
 
     setLoading(true);
 
@@ -176,24 +216,129 @@ const EncounterVerification = () => {
                 }}
               />
 
-              <TextField
-                fullWidth
-                label="Date of Birth"
-                type="date"
-                variant="outlined"
-                value={dateOfBirth}
-                onChange={(e) => setDateOfBirth(e.target.value)}
-                onKeyPress={handleKeyPress}
-                disabled={loading}
-                sx={{ mb: 3 }}
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                inputProps={{
-                  max: new Date().toISOString().split('T')[0], // Can't be future date
-                  style: { fontSize: "1.1rem", padding: "14px" }
-                }}
-              />
+              <Box sx={{ mb: 3 }}>
+                <h5 className="header4" style={{ marginBottom: "12px", marginTop: "8px" }}>
+                  Date of Birth
+                </h5>
+                <Box sx={{ display: "flex", gap: 2 }}>
+                  <FormControl fullWidth>
+                    <InputLabel>Month</InputLabel>
+                    <Select
+                      value={dobMonth}
+                      onChange={(e) => {
+                        setDobMonth(e.target.value);
+                        // Reset day if it's invalid for the new month
+                        if (dobDay && dobYear) {
+                          const maxDays = new Date(parseInt(dobYear), parseInt(e.target.value), 0).getDate();
+                          if (parseInt(dobDay) > maxDays) {
+                            setDobDay("");
+                          }
+                        }
+                      }}
+                      label="Month"
+                      disabled={loading}
+                      sx={{
+                        "& .MuiSelect-select": {
+                          fontSize: "1.1rem",
+                          padding: "14px"
+                        }
+                      }}
+                      MenuProps={{
+                        PaperProps: {
+                          style: {
+                            maxHeight: 400,
+                          }
+                        }
+                      }}
+                    >
+                      {months.map((month) => (
+                        <MenuItem 
+                          key={month.value}
+                          value={month.value}
+                          sx={{ fontSize: "1.1rem", padding: "12px 16px" }}
+                        >
+                          {month.label}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+
+                  <FormControl fullWidth>
+                    <InputLabel>Day</InputLabel>
+                    <Select
+                      value={dobDay}
+                      onChange={(e) => setDobDay(e.target.value)}
+                      label="Day"
+                      disabled={loading}
+                      sx={{
+                        "& .MuiSelect-select": {
+                          fontSize: "1.1rem",
+                          padding: "14px"
+                        }
+                      }}
+                      MenuProps={{
+                        PaperProps: {
+                          style: {
+                            maxHeight: 400,
+                          }
+                        }
+                      }}
+                    >
+                      {days.map((day) => (
+                        <MenuItem 
+                          key={day} 
+                          value={day}
+                          sx={{ fontSize: "1.1rem", padding: "12px 16px" }}
+                        >
+                          {day}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+
+                  <FormControl fullWidth>
+                    <InputLabel>Year</InputLabel>
+                    <Select
+                      value={dobYear}
+                      onChange={(e) => {
+                        setDobYear(e.target.value);
+                        // Reset day if it's invalid for the new year (leap year handling)
+                        if (dobDay && dobMonth) {
+                          const maxDays = new Date(parseInt(e.target.value), parseInt(dobMonth), 0).getDate();
+                          if (parseInt(dobDay) > maxDays) {
+                            setDobDay("");
+                          }
+                        }
+                      }}
+                      label="Year"
+                      disabled={loading}
+                      sx={{
+                        "& .MuiSelect-select": {
+                          fontSize: "1.1rem",
+                          padding: "14px"
+                        }
+                      }}
+                      MenuProps={{
+                        PaperProps: {
+                          style: {
+                            maxHeight: 400,
+                          }
+                        }
+                      }}
+                    >
+                      {years.map((year) => (
+                        <MenuItem 
+                          key={year} 
+                          value={year}
+                          sx={{ fontSize: "1.1rem", padding: "12px 16px" }}
+                        >
+                          {year}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Box>
+              </Box>
 
               {error && (
                 <Alert severity="error" sx={{ mb: 3 }}>
@@ -213,7 +358,7 @@ const EncounterVerification = () => {
 
               <Button
                 onClick={handleSubmit}
-                disabled={loading || !firstName.trim() || !lastName.trim() || !dateOfBirth}
+                disabled={loading || !firstName.trim() || !lastName.trim() || !dobMonth || !dobDay || !dobYear}
                 className="primaryButton"
                 variant="contained"
                 size="large"

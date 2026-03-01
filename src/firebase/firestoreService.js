@@ -11,6 +11,7 @@ import {
   Timestamp 
 } from "firebase/firestore";
 import { db } from "./config";
+import { getDateRange } from "../utils/dateUtils";
 
 /**
  * Get local date in YYYY-MM-DD format
@@ -33,192 +34,95 @@ const getLocalDate = () => {
  */
 export const verifyPatientByNameAndDOB = async (firstName, lastName, dateOfBirth, date = null) => {
   try {
-    const searchDate = date || getLocalDate();
+    // Get date range for appointment date query
+    const searchDate = date ? new Date(date) : new Date();
+    const { start, end } = getDateRange(searchDate);
     
-    console.log("🔍 Querying Firestore for patient:", firstName, lastName, "DOB:", dateOfBirth, "on date:", searchDate);
+    // Normalize names for case-insensitive comparison
+    const firstNameLower = firstName.toLowerCase().trim();
+    const lastNameLower = lastName.toLowerCase().trim();
     
-    // Normalize strings for comparison
-    const normalizeString = (str) => str.toLowerCase().trim();
+    // Normalize DOB for comparison
+    const inputDOBDate = new Date(dateOfBirth);
+    const normalizedInputDOB = isNaN(inputDOBDate.getTime()) ? null : inputDOBDate.toISOString().split('T')[0];
     
-    // Helper to normalize dates for comparison
-    const normalizeDOB = (dobString) => {
-      if (!dobString) return null;
-      
-      try {
-        // Parse the date string (handles "May 12, 1942", "1942-05-12", "5/12/1942", etc.)
-        const dateObj = new Date(dobString);
-        
-        // Check if valid date
-        if (isNaN(dateObj.getTime())) {
-          return null;
-        }
-        
-        // Return normalized format: YYYY-MM-DD
-        const year = dateObj.getFullYear();
-        const month = String(dateObj.getMonth() + 1).padStart(2, '0');
-        const day = String(dateObj.getDate()).padStart(2, '0');
-        
-        return `${year}-${month}-${day}`;
-      } catch (e) {
-        console.warn("Could not parse DOB:", dobString, e);
-        return null;
-      }
-    };
-    
-    // Normalize the input DOB for comparison
-    const normalizedInputDOB = normalizeDOB(dateOfBirth);
-    
-    // Query patients collection - Firestore queries are case-sensitive
-    // So we query broadly and filter in memory for case-insensitive matching
-    const patientsRef = collection(db, "patients");
-    
-    // Option 1: Try with exact case first (faster if data uses title case)
-    let q = query(
-      patientsRef,
-      where("firstName", "==", firstName)
-    );
-    
-    let querySnapshot = await getDocs(q);
-    
-    // Option 2: If not found, try with capitalized first letter
-    if (querySnapshot.empty && firstName.length > 0) {
-      const capitalizedFirstName = firstName.charAt(0).toUpperCase() + firstName.slice(1).toLowerCase();
-      console.log("🔍 Trying with capitalized name:", capitalizedFirstName);
-      q = query(
-        patientsRef,
-        where("firstName", "==", capitalizedFirstName)
-      );
-      querySnapshot = await getDocs(q);
-    }
-    
-    // Option 3: If still not found, get all patients and filter in memory (less efficient but works)
-    if (querySnapshot.empty) {
-      console.log("🔍 Querying all patients for case-insensitive search...");
-      querySnapshot = await getDocs(patientsRef);
-    }
-    
-    if (querySnapshot.empty) {
-      console.log("❌ No patients found in database");
-      return null;
-    }
-    
-    console.log(`🔍 Found ${querySnapshot.docs.length} patient(s) to check`);
-    
-    // Filter by last name, DOB, and appointment date in memory
-    const matchingPatients = querySnapshot.docs.filter(doc => {
-      const patientData = doc.data();
-      
-      console.log("🔍 Checking patient:", patientData.firstName, patientData.lastName, "DOB:", patientData.dateOfBirth);
-      
-      // Check last name match (case-insensitive)
-      if (normalizeString(patientData.lastName || "") !== normalizeString(lastName)) {
-        console.log("❌ Last name doesn't match:", patientData.lastName, "vs", lastName);
-        return false;
-      }
-      
-      console.log("✅ Last name matches");
-      
-      // Check DOB match - normalize both dates for comparison
-      const patientDOB = normalizeDOB(patientData.dateOfBirth);
-      
-      console.log("🔍 Comparing DOBs - Input:", normalizedInputDOB, "Patient:", patientDOB, "Original:", patientData.dateOfBirth);
-      
-      if (!patientDOB || !normalizedInputDOB || patientDOB !== normalizedInputDOB) {
-        console.log("❌ DOB doesn't match");
-        return false;
-      }
-      
-      console.log("✅ DOB matches");
-      
-      // Check appointment date
-      const appointmentDate = patientData.appointmentDate || "";
-      if (!appointmentDate) {
-        console.log("⚠️  No appointment date for patient");
-        return false;
-      }
-      
-      // Parse search date (format: YYYY-MM-DD)
-      const [year, month, day] = searchDate.split('-');
-      const searchYear = parseInt(year, 10);
-      const searchMonth = parseInt(month, 10);
-      const searchDay = parseInt(day, 10);
-      
-      // Try to parse appointmentDate (various formats)
-      let appointmentDateObj;
-      
-      try {
-        // Try parsing as "Jan 25, 2026", "January 25, 2026", etc.
-        appointmentDateObj = new Date(appointmentDate);
-        
-        console.log("📅 Appointment date comparison:", {
-          original: appointmentDate,
-          parsed: appointmentDateObj,
-          searchDate: searchDate,
-          searchYear, searchMonth, searchDay
-        });
-        
-        // Check if valid date
-        if (!isNaN(appointmentDateObj.getTime())) {
-          const aptYear = appointmentDateObj.getFullYear();
-          const aptMonth = appointmentDateObj.getMonth() + 1; // 0-indexed
-          const aptDay = appointmentDateObj.getDate();
-          
-          console.log("📅 Comparing dates - Appointment:", `${aptYear}-${aptMonth}-${aptDay}`, "Search:", `${searchYear}-${searchMonth}-${searchDay}`);
-          
-          // Compare year, month, day
-          if (aptYear === searchYear && aptMonth === searchMonth && aptDay === searchDay) {
-            console.log("✅ Appointment date matches!");
-            return true;
-          } else {
-            console.log("❌ Appointment date does not match");
-          }
-        }
-      } catch (e) {
-        console.warn("⚠️  Error parsing appointment date:", e);
-      }
-      
-      // Fallback: String matching for various formats
-      const monthNum = searchMonth;
-      const dayNum = searchDay;
-      
-      // Check various date formats:
-      // - YYYY-MM-DD, YYYY/MM/DD
-      // - MM/DD/YYYY, M/D/YYYY
-      // - DD/MM/YYYY, D/M/YYYY
-      const stringMatch = appointmentDate.includes(searchDate) || 
-             appointmentDate.includes(searchDate.replace(/-/g, "/")) ||
-             appointmentDate.includes(`${monthNum}/${dayNum}/${year}`) ||
-             appointmentDate.includes(`${month}/${day}/${year}`) ||
-             appointmentDate.includes(`${dayNum}/${monthNum}/${year}`);
-      
-      if (stringMatch) {
-        console.log("✅ Appointment date matched via string comparison");
-      } else {
-        console.log("❌ Appointment date no match via any method");
-      }
-      
-      return stringMatch;
+    console.log("🔍 Querying Firestore for patient:", firstName, lastName, "DOB:", dateOfBirth);
+    console.log("📅 Date range:", {
+      start: start.toDate().toISOString(),
+      end: end.toDate().toISOString(),
+      startSeconds: start.seconds,
+      endSeconds: end.seconds
     });
     
-    if (matchingPatients.length === 0) {
-      console.log("❌ No matching patient found for today's appointments");
+    // Query with case-insensitive name fields and Timestamp date range
+    const patientsRef = collection(db, "patients");
+    const q = query(
+      patientsRef,
+      where("firstNameLower", "==", firstNameLower),
+      where("lastNameLower", "==", lastNameLower),
+      where("appointmentDate", ">=", start),
+      where("appointmentDate", "<=", end)
+    );
+    
+    const querySnapshot = await getDocs(q);
+    
+    if (querySnapshot.empty) {
+      console.log("❌ No patients found matching criteria");
+      console.log("🔍 Debug: Checking for patients with this name (without date filter)...");
+      
+      // Debug query without date filter
+      const debugQuery = query(
+        patientsRef,
+        where("firstNameLower", "==", firstNameLower),
+        where("lastNameLower", "==", lastNameLower)
+      );
+      const debugSnapshot = await getDocs(debugQuery);
+      
+      if (!debugSnapshot.empty) {
+        debugSnapshot.docs.forEach(doc => {
+          const data = doc.data();
+          console.log("🔍 Found patient but date didn't match:", {
+            name: `${data.firstName} ${data.lastName}`,
+            dob: data.dateOfBirth,
+            appointmentDateSeconds: data.appointmentDate?.seconds,
+            appointmentDateISO: data.appointmentDate ? new Date(data.appointmentDate.seconds * 1000).toISOString() : 'N/A'
+          });
+        });
+      }
+      
       return null;
     }
     
-    // Get the first matching patient
-    const patientDoc = matchingPatients[0];
-    const patientData = patientDoc.data();
+    console.log(`🔍 Found ${querySnapshot.docs.length} potential match(es)`);
     
-    // Check if already checked in
-    if (patientData.checkInStatus && patientData.checkInStatus !== "not-checked-in") {
-      console.log("⚠️  Patient already checked in");
+    // Filter by DOB and check-in status
+    const matchingPatient = querySnapshot.docs.find(doc => {
+      const patientData = doc.data();
+      
+      // Check DOB match
+      let dobMatches = false;
+      if (patientData.dateOfBirth && normalizedInputDOB) {
+        const patientDOBDate = new Date(patientData.dateOfBirth);
+        const normalizedPatientDOB = isNaN(patientDOBDate.getTime()) ? null : patientDOBDate.toISOString().split('T')[0];
+        dobMatches = normalizedPatientDOB === normalizedInputDOB;
+      }
+      
+      // Must not be checked in yet
+      const notCheckedIn = !patientData.checkInStatus || patientData.checkInStatus === "not-checked-in";
+      
+      return dobMatches && notCheckedIn;
+    });
+    
+    if (!matchingPatient) {
+      console.log("❌ No matching patient found or patient already checked in");
       return null;
     }
     
-    // Return complete patient data for verification and form auto-population
+    // Return complete patient data
+    console.log("✅ Patient verified successfully");
     return {
-      id: patientDoc.id,
-      ...patientData
+      id: matchingPatient.id,
+      ...matchingPatient.data()
     };
   } catch (error) {
     console.error("❌ Error verifying patient from Firestore:", error);
