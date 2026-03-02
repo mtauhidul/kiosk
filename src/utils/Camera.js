@@ -117,6 +117,7 @@ const Camera = () => {
 
   const { id } = useParams();
   const isPortrait = id === "patientsPicture";
+  // eslint-disable-next-line no-unused-vars
   const isCard = [
     "driversLicense",
     "insuranceCardFront",
@@ -265,6 +266,7 @@ const Camera = () => {
     });
   };
 
+  // eslint-disable-next-line no-unused-vars
   const processCard = async (canvas) => {
     if (!cvReady || !window.cv) {
       setProcessedImage(canvas.toDataURL("image/jpeg", 0.95));
@@ -358,6 +360,7 @@ const Camera = () => {
     }
   };
 
+  // eslint-disable-next-line no-unused-vars
   const processPortrait = async (canvas) => {
     if (!cvReady || !window.cv) {
       setProcessedImage(canvas.toDataURL("image/jpeg", 0.95));

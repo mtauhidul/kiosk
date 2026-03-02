@@ -178,6 +178,7 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
 
   // Determine document type
   const isPortrait = id === "patientsPicture";
+  // eslint-disable-next-line no-unused-vars
   const isCard = [
     "driversLicense",
     "insuranceCardFront",
@@ -334,6 +335,7 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
     });
   };
 
+  // eslint-disable-next-line no-unused-vars
   const processCard = async (canvas) => {
     if (!cvReady || !window.cv) {
       setProcessedImage(canvas.toDataURL("image/jpeg", 0.98));
@@ -445,6 +447,7 @@ const ScanCard = ({ id, title, subTitle, img, alt, btnText }) => {
     }
   };
 
+  // eslint-disable-next-line no-unused-vars
   const processPortrait = async (canvas) => {
     if (!cvReady || !window.cv) {
       setProcessedImage(canvas.toDataURL("image/jpeg", 0.98));
