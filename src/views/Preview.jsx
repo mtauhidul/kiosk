@@ -88,7 +88,7 @@ const Preview = () => {
         return;
       }
 
-      // Format data for V2 API (removed userInfo section)
+      // Format data for V2 API
       const kioskData = {
         patientId: patientId,
         encounterId: encounterId,
@@ -100,7 +100,33 @@ const Preview = () => {
           address2: demographicsInfo?.address2 || "",
           state: demographicsInfo?.state || "",
           phone: demographicsInfo?.phone || "",
+          patientsPicture: demographicsInfo?.patientsPicture || "",
+          driversLicense: demographicsInfo?.driversLicense || "",
         },
+        primaryInsurance: {
+          insuranceName: primaryInsurance?.insuranceName || "",
+          memberId: primaryInsurance?.memberId || "",
+          groupName: primaryInsurance?.groupName || "",
+          groupNumber: primaryInsurance?.groupNumber || "",
+          phoneNumber: primaryInsurance?.phoneNumber || "",
+          copay: primaryInsurance?.copay || "",
+          copayForSpecialist: primaryInsurance?.copayForSpecialist || "",
+          insuranceCardFront: primaryInsurance?.insuranceCardFront || "",
+          insuranceCardBack: primaryInsurance?.insuranceCardBack || "",
+        },
+        secondaryInsurance: secondaryInsurance?.insuranceName
+          ? {
+              insuranceName: secondaryInsurance?.insuranceName || "",
+              memberId: secondaryInsurance?.memberId || "",
+              groupName: secondaryInsurance?.groupName || "",
+              groupNumber: secondaryInsurance?.groupNumber || "",
+              phoneNumber: secondaryInsurance?.phoneNumber || "",
+              copay: secondaryInsurance?.copay || "",
+              copayForSpecialist: secondaryInsurance?.copayForSpecialist || "",
+              insuranceCardFront: secondaryInsurance?.insuranceCardFront || "",
+              insuranceCardBack: secondaryInsurance?.insuranceCardBack || "",
+            }
+          : null,
         allergies: allergies || [],
         medications: medications || [],
         familyHistory: familyHistory || {

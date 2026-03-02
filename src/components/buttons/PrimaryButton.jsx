@@ -20,7 +20,8 @@ const PrimaryButton = ({
       navigate(url);
     } else {
       if (handleSubmit) {
-        handleSubmit(data);
+        const result = handleSubmit(data);
+        if (result === false) return;
       }
       navigate(url);
     }

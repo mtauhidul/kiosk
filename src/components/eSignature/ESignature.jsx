@@ -1,5 +1,6 @@
 import { IconButton } from "@mui/material";
 import React, { useRef } from "react";
+import toast from "react-hot-toast";
 import { useLocation } from "react-router-dom";
 import SignatureCanvas from "react-signature-canvas";
 import CloseIcon from "../../assets/icons/close.svg";
@@ -19,10 +20,15 @@ const ESignature = ({ handleSubmit, title, url, policyFile }) => {
 
   const { width } = useWindowSize();
 
-  const save = () =>
+  const save = () => {
+    if (sigCanvas.current.isEmpty()) {
+      toast.error("Please sign before continuing.");
+      return false;
+    }
     handleSubmit({
       signature: sigCanvas.current.getTrimmedCanvas().toDataURL("image/png"),
     });
+  };
 
   const clear = () => sigCanvas.current.clear();
 
