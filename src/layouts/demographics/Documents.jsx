@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 import DriversLicense from "../../assets/images/driversLic.svg";
 import PatientsPicture from "../../assets/images/patientsPic.svg";
 import Bottom from "../../components/Bottom/Bottom";
@@ -9,6 +10,7 @@ import useReviewImages from "../../views/useReviewImages";
 const Documents = () => {
   // const dispatch = useDispatch();
   // const state = store?.getState()?.data?.demographicsInfo;
+  const location = useLocation();
   const [isDisabled, setIsDisabled] = useState(true);
   const { docs } = useReviewImages();
 
@@ -69,7 +71,7 @@ const Documents = () => {
           addFile={addFile}
         /> */}
       </div>
-      <Bottom isDisabled={isDisabled} />
+      <Bottom isDisabled={isDisabled} isEdit={location.state} />
     </div>
   );
 };

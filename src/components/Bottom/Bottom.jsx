@@ -31,7 +31,7 @@ const Bottom = ({ handleSubmit, isDisabled, data, isEdit }) => {
         <Button
           onClick={() => {
             navigate(-1);
-            handleSubmit(data);
+            if (typeof handleSubmit === "function") handleSubmit(data);
           }}
           className="primaryButton"
           variant="contained"

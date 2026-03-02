@@ -6,6 +6,7 @@ import {
   Grid,
   Paper,
   Typography,
+  Divider,
 } from "@mui/material";
 import React, { useContext, useEffect } from "react";
 import toast from "react-hot-toast";
@@ -14,21 +15,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { bindActionCreators } from "redux";
 
 // Icons
-import CalendarIcon from "../assets/icons/calender.svg";
-import FamilyIcon from "../assets/icons/family.svg";
 import EditIcon from "../assets/icons/icons8-edit.svg";
-import InsuranceIcon from "../assets/icons/insurance.svg";
-import MedicalIcon from "../assets/icons/medical.svg";
-import MedicationsIcon from "../assets/icons/medications.svg";
-import ShoeIcon from "../assets/icons/shoe.svg";
-import SocialIcon from "../assets/icons/social.svg";
-import SurgicalIcon from "../assets/icons/surgical.svg";
 import Logo from "../assets/images/logo.svg";
 
 // Components
 import AnimatedPage from "../components/Animation/Pages";
-import ScanCard from "../components/cards/ScanCard";
-import PreviewCard from "../components/previewCard/PreviewCard";
 
 // State and API
 import { submitKioskData } from "../apis/api";
@@ -158,12 +149,10 @@ const Preview = () => {
         }
       } else if (res.status === "success") {
         removeUserData();
-        const encounterId = sessionStorage.getItem("encounterId");
         toast.success("Your appointment was checked in successfully!");
 
         setTimeout(() => {
-          // Navigate to collect ticket page with encounter ID
-          navigate("/collect-ticket", { state: { encounterId } });
+          navigate("/");
         }, 2000);
       }
     } catch (error) {
@@ -201,384 +190,1471 @@ const Preview = () => {
   };
 
   const renderInfoItem = (label, value) => (
-    <Box sx={{ mb: 1.5 }}>
+    <Box sx={{ mb: 2 }}>
       <Typography
-        variant="caption"
-        color="text.secondary"
-        sx={{ display: "block" }}
+        sx={{
+          display: "block",
+          color: "var(--grey)",
+          fontWeight: 600,
+          fontSize: "10px",
+          textTransform: "uppercase",
+          letterSpacing: "0.6px",
+          mb: 0.4,
+        }}
       >
         {label}
       </Typography>
-      <Typography variant="body1" fontWeight="500">
+      <Typography
+        sx={{ color: "var(--secondary)", fontWeight: 600, fontSize: "14px" }}
+      >
         {value || "—"}
       </Typography>
     </Box>
   );
 
-  const renderInsuranceCard = (insurance, title, editPath) => {
-    if (
-      !insurance ||
-      (!title.includes("Secondary") && !insurance.insuranceName)
-    )
-      return null;
-
-    return (
-      <Box
-        sx={{
-          mt: title.includes("Secondary") ? 2 : 0,
-          pt: title.includes("Secondary") ? 2 : 0,
-          borderTop: title.includes("Secondary")
-            ? "1px solid rgba(0, 0, 0, 0.12)"
-            : "none",
-        }}
-      >
+  const renderYesNoBadge = (value) => {
+    if (value === "yes") {
+      return (
         <Box
+          component="span"
           sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            mb: 1,
+            display: "inline-block",
+            bgcolor: "#e8f5e9",
+            color: "#2e7d32",
+            borderRadius: "5px",
+            px: 1.25,
+            py: 0.3,
+            fontSize: "11px",
+            fontWeight: 700,
+            letterSpacing: "0.4px",
           }}
         >
-          <Typography variant="subtitle2" color="text.secondary">
-            {title}
-          </Typography>
-          <Link to={editPath} state={{ edit: true }}>
-            <img src={EditIcon} alt="Edit" style={{ width: 18, height: 18 }} />
-          </Link>
+          Yes
         </Box>
-
-        {insurance.insuranceName && (
-          <>
-            <Typography variant="body1" fontWeight="500" gutterBottom>
-              {insurance.insuranceName}
-            </Typography>
-            {renderInfoItem("Member ID", insurance.memberId)}
-            {renderInfoItem("Group Number", insurance.groupNumber)}
-            {renderInfoItem("Group Name", insurance.groupName)}
-            {renderInfoItem("Phone Number", insurance.phoneNumber)}
-            {renderInfoItem("Copay", "$110.00")}
-          </>
-        )}
+      );
+    }
+    if (value === "no") {
+      return (
+        <Box
+          component="span"
+          sx={{
+            display: "inline-block",
+            bgcolor: "#f5f5f5",
+            color: "var(--grey)",
+            borderRadius: "5px",
+            px: 1.25,
+            py: 0.3,
+            fontSize: "11px",
+            fontWeight: 700,
+            letterSpacing: "0.4px",
+          }}
+        >
+          No
+        </Box>
+      );
+    }
+    return (
+      <Box
+        component="span"
+        sx={{
+          display: "inline-block",
+          bgcolor: "#f5f5f5",
+          color: "var(--grey)",
+          borderRadius: "5px",
+          px: 1.25,
+          py: 0.3,
+          fontSize: "11px",
+          fontWeight: 600,
+        }}
+      >
+        Not answered
       </Box>
     );
   };
 
   return (
     <AnimatedPage>
-      <Container maxWidth="xl" sx={{ pb: 6, bgcolor: "#f3f3fc", minHeight: "100vh" }}>
-        {/* Header with Logo and Approve Button */}
+      <Container maxWidth="xl" sx={{ py: 3, minHeight: "100vh", backgroundColor: "var(--bg)" }}>
+        {/* Header */}
+        <Box sx={{ mb: 3 }}>
+          <img src={Logo} alt="Logo" style={{ maxHeight: 42 }} />
+        </Box>
+
+        {/* Review instruction banner */}
         <Box
           sx={{
+            mb: 3,
+            px: 2.5,
+            py: 1.5,
+            borderRadius: "10px",
+            backgroundColor: "var(--checked)",
+            border: "1px solid var(--border)",
             display: "flex",
-            justifyContent: "space-between",
             alignItems: "center",
-            py: { xs: 2, md: 3 },
-            mb: { xs: 2, md: 3 },
-            flexWrap: "wrap",
-            gap: 2,
+            gap: 1.5,
           }}
         >
-          <img src={Logo} alt="Logo" style={{ maxHeight: 45, flexShrink: 0 }} />
-          <Button
-            disabled={loading}
-            onClick={() => postData()}
-            className="primaryButton"
-            variant="contained"
-            size="medium"
+          <Box
             sx={{
-              fontWeight: 600,
-              minWidth: { xs: 100, sm: 120 },
-              fontSize: { xs: "0.875rem", sm: "1rem" },
-              "&:disabled": {
-                backgroundColor: "rgba(0, 0, 0, 0.38) !important",
-                color: "white !important",
-              },
+              width: 8,
+              height: 8,
+              borderRadius: "50%",
+              bgcolor: "var(--primary)",
+              flexShrink: 0,
+            }}
+          />
+          <Typography
+            sx={{
+              fontSize: "13px",
+              color: "var(--secondary)",
+              fontWeight: 500,
+              lineHeight: 1.5,
             }}
           >
-            {loading ? "Approving..." : "Approve"}
-          </Button>
+            Please review your information carefully. If anything is incorrect, tap{" "}
+            <Box component="span" sx={{ fontWeight: 700, color: "var(--primary)" }}>
+              Edit
+            </Box>{" "}
+            next to that section before submitting.
+          </Typography>
+        </Box>
+
+        {/* Page Section Heading */}
+        <Box sx={{ mb: 2.5 }}>
+          <Typography
+            sx={{
+              fontSize: "22px",
+              fontWeight: 700,
+              color: "var(--secondary)",
+              lineHeight: 1.2,
+            }}
+          >
+            Your Check-In Summary
+          </Typography>
+          <Typography sx={{ fontSize: "13px", color: "var(--grey)", mt: 0.5 }}>
+            Review each section and tap Edit if anything needs updating.
+          </Typography>
         </Box>
 
         <Grid container spacing={3}>
           {/* Left Column */}
           <Grid item xs={12} md={5}>
-            {/* Patient Profile Card */}
+            {/* Patient Profile */}
             <Paper
               elevation={0}
-              sx={{ mb: 3, overflow: "hidden", borderRadius: "12px", border: "1px solid rgba(0, 0, 0, 0.12)" }}
+              sx={{
+                mb: 3,
+                borderRadius: "14px",
+                border: "1px solid #d3d4e7",
+                boxShadow: "0px 4px 40px rgba(108, 109, 138, 0.12)",
+                overflow: "hidden",
+              }}
             >
-              <Box sx={{ display: "flex", alignItems: "center", gap: 2, p: 2 }}>
+              {/* Colored header band */}
+              <Box
+                sx={{
+                  backgroundColor: "var(--primary)",
+                  pt: 3.5,
+                  pb: 4,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  gap: 1.5,
+                  position: "relative",
+                }}
+              >
                 <Avatar
                   src={demographicsInfo?.patientsPicture}
                   alt={demographicsInfo?.user?.fullName}
-                  sx={{ width: 80, height: 80 }}
+                  sx={{
+                    width: 80,
+                    height: 80,
+                    border: "3px solid rgba(255,255,255,0.6)",
+                    boxShadow: "0 4px 16px rgba(0,0,0,0.18)",
+                  }}
                 />
-                <Typography
-                  variant="h5"
-                  fontWeight="500"
-                  sx={{ overflow: "hidden", textOverflow: "ellipsis" }}
-                >
-                  {demographicsInfo?.user?.fullName}
-                </Typography>
+                <Box sx={{ textAlign: "center" }}>
+                  <Typography
+                    sx={{
+                      fontSize: "18px",
+                      fontWeight: 700,
+                      color: "#fff",
+                      lineHeight: 1.25,
+                      letterSpacing: "0.2px",
+                    }}
+                  >
+                    {demographicsInfo?.user?.fullName || "Patient Name"}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontSize: "12px",
+                      color: "rgba(255,255,255,0.75)",
+                      mt: 0.5,
+                      fontWeight: 500,
+                    }}
+                  >
+                    Date of Birth: {formatBirthday(userInfo)}
+                  </Typography>
+                </Box>
               </Box>
-            </Paper>
-
-            {/* Appointment Card */}
-            <Paper
-              elevation={0}
-              sx={{ mb: 3, borderRadius: "12px", overflow: "hidden", border: "1px solid rgba(0, 0, 0, 0.12)" }}
-            >
+              {/* Info strip below the band */}
               <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
+                  justifyContent: "center",
                   gap: 1,
-                  px: 2,
+                  px: 2.5,
                   py: 1.5,
-                  bgcolor: "rgba(0, 0, 0, 0.04)",
+                  backgroundColor: "#fff",
+                  borderTop: "1px solid #d3d4e7",
                 }}
               >
-                <img
-                  src={CalendarIcon}
-                  alt="Calendar"
-                  style={{ width: 20, height: 20 }}
-                />
-                <Typography variant="subtitle1" fontWeight="500">
-                  Last doctor's visit
+                <Typography sx={{ fontSize: "11px", color: "var(--grey)", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.5px" }}>
+                  Check-In:
                 </Typography>
-              </Box>
-              <Box sx={{ p: 2 }}>
-                <Typography variant="body1" fontWeight="600">
+                <Typography sx={{ fontSize: "12px", color: "var(--secondary)", fontWeight: 600 }}>
                   {appointmentTimeAndDate}
                 </Typography>
               </Box>
             </Paper>
 
-            {/* Insurance Card */}
-            <Paper elevation={0} sx={{ borderRadius: "12px", overflow: "hidden", border: "1px solid rgba(0, 0, 0, 0.12)" }}>
+            {/* Personal Information */}
+            <Paper
+              elevation={0}
+              sx={{
+                mb: 3,
+                borderRadius: "12px",
+                border: "1px solid #d3d4e7",
+                boxShadow: "0px 4px 40px rgba(108, 109, 138, 0.1)",
+                overflow: "hidden",
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  px: 2.5,
+                  py: 1.5,
+                  borderBottom: "1px solid #d3d4e7",
+                  backgroundColor: "#f9f9ff",
+                  borderRadius: "12px 12px 0 0",
+                }}
+              >
+                  <Typography
+                    sx={{
+                      fontSize: "12px",
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.7px",
+                      color: "var(--secondary)",
+                    }}
+                  >
+                    Personal Information
+                  </Typography>
+                <Link
+                  to="/kiosk/demographics_Information"
+                  state={{ edit: true }}
+                >
+                  <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "6px", bgcolor: "var(--checked)" }}>
+                    <img src={EditIcon} alt="Edit" style={{ width: 14, height: 14 }} />
+                  </Box>
+                </Link>
+              </Box>
+              <Box sx={{ p: 2.5 }}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12}>
+                    {renderInfoItem("Primary Phone", demographicsInfo?.phone)}
+                    {renderInfoItem("Email Address", demographicsInfo?.email)}
+                    {renderInfoItem("Address", demographicsInfo?.address)}
+                    {demographicsInfo?.address2 &&
+                      renderInfoItem("Apartment/Suite", demographicsInfo?.address2)}
+                    <Box sx={{ display: "flex", gap: 2 }}>
+                      <Box sx={{ flex: 1 }}>
+                        {renderInfoItem("City", demographicsInfo?.city)}
+                      </Box>
+                      <Box sx={{ flex: 1 }}>
+                        {renderInfoItem("State", demographicsInfo?.state)}
+                      </Box>
+                      <Box sx={{ flex: 1 }}>
+                        {renderInfoItem("Zipcode", demographicsInfo?.zipcode)}
+                      </Box>
+                    </Box>
+                  </Grid>
+                </Grid>
+              </Box>
+            </Paper>
+
+            {/* Insurance Information */}
+            <Paper
+              elevation={0}
+              sx={{
+                borderRadius: "12px",
+                border: "1px solid #d3d4e7",
+                boxShadow: "0px 4px 40px rgba(108, 109, 138, 0.1)",
+                overflow: "hidden",
+              }}
+            >
               <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
-                  gap: 1,
-                  px: 2,
+                  px: 2.5,
                   py: 1.5,
-                  bgcolor: "rgba(0, 0, 0, 0.04)",
+                  borderBottom: "1px solid #d3d4e7",
+                  backgroundColor: "#f9f9ff",
+                  borderRadius: "12px 12px 0 0",
+                  gap: 1.5,
                 }}
               >
-                <img
-                  src={InsuranceIcon}
-                  alt="Insurance"
-                  style={{ width: 20, height: 20 }}
-                />
-                <Typography variant="subtitle1" fontWeight="500">
-                  Insurance
-                </Typography>
-              </Box>
-
-              <Box sx={{ display: "flex", p: 2 }}>
-                <Box sx={{ width: "30%", pr: 2 }}>
-                  {renderInfoItem("Active Date", "Sep 30, 2014")}
-                  {renderInfoItem("Copay for Specialist", "$40.00")}
-                </Box>
-
-                <Box
+                <Typography
                   sx={{
-                    width: "70%",
-                    pl: 1,
-                    borderLeft: "1px solid rgba(0, 0, 0, 0.12)",
+                    fontSize: "12px",
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.7px",
+                    color: "var(--secondary)",
                   }}
                 >
-                  {renderInsuranceCard(
-                    primaryInsurance,
-                    "Primary Insurance",
-                    "/kiosk/insurance_information"
-                  )}
+                  Insurance Information
+                </Typography>
+              </Box>
+              <Box sx={{ p: 2.5 }}>
+                {/* Primary Insurance */}
+                {primaryInsurance?.insuranceName ? (
+                  <Box sx={{ mb: secondaryInsurance?.insuranceName ? 3 : 0 }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        mb: 2,
+                      }}
+                    >
+                      <Typography
+                        sx={{
+                          fontSize: "11px",
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.6px",
+                          color: "var(--primary)",
+                        }}
+                      >
+                        Primary Insurance
+                      </Typography>
+                      <Link
+                        to="/kiosk/insurance_information"
+                        state={{ edit: true }}
+                      >
+                        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "6px", bgcolor: "var(--checked)" }}>
+                      <img src={EditIcon} alt="Edit" style={{ width: 14, height: 14 }} />
+                    </Box>
+                      </Link>
+                    </Box>
+                    <Typography variant="body1" fontWeight="600" gutterBottom>
+                      {primaryInsurance.insuranceName}
+                    </Typography>
+                    {renderInfoItem("Member ID", primaryInsurance.memberId)}
+                    {renderInfoItem("Group Number", primaryInsurance.groupNumber)}
+                    {renderInfoItem("Group Name", primaryInsurance.groupName)}
+                    {renderInfoItem("Phone", primaryInsurance.phoneNumber)}
+                  </Box>
+                ) : (
+                  <Typography color="text.secondary">
+                    No primary insurance information
+                  </Typography>
+                )}
 
-                  {renderInsuranceCard(
-                    secondaryInsurance,
-                    "Secondary Insurance",
-                    "/kiosk/insurance_info_secondary"
-                  )}
-                </Box>
+                {/* Secondary Insurance */}
+                {secondaryInsurance?.insuranceName && (
+                  <>
+                    <Divider sx={{ my: 3 }} />
+                    <Box>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "space-between",
+                          alignItems: "center",
+                          mb: 2,
+                        }}
+                      >
+                        <Typography
+                          sx={{
+                            fontSize: "11px",
+                            fontWeight: 700,
+                            textTransform: "uppercase",
+                            letterSpacing: "0.6px",
+                            color: "var(--primary)",
+                          }}
+                        >
+                          Secondary Insurance
+                        </Typography>
+                        <Link
+                          to="/kiosk/insurance_info_secondary"
+                          state={{ edit: true }}
+                        >
+                          <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "6px", bgcolor: "var(--checked)" }}>
+                      <img src={EditIcon} alt="Edit" style={{ width: 14, height: 14 }} />
+                    </Box>
+                        </Link>
+                      </Box>
+                      <Typography variant="body1" fontWeight="600" gutterBottom>
+                        {secondaryInsurance.insuranceName}
+                      </Typography>
+                      {renderInfoItem("Member ID", secondaryInsurance.memberId)}
+                      {renderInfoItem("Group Number", secondaryInsurance.groupNumber)}
+                      {renderInfoItem("Group Name", secondaryInsurance.groupName)}
+                      {renderInfoItem("Phone", secondaryInsurance.phoneNumber)}
+                    </Box>
+                  </>
+                )}
               </Box>
             </Paper>
           </Grid>
 
           {/* Right Column */}
           <Grid item xs={12} md={7}>
-            {/* Personal Information */}
-            <Paper elevation={0} sx={{ p: 2.5, mb: 3, borderRadius: "12px", border: "1px solid rgba(0, 0, 0, 0.12)" }}>
-              <Box
-                sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}
-              >
-                <Typography variant="h6" fontWeight="500">
-                  Personal Information
-                </Typography>
-                <Link
-                  to="/kiosk/demographics_Information"
-                  state={{ edit: true }}
+            <Grid container spacing={2}>
+              {/* Allergies */}
+              <Grid item xs={12} sm={6}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    borderRadius: "12px",
+                    border: "1px solid #d3d4e7",
+                    boxShadow: "0px 4px 40px rgba(108, 109, 138, 0.1)",
+                    overflow: "hidden",
+                    height: "100%",
+                  }}
                 >
-                  <img
-                    src={EditIcon}
-                    alt="Edit"
-                    style={{ width: 20, height: 20 }}
-                  />
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      px: 2,
+                      py: 1.5,
+                      borderBottom: "1px solid #d3d4e7",
+                      backgroundColor: "#f9f9ff",
+                      borderRadius: "12px 12px 0 0",
+                    }}
+                  >
+                      <Typography
+                        sx={{
+                          fontSize: "11px",
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.7px",
+                          color: "var(--secondary)",
+                        }}
+                      >
+                        Allergies
+                      </Typography>
+                    <Link to="/kiosk/allergies_add" state={{ edit: true }}>
+                      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "6px", bgcolor: "var(--checked)" }}>
+                      <img src={EditIcon} alt="Edit" style={{ width: 14, height: 14 }} />
+                    </Box>
+                    </Link>
+                  </Box>
+                  <Box sx={{ p: 2 }}>
+                    {allergies && allergies.length > 0 ? (
+                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75 }}>
+                        {allergies.map((allergy, index) => (
+                          <Box
+                            key={index}
+                            sx={{
+                              bgcolor: "var(--checked)",
+                              color: "var(--secondary)",
+                              borderRadius: "6px",
+                              px: 1.25,
+                              py: 0.5,
+                              fontSize: "12px",
+                              fontWeight: 600,
+                              lineHeight: 1.5,
+                            }}
+                          >
+                            {allergy}
+                          </Box>
+                        ))}
+                      </Box>
+                    ) : (
+                      <Typography sx={{ fontSize: "13px", color: "var(--grey)", fontStyle: "italic" }}>
+                        None reported
+                      </Typography>
+                    )}
+                  </Box>
+                </Paper>
+              </Grid>
+
+              {/* Medications */}
+              <Grid item xs={12} sm={6}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    borderRadius: "12px",
+                    border: "1px solid #d3d4e7",
+                    boxShadow: "0px 4px 40px rgba(108, 109, 138, 0.1)",
+                    overflow: "hidden",
+                    height: "100%",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      px: 2,
+                      py: 1.5,
+                      borderBottom: "1px solid #d3d4e7",
+                      backgroundColor: "#f9f9ff",
+                      borderRadius: "12px 12px 0 0",
+                    }}
+                  >
+                      <Typography
+                        sx={{
+                          fontSize: "11px",
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.7px",
+                          color: "var(--secondary)",
+                        }}
+                      >
+                        Medications
+                      </Typography>
+                    <Link to="/kiosk/medications_add" state={{ edit: true }}>
+                      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "6px", bgcolor: "var(--checked)" }}>
+                      <img src={EditIcon} alt="Edit" style={{ width: 14, height: 14 }} />
+                    </Box>
+                    </Link>
+                  </Box>
+                  <Box sx={{ p: 2 }}>
+                    {medications && medications.length > 0 ? (
+                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75 }}>
+                        {medications.map((medication, index) => (
+                          <Box
+                            key={index}
+                            sx={{
+                              bgcolor: "var(--checked)",
+                              color: "var(--secondary)",
+                              borderRadius: "6px",
+                              px: 1.25,
+                              py: 0.5,
+                              fontSize: "12px",
+                              fontWeight: 600,
+                              lineHeight: 1.5,
+                            }}
+                          >
+                            {medication}
+                          </Box>
+                        ))}
+                      </Box>
+                    ) : (
+                      <Typography sx={{ fontSize: "13px", color: "var(--grey)", fontStyle: "italic" }}>
+                        None reported
+                      </Typography>
+                    )}
+                  </Box>
+                </Paper>
+              </Grid>
+
+              {/* Family History */}
+              <Grid item xs={12} sm={6}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    borderRadius: "12px",
+                    border: "1px solid #d3d4e7",
+                    boxShadow: "0px 4px 40px rgba(108, 109, 138, 0.1)",
+                    overflow: "hidden",
+                    height: "100%",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      px: 2,
+                      py: 1.5,
+                      borderBottom: "1px solid #d3d4e7",
+                      backgroundColor: "#f9f9ff",
+                      borderRadius: "12px 12px 0 0",
+                    }}
+                  >
+                      <Typography
+                        sx={{
+                          fontSize: "11px",
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.7px",
+                          color: "var(--secondary)",
+                        }}
+                      >
+                        Family History
+                      </Typography>
+                    <Link to="/kiosk/family_history" state={{ edit: true }}>
+                      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "6px", bgcolor: "var(--checked)" }}>
+                      <img src={EditIcon} alt="Edit" style={{ width: 14, height: 14 }} />
+                    </Box>
+                    </Link>
+                  </Box>
+                  <Box sx={{ p: 2 }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        py: 1,
+                      }}
+                    >
+                      <Typography sx={{ fontSize: "13px", color: "var(--secondary)", fontWeight: 500 }}>
+                        Diabetes (parental)
+                      </Typography>
+                      {renderYesNoBadge(familyHistory?.diabetes)}
+                    </Box>
+                  </Box>
+                </Paper>
+              </Grid>
+
+              {/* Medical History */}
+              <Grid item xs={12} sm={6}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    borderRadius: "12px",
+                    border: "1px solid #d3d4e7",
+                    boxShadow: "0px 4px 40px rgba(108, 109, 138, 0.1)",
+                    overflow: "hidden",
+                    height: "100%",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      px: 2,
+                      py: 1.5,
+                      borderBottom: "1px solid #d3d4e7",
+                      backgroundColor: "#f9f9ff",
+                      borderRadius: "12px 12px 0 0",
+                    }}
+                  >
+                      <Typography
+                        sx={{
+                          fontSize: "11px",
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.7px",
+                          color: "var(--secondary)",
+                        }}
+                      >
+                        Medical History
+                      </Typography>
+                    <Link to="/kiosk/medical_add" state={{ edit: true }}>
+                      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "6px", bgcolor: "var(--checked)" }}>
+                      <img src={EditIcon} alt="Edit" style={{ width: 14, height: 14 }} />
+                    </Box>
+                    </Link>
+                  </Box>
+                  <Box sx={{ p: 2 }}>
+                    {medicalHistory && medicalHistory.length > 0 ? (
+                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75 }}>
+                        {medicalHistory.map((condition, index) => (
+                          <Box
+                            key={index}
+                            sx={{
+                              bgcolor: "var(--checked)",
+                              color: "var(--secondary)",
+                              borderRadius: "6px",
+                              px: 1.25,
+                              py: 0.5,
+                              fontSize: "12px",
+                              fontWeight: 600,
+                              lineHeight: 1.5,
+                            }}
+                          >
+                            {condition}
+                          </Box>
+                        ))}
+                      </Box>
+                    ) : (
+                      <Typography sx={{ fontSize: "13px", color: "var(--grey)", fontStyle: "italic" }}>
+                        None reported
+                      </Typography>
+                    )}
+                  </Box>
+                </Paper>
+              </Grid>
+
+              {/* Social History */}
+              <Grid item xs={12} sm={6}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    borderRadius: "12px",
+                    border: "1px solid #d3d4e7",
+                    boxShadow: "0px 4px 40px rgba(108, 109, 138, 0.1)",
+                    overflow: "hidden",
+                    height: "100%",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      px: 2,
+                      py: 1.5,
+                      borderBottom: "1px solid #d3d4e7",
+                      backgroundColor: "#f9f9ff",
+                      borderRadius: "12px 12px 0 0",
+                    }}
+                  >
+                      <Typography
+                        sx={{
+                          fontSize: "11px",
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.7px",
+                          color: "var(--secondary)",
+                        }}
+                      >
+                        Social History
+                      </Typography>
+                    <Link to="/kiosk/social_history" state={{ edit: true }}>
+                      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "6px", bgcolor: "var(--checked)" }}>
+                      <img src={EditIcon} alt="Edit" style={{ width: 14, height: 14 }} />
+                    </Box>
+                    </Link>
+                  </Box>
+                  <Box sx={{ p: 2 }}>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        py: 1,
+                      }}
+                    >
+                      <Typography sx={{ fontSize: "13px", color: "var(--secondary)", fontWeight: 500 }}>
+                        Smoking / Tobacco
+                      </Typography>
+                      {socialHistory?.smoke === "smoker" ? (
+                        <Box
+                          component="span"
+                          sx={{
+                            display: "inline-block",
+                            bgcolor: "#fff3e0",
+                            color: "#e65100",
+                            borderRadius: "5px",
+                            px: 1.25,
+                            py: 0.3,
+                            fontSize: "11px",
+                            fontWeight: 700,
+                            letterSpacing: "0.4px",
+                          }}
+                        >
+                          Smoker
+                        </Box>
+                      ) : socialHistory?.smoke === "non-smoker" ? (
+                        <Box
+                          component="span"
+                          sx={{
+                            display: "inline-block",
+                            bgcolor: "#e8f5e9",
+                            color: "#2e7d32",
+                            borderRadius: "5px",
+                            px: 1.25,
+                            py: 0.3,
+                            fontSize: "11px",
+                            fontWeight: 700,
+                            letterSpacing: "0.4px",
+                          }}
+                        >
+                          Non-Smoker
+                        </Box>
+                      ) : (
+                        <Box
+                          component="span"
+                          sx={{
+                            display: "inline-block",
+                            bgcolor: "#f5f5f5",
+                            color: "var(--grey)",
+                            borderRadius: "5px",
+                            px: 1.25,
+                            py: 0.3,
+                            fontSize: "11px",
+                            fontWeight: 600,
+                          }}
+                        >
+                          Not answered
+                        </Box>
+                      )}
+                    </Box>
+                  </Box>
+                </Paper>
+              </Grid>
+
+              {/* Surgical History */}
+              <Grid item xs={12} sm={6}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    borderRadius: "12px",
+                    border: "1px solid #d3d4e7",
+                    boxShadow: "0px 4px 40px rgba(108, 109, 138, 0.1)",
+                    overflow: "hidden",
+                    height: "100%",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      px: 2,
+                      py: 1.5,
+                      borderBottom: "1px solid #d3d4e7",
+                      backgroundColor: "#f9f9ff",
+                      borderRadius: "12px 12px 0 0",
+                    }}
+                  >
+                      <Typography
+                        sx={{
+                          fontSize: "11px",
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.7px",
+                          color: "var(--secondary)",
+                        }}
+                      >
+                        Surgical History
+                      </Typography>
+                    <Link to="/kiosk/surgical_add" state={{ edit: true }}>
+                      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "6px", bgcolor: "var(--checked)" }}>
+                      <img src={EditIcon} alt="Edit" style={{ width: 14, height: 14 }} />
+                    </Box>
+                    </Link>
+                  </Box>
+                  <Box sx={{ p: 2 }}>
+                    {surgicalHistory && surgicalHistory.length > 0 ? (
+                      <Box sx={{ display: "flex", flexWrap: "wrap", gap: 0.75 }}>
+                        {surgicalHistory.map((surgery, index) => (
+                          <Box
+                            key={index}
+                            sx={{
+                              bgcolor: "var(--checked)",
+                              color: "var(--secondary)",
+                              borderRadius: "6px",
+                              px: 1.25,
+                              py: 0.5,
+                              fontSize: "12px",
+                              fontWeight: 600,
+                              lineHeight: 1.5,
+                            }}
+                          >
+                            {surgery}
+                          </Box>
+                        ))}
+                      </Box>
+                    ) : (
+                      <Typography sx={{ fontSize: "13px", color: "var(--grey)", fontStyle: "italic" }}>
+                        None reported
+                      </Typography>
+                    )}
+                  </Box>
+                </Paper>
+              </Grid>
+
+              {/* Shoe Size */}
+              <Grid item xs={12} sm={6}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    borderRadius: "12px",
+                    border: "1px solid #d3d4e7",
+                    boxShadow: "0px 4px 40px rgba(108, 109, 138, 0.1)",
+                    overflow: "hidden",
+                    height: "100%",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      alignItems: "center",
+                      px: 2,
+                      py: 1.5,
+                      borderBottom: "1px solid #d3d4e7",
+                      backgroundColor: "#f9f9ff",
+                      borderRadius: "12px 12px 0 0",
+                    }}
+                  >
+                      <Typography
+                        sx={{
+                          fontSize: "11px",
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.7px",
+                          color: "var(--secondary)",
+                        }}
+                      >
+                        Shoe Size
+                      </Typography>
+                    <Link to="/kiosk/shoe_size" state={{ edit: true }}>
+                      <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "6px", bgcolor: "var(--checked)" }}>
+                      <img src={EditIcon} alt="Edit" style={{ width: 14, height: 14 }} />
+                    </Box>
+                    </Link>
+                  </Box>
+                  <Box sx={{ p: 2, display: "flex", alignItems: "baseline", gap: 0.75 }}>
+                    <Typography
+                      sx={{ fontSize: "36px", fontWeight: 700, color: "var(--secondary)", lineHeight: 1 }}
+                    >
+                      {shoeSize?.shoeSize || "\u2014"}
+                    </Typography>
+                    {shoeSize?.shoeSize && (
+                      <Typography sx={{ fontSize: "12px", color: "var(--grey)", fontWeight: 600 }}>
+                        US
+                      </Typography>
+                    )}
+                  </Box>
+                </Paper>
+              </Grid>
+
+              {/* Appointment Info */}
+              <Grid item xs={12} sm={6}>
+                <Paper
+                  elevation={0}
+                  sx={{
+                    borderRadius: "12px",
+                    border: "1px solid #d3d4e7",
+                    boxShadow: "0px 4px 40px rgba(108, 109, 138, 0.1)",
+                    overflow: "hidden",
+                    height: "100%",
+                  }}
+                >
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      px: 2,
+                      py: 1.5,
+                      borderBottom: "1px solid #d3d4e7",
+                      backgroundColor: "#f9f9ff",
+                      borderRadius: "12px 12px 0 0",
+                      gap: 1.5,
+                    }}
+                  >
+                    <Typography
+                      sx={{
+                        fontSize: "11px",
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.7px",
+                        color: "var(--secondary)",
+                      }}
+                    >
+                      Last Visit
+                    </Typography>
+                  </Box>
+                  <Box sx={{ p: 2 }}>
+                    <Typography sx={{ fontSize: "14px", fontWeight: 600, color: "var(--secondary)" }}>
+                      {appointmentTimeAndDate || "\u2014"}
+                    </Typography>
+                  </Box>
+                </Paper>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+
+        {/* Documents Section */}
+        <Box sx={{ mt: 4 }}>
+          {/* Section label */}
+          <Typography
+            sx={{
+              fontSize: "11px",
+              fontWeight: 700,
+              textTransform: "uppercase",
+              letterSpacing: "0.8px",
+              color: "var(--secondary)",
+              mb: 2,
+            }}
+          >
+            Documents &amp; Scans
+          </Typography>
+          <Grid container spacing={2.5}>
+            {/* Identity Documents */}
+            <Grid item xs={12} sm={6} lg={4}>
+            <Paper
+            elevation={0}
+            sx={{
+              borderRadius: "12px",
+              border: "1px solid #d3d4e7",
+              boxShadow: "0px 4px 40px rgba(108, 109, 138, 0.1)",
+              overflow: "hidden",
+              height: "100%",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                px: 2.5,
+                py: 1.5,
+                borderBottom: "1px solid #d3d4e7",
+                backgroundColor: "#f9f9ff",
+              }}
+            >
+                <Typography
+                  sx={{
+                    fontSize: "12px",
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.7px",
+                    color: "var(--secondary)",
+                  }}
+                >
+                  Identity Documents
+                </Typography>
+              <Link to="/kiosk/demographics_documents" state={{ edit: true }}>
+                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "6px", bgcolor: "var(--checked)" }}>
+                  <img src={EditIcon} alt="Edit" style={{ width: 14, height: 14 }} />
+                </Box>
+              </Link>
+            </Box>
+            <Box sx={{ p: 2.5 }}>
+              <Grid container spacing={2} alignItems="flex-start">
+                {/* Patient Photo */}
+                <Grid item xs={5}>
+                  <Typography
+                    sx={{
+                      fontSize: "10px",
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.6px",
+                      color: "var(--grey)",
+                      mb: 1,
+                    }}
+                  >
+                    Photo
+                  </Typography>
+                  <Box
+                    sx={{
+                      width: "100%",
+                      aspectRatio: "3 / 4",
+                      bgcolor: demographicsInfo?.patientsPicture ? "transparent" : "#f0f0f8",
+                      borderRadius: "8px",
+                      overflow: "hidden",
+                      border: "1px solid #d3d4e7",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {demographicsInfo?.patientsPicture ? (
+                      <img
+                        src={demographicsInfo.patientsPicture}
+                        alt="Patient"
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    ) : (
+                      <Typography sx={{ fontSize: "11px", color: "var(--grey)", textAlign: "center", p: 1 }}>
+                        Not uploaded
+                      </Typography>
+                    )}
+                  </Box>
+                </Grid>
+
+                {/* Driver's License */}
+                <Grid item xs={7}>
+                  <Typography
+                    sx={{
+                      fontSize: "10px",
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.6px",
+                      color: "var(--grey)",
+                      mb: 1,
+                    }}
+                  >
+                    ID / License
+                  </Typography>
+                  <Box
+                    sx={{
+                      width: "100%",
+                      aspectRatio: "85.6 / 54",
+                      bgcolor: demographicsInfo?.driversLicense ? "transparent" : "#f0f0f8",
+                      borderRadius: "8px",
+                      overflow: "hidden",
+                      border: "1px solid #d3d4e7",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {demographicsInfo?.driversLicense ? (
+                      <img
+                        src={demographicsInfo.driversLicense}
+                        alt="License"
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    ) : (
+                      <Typography sx={{ fontSize: "11px", color: "var(--grey)", textAlign: "center", p: 1 }}>
+                        Not uploaded
+                      </Typography>
+                    )}
+                  </Box>
+                </Grid>
+              </Grid>
+            </Box>
+          </Paper>
+          </Grid>
+
+            {/* Primary Insurance Card */}
+            <Grid item xs={12} sm={6} lg={4}>
+          <Paper
+            elevation={0}
+            sx={{
+              borderRadius: "12px",
+              border: "1px solid #d3d4e7",
+              boxShadow: "0px 4px 40px rgba(108, 109, 138, 0.1)",
+              overflow: "hidden",
+              height: "100%",
+            }}
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                px: 2.5,
+                py: 1.5,
+                borderBottom: "1px solid #d3d4e7",
+                backgroundColor: "#f9f9ff",
+              }}
+            >
+                <Typography
+                  sx={{
+                    fontSize: "12px",
+                    fontWeight: 700,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.7px",
+                    color: "var(--secondary)",
+                  }}
+                >
+                  Primary Insurance Card
+                </Typography>
+              <Link to="/kiosk/insurance_documents" state={{ edit: true }}>
+                <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "6px", bgcolor: "var(--checked)" }}>
+                  <img src={EditIcon} alt="Edit" style={{ width: 14, height: 14 }} />
+                </Box>
+              </Link>
+            </Box>
+            <Box sx={{ p: 2.5 }}>
+              <Grid container spacing={2}>
+                <Grid item xs={6}>
+                  <Typography
+                    sx={{
+                      fontSize: "10px",
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.6px",
+                      color: "var(--grey)",
+                      mb: 1,
+                    }}
+                  >
+                    Front
+                  </Typography>
+                  <Box
+                    sx={{
+                      width: "100%",
+                      aspectRatio: "85.6 / 54",
+                      bgcolor: primaryInsurance?.insuranceCardFront ? "transparent" : "#f0f0f8",
+                      borderRadius: "8px",
+                      overflow: "hidden",
+                      border: "1px solid #d3d4e7",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {primaryInsurance?.insuranceCardFront ? (
+                      <img
+                        src={primaryInsurance.insuranceCardFront}
+                        alt="Insurance Front"
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    ) : (
+                      <Typography sx={{ fontSize: "11px", color: "var(--grey)", textAlign: "center", p: 1 }}>
+                        Not uploaded
+                      </Typography>
+                    )}
+                  </Box>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography
+                    sx={{
+                      fontSize: "10px",
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.6px",
+                      color: "var(--grey)",
+                      mb: 1,
+                    }}
+                  >
+                    Back
+                  </Typography>
+                  <Box
+                    sx={{
+                      width: "100%",
+                      aspectRatio: "85.6 / 54",
+                      bgcolor: primaryInsurance?.insuranceCardBack ? "transparent" : "#f0f0f8",
+                      borderRadius: "8px",
+                      overflow: "hidden",
+                      border: "1px solid #d3d4e7",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    {primaryInsurance?.insuranceCardBack ? (
+                      <img
+                        src={primaryInsurance.insuranceCardBack}
+                        alt="Insurance Back"
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    ) : (
+                      <Typography sx={{ fontSize: "11px", color: "var(--grey)", textAlign: "center", p: 1 }}>
+                        Not uploaded
+                      </Typography>
+                    )}
+                  </Box>
+                </Grid>
+              </Grid>
+            </Box>
+          </Paper>
+          </Grid>
+
+            {/* Secondary Insurance Card */}
+            {secondaryInsurance?.insuranceName && (
+              <Grid item xs={12} sm={6} lg={4}>
+            <Paper
+              elevation={0}
+              sx={{
+                borderRadius: "12px",
+                border: "1px solid #d3d4e7",
+                boxShadow: "0px 4px 40px rgba(108, 109, 138, 0.1)",
+                overflow: "hidden",
+                height: "100%",
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  px: 2.5,
+                  py: 1.5,
+                  borderBottom: "1px solid #d3d4e7",
+                  backgroundColor: "#f9f9ff",
+                }}
+              >
+                  <Typography
+                    sx={{
+                      fontSize: "12px",
+                      fontWeight: 700,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.7px",
+                      color: "var(--secondary)",
+                    }}
+                  >
+                    Secondary Insurance Card
+                  </Typography>
+                <Link to="/kiosk/insurance_documents_secondary" state={{ edit: true }}>
+                  <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", width: 32, height: 32, borderRadius: "6px", bgcolor: "var(--checked)" }}>
+                  <img src={EditIcon} alt="Edit" style={{ width: 14, height: 14 }} />
+                </Box>
                 </Link>
               </Box>
-
-              <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  {renderInfoItem("Date of birth", formatBirthday(userInfo))}
-                  {renderInfoItem("Primary Phone", demographicsInfo?.phone)}
-                  {renderInfoItem(
-                    "Email Address",
-                    demographicsInfo?.email?.toLowerCase()
-                  )}
-                  {renderInfoItem("Address", demographicsInfo?.address)}
-                  {renderInfoItem(
-                    "Apartment, suite, etc (optional)",
-                    demographicsInfo?.address2
-                  )}
+              <Box sx={{ p: 2.5 }}>
+                <Grid container spacing={2}>
+                  <Grid item xs={6}>
+                    <Typography
+                      sx={{
+                        fontSize: "10px",
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.6px",
+                        color: "var(--grey)",
+                        mb: 1,
+                      }}
+                    >
+                      Front
+                    </Typography>
+                    <Box
+                      sx={{
+                        width: "100%",
+                        aspectRatio: "85.6 / 54",
+                        bgcolor: secondaryInsurance?.insuranceCardFront ? "transparent" : "#f0f0f8",
+                        borderRadius: "8px",
+                        overflow: "hidden",
+                        border: "1px solid #d3d4e7",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {secondaryInsurance?.insuranceCardFront ? (
+                        <img
+                          src={secondaryInsurance.insuranceCardFront}
+                          alt="Secondary Insurance Front"
+                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        />
+                      ) : (
+                        <Typography sx={{ fontSize: "11px", color: "var(--grey)", textAlign: "center", p: 1 }}>
+                          Not uploaded
+                        </Typography>
+                      )}
+                    </Box>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Typography
+                      sx={{
+                        fontSize: "10px",
+                        fontWeight: 700,
+                        textTransform: "uppercase",
+                        letterSpacing: "0.6px",
+                        color: "var(--grey)",
+                        mb: 1,
+                      }}
+                    >
+                      Back
+                    </Typography>
+                    <Box
+                      sx={{
+                        width: "100%",
+                        aspectRatio: "85.6 / 54",
+                        bgcolor: secondaryInsurance?.insuranceCardBack ? "transparent" : "#f0f0f8",
+                        borderRadius: "8px",
+                        overflow: "hidden",
+                        border: "1px solid #d3d4e7",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {secondaryInsurance?.insuranceCardBack ? (
+                        <img
+                          src={secondaryInsurance.insuranceCardBack}
+                          alt="Secondary Insurance Back"
+                          style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                        />
+                      ) : (
+                        <Typography sx={{ fontSize: "11px", color: "var(--grey)", textAlign: "center", p: 1 }}>
+                          Not uploaded
+                        </Typography>
+                      )}
+                    </Box>
+                  </Grid>
                 </Grid>
-                <Grid item xs={12} sm={6}>
-                  {renderInfoItem("Zipcode", demographicsInfo?.zipcode)}
-                  {renderInfoItem("State", demographicsInfo?.state)}
-                  {renderInfoItem("City", demographicsInfo?.city)}
-                </Grid>
-              </Grid>
+              </Box>
             </Paper>
-
-            {/* Medical Information Cards */}
-            <Grid container spacing={2}>
-              <Grid item xs={12} sm={6}>
-                <PreviewCard
-                  url="/kiosk/allergies_add"
-                  icon={InsuranceIcon}
-                  title="Allergies"
-                  text="Active allergies:"
-                  info={allergies}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <PreviewCard
-                  url="/kiosk/medications_add"
-                  icon={MedicationsIcon}
-                  title="Medications"
-                  text=""
-                  info={medications}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <PreviewCard
-                  url="/kiosk/family_history"
-                  icon={FamilyIcon}
-                  title="Family History"
-                  text="Does (Did) your mother or father have diabetes?"
-                  info={[familyHistory?.diabetes?.toUpperCase()]}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <PreviewCard
-                  url="/kiosk/medical_add"
-                  icon={MedicalIcon}
-                  title="Medical History"
-                  text="Past medical history:"
-                  info={medicalHistory}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <PreviewCard
-                  url="/kiosk/social_history"
-                  icon={SocialIcon}
-                  title="Social History"
-                  text={socialHistory?.smoke?.toUpperCase()}
-                  info={[]}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <PreviewCard
-                  url="/kiosk/surgical_add"
-                  icon={SurgicalIcon}
-                  title="Surgical History"
-                  text=""
-                  info={surgicalHistory}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <PreviewCard
-                  url="/kiosk/shoe_size"
-                  icon={ShoeIcon}
-                  title="Shoe Size"
-                  text="Choose your shoe size"
-                  info={[shoeSize?.shoeSize]}
-                />
-              </Grid>
             </Grid>
+            )}
           </Grid>
-        </Grid>
+        </Box>
 
-        {/* Document Scans Section */}
-        <Typography variant="h6" fontWeight="500" sx={{ mt: 4, mb: 2 }}>
-          Uploaded Documents
-        </Typography>
-
-        <Grid container spacing={2}>
-          <Grid item xs={12} sm={6} md={3}>
-            <ScanCard
-              id="insuranceCardFront"
-              title="PRI INSURANCE CARD"
-              subTitle="Front"
-              img={primaryInsurance?.insuranceCardFront}
-              alt="Insurance Card"
-              btnText="Review"
+        {/* Bottom Submit CTA */}
+        <Paper
+          elevation={0}
+          sx={{
+            mt: 5,
+            mb: 3,
+            borderRadius: "16px",
+            border: "1px solid #d3d4e7",
+            overflow: "hidden",
+            boxShadow: "0px 4px 40px rgba(108, 109, 138, 0.1)",
+          }}
+        >
+          {/* Top confirmation message strip */}
+          <Box
+            sx={{
+              px: 3,
+              py: 2,
+              backgroundColor: "#f9f9ff",
+              borderBottom: "1px solid #d3d4e7",
+              display: "flex",
+              alignItems: "flex-start",
+              gap: 1.5,
+            }}
+          >
+            <Box
+              sx={{
+                width: 8,
+                height: 8,
+                borderRadius: "50%",
+                bgcolor: "var(--primary)",
+                flexShrink: 0,
+                mt: "5px",
+              }}
             />
-          </Grid>
+            <Box>
+              <Typography sx={{ fontSize: "14px", fontWeight: 700, color: "var(--secondary)", mb: 0.3 }}>
+                Ready to check in?
+              </Typography>
+              <Typography sx={{ fontSize: "13px", color: "var(--grey)", lineHeight: 1.5 }}>
+                By tapping <Box component="span" sx={{ fontWeight: 700, color: "var(--secondary)" }}>Confirm &amp; Submit</Box> you confirm all the information above is accurate. If anything needs updating, scroll up and tap the{" "}
+                <Box component="span" sx={{ fontWeight: 700, color: "var(--secondary)" }}>edit</Box> button on that section.
+              </Typography>
+            </Box>
+          </Box>
 
-          <Grid item xs={12} sm={6} md={3}>
-            <ScanCard
-              id="insuranceCardBack"
-              title="PRI INSURANCE CARD"
-              subTitle="Back"
-              img={primaryInsurance?.insuranceCardBack}
-              alt="Insurance Card"
-              btnText="Review"
-            />
-          </Grid>
+          {/* Button row */}
+          <Box
+            sx={{
+              px: 3,
+              py: 2.5,
+              backgroundColor: "#fff",
+              display: "flex",
+              justifyContent: "center",
+            }}
+          >
+            <Button
+              disabled={loading}
+              onClick={() => postData()}
+              variant="contained"
+              size="large"
+              sx={{
+                backgroundColor: "var(--primary)",
+                color: "#fff",
+                fontFamily: "Montserrat, sans-serif",
+                fontWeight: 700,
+                fontSize: "15px",
+                letterSpacing: "0.3px",
+                borderRadius: "12px",
+                height: 54,
+                minWidth: 280,
+                textTransform: "none",
+                boxShadow: "0 6px 20px rgba(106,110,244,0.35)",
+                "&:hover": { backgroundColor: "#5558e0", boxShadow: "0 8px 24px rgba(106,110,244,0.45)" },
+                "&:disabled": {
+                  backgroundColor: "rgba(0,0,0,0.12) !important",
+                  color: "rgba(0,0,0,0.38) !important",
+                  boxShadow: "none",
+                },
+              }}
+            >
+              {loading ? "Processing..." : "Confirm & Submit Check-In"}
+            </Button>
+          </Box>
+        </Paper>
 
-          {secondaryInsurance?.insuranceName && (
-            <Grid item xs={12} sm={6} md={3}>
-              <ScanCard
-                id="secInsuranceFront"
-                title="SEC INSURANCE CARD"
-                subTitle="Front"
-                img={secondaryInsurance?.insuranceCardFront}
-                alt="Insurance Card"
-                btnText="Review"
-              />
-            </Grid>
-          )}
 
-          {secondaryInsurance?.insuranceName && (
-            <Grid item xs={12} sm={6} md={3}>
-              <ScanCard
-                id="secInsuranceBack"
-                title="SEC INSURANCE CARD"
-                subTitle="Back"
-                img={secondaryInsurance?.insuranceCardBack}
-                alt="Insurance Card"
-                btnText="Review"
-              />
-            </Grid>
-          )}
-        </Grid>
       </Container>
     </AnimatedPage>
   );

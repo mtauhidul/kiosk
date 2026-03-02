@@ -82,7 +82,19 @@ const Appointment = () => {
 
     // Set appointment date from Firestore data
     if (patientData?.appointmentDate) {
-      setAppointmentDate(patientData.appointmentDate)
+      // Check if it's a Firestore Timestamp object
+      if (patientData.appointmentDate.seconds) {
+        const dateObj = new Date(patientData.appointmentDate.seconds * 1000)
+        const formattedDate = dateObj.toLocaleDateString('en-us', {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+        })
+        setAppointmentDate(formattedDate)
+      } else {
+        // If it's already a string, use it directly
+        setAppointmentDate(patientData.appointmentDate)
+      }
     } else {
       setAppointmentDate(date)
     }

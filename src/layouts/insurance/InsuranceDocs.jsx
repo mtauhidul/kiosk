@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useLocation } from "react-router-dom";
 import InsuranceCardBack from "../../assets/images/insuranceBack.svg";
 import InsuranceCardFront from "../../assets/images/insuranceFront.svg";
 import AnimatedPage from "../../components/Animation/Pages";
@@ -10,6 +11,7 @@ import styles from "../../styles/InsuranceDocs.module.css";
 const InsuranceDocs = () => {
   // Use Redux hooks instead of direct store access
   const primaryInsurance = useSelector((state) => state.data.primaryInsurance);
+  const location = useLocation();
   const [isDisabled, setIsDisabled] = useState(true);
 
   // Set insurance type in session storage only once on component mount
@@ -58,7 +60,7 @@ const InsuranceDocs = () => {
             btnText="Scan insurance card"
           />
         </div>
-        <Bottom isDisabled={isDisabled} />
+        <Bottom isDisabled={isDisabled} isEdit={location.state} />
       </div>
     </AnimatedPage>
   );
