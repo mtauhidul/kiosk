@@ -7,6 +7,7 @@ import {
   getDoc,
   addDoc, 
   updateDoc,
+  arrayUnion,
   doc,
   Timestamp 
 } from "firebase/firestore";
@@ -244,6 +245,7 @@ export const verifyEncounterIdFromFirestore = async (encounterId, date = null) =
 /**
  * Submit kiosk data to Firestore
  * Creates kiosk data document and updates patient check-in status
+ * Also adds the patient to their doctor's waiting queue (mirrors manual check-in flow).
  * @param {string} patientId - Patient document ID
  * @param {Object} kioskData - Complete kiosk form data
  * @returns {Promise<string>} - Kiosk data document ID
@@ -278,12 +280,97 @@ export const submitKioskDataToFirestore = async (patientId, kioskData) => {
     });
     
     console.log("Patient check-in status updated");
+
+    // ── Add patient to doctor's waiting queue ────────────────────────────
+    // Mirror the same logic as manual check-in (addPatientToQueue in usePatientStore).
+    // We read the doctor name from the patient doc then do fuzzy name matching.
+    try {
+      const patientSnap = await getDoc(patientRef);
+      if (patientSnap.exists()) {
+        const providerName = patientSnap.data().appointmentProviderName;
+        if (providerName) {
+          await addPatientToDoctorQueue(patientId, providerName);
+        } else {
+          console.warn("⚠️ No appointmentProviderName on patient, skipping queue add");
+        }
+      }
+    } catch (queueError) {
+      // Non-fatal: check-in succeeded; log but don't fail the whole submit
+      console.error("❌ Failed to add patient to doctor queue:", queueError);
+    }
     
     return docRef.id;
   } catch (error) {
     console.error("Error submitting kiosk data to Firestore:", error);
     throw error;
   }
+};
+
+/**
+ * Find the matching doctor and add the patient to their waiting queue.
+ * Uses the same "Last, First" → "First Last" name normalization as the
+ * caresync dashboard (addPatientToQueue in usePatientStore.ts).
+ *
+ * @param {string} patientId - Patient document ID to add to the queue
+ * @param {string} providerName - Raw provider name from the appointment data
+ */
+const addPatientToDoctorQueue = async (patientId, providerName) => {
+  /**
+   * Normalize a name for fuzzy comparison.
+   * Handles "Pham, Alyssa " (CSV) and "Dr. Alyssa Pham MD" (Firestore) → "alyssa pham"
+   */
+  const normalizeName = (name) => {
+    let n = name.trim().toLowerCase();
+    n = n.replace(/\b(dr\.?|md|do|np|pa|rn|pt)\b\.?/g, "").trim();
+    if (n.includes(",")) {
+      const [last, ...rest] = n.split(",").map((s) => s.trim());
+      n = `${rest.join(" ")} ${last}`.trim();
+    }
+    return n.replace(/\s+/g, " ");
+  };
+
+  const normalizedTarget = normalizeName(providerName);
+
+  // Query all doctors and find the match
+  const doctorsSnap = await getDocs(collection(db, "doctors"));
+  let matchedDoctor = null;
+
+  doctorsSnap.forEach((d) => {
+    if (matchedDoctor) return; // already found
+    const data = d.data();
+    const docName = data.name || "";
+    if (docName === providerName || normalizeName(docName) === normalizedTarget) {
+      matchedDoctor = { id: d.id, ...data };
+    }
+  });
+
+  if (!matchedDoctor) {
+    console.error(
+      `❌ Doctor not found for provider: "${providerName}" (normalized: "${normalizedTarget}")`
+    );
+    console.error(
+      "Available doctors:",
+      doctorsSnap.docs.map((d) => `"${d.data().name}" → "${normalizeName(d.data().name)}"`)
+    );
+    return;
+  }
+
+  // Skip if already in queue (dedup)
+  const existingPatients = matchedDoctor.patients || [];
+  if (existingPatients.includes(patientId)) {
+    console.log("Patient already in doctor queue:", patientId);
+    return;
+  }
+
+  // Add patient to doctor's queue using arrayUnion for safe concurrent writes
+  const doctorRef = doc(db, "doctors", matchedDoctor.id);
+  await updateDoc(doctorRef, {
+    patients: arrayUnion(patientId),
+  });
+
+  console.log(
+    `✅ Added patient ${patientId} to Dr. ${matchedDoctor.name}'s queue`
+  );
 };
 
 /**
